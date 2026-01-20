@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { Home, Users, Gift, TrendingUp, CheckSquare, FolderTree, Workflow } from 'lucide-react'
 import BackButton from '@/components/back-button'
 
+export const dynamic = 'force-dynamic'
+
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: Home },
   { name: 'Donors', href: '/donors', icon: Users },

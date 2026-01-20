@@ -1,6 +1,7 @@
 // Authentication utilities
 import { prisma } from './db'
 import { hashPassword, verifyPassword } from './password'
+import { createOrganizationForNewUser, ensureStarterDataForOrganization } from './starter-data'
 
 /**
  * TODO: Register a new user
@@ -29,27 +30,23 @@ export async function register(userData) {
 
   // determine organizationId
   let organizationId = null
+  let createdNewOrganization = false
   if (organization) {
     // try by id
     const byId = await prisma.organization.findFirst({ where: { id: organization } }).catch(() => null)
     if (byId) organizationId = byId.id
     else {
-      // try by name
-      const byName = await prisma.organization.findFirst({ where: { name: organization } }).catch(() => null)
-      if (byName) organizationId = byName.id
-      else {
-        const created = await prisma.organization.create({ data: { name: organization } })
-        organizationId = created.id
-      }
+      // Treat provided organization as a *new organization name*.
+      // This avoids accidentally joining seeded/demo orgs that happen to share the same name.
+      const created = await createOrganizationForNewUser({ firstName, lastName, email: normalizedEmail, organizationName: organization })
+      organizationId = created.id
+      createdNewOrganization = true
     }
   } else {
-    // use an existing organization if present, or create a default one
-    const firstOrg = await prisma.organization.findFirst()
-    if (firstOrg) organizationId = firstOrg.id
-    else {
-      const created = await prisma.organization.create({ data: { name: 'Default Organization' } })
-      organizationId = created.id
-    }
+    // Default behavior: each newly registered user gets their own organization
+    const created = await createOrganizationForNewUser({ firstName, lastName, email: normalizedEmail })
+    organizationId = created.id
+    createdNewOrganization = true
   }
 
   const hashed = await hashPassword(password)
@@ -63,6 +60,17 @@ export async function register(userData) {
       organizationId,
     },
   })
+
+  // If joining an existing org (by id/name), ensure it has starter data only when empty.
+  // If this registration created a new org, starter data is already seeded.
+  if (!createdNewOrganization) {
+    try {
+      await ensureStarterDataForOrganization(organizationId)
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.warn('starter data seed failed:', e?.message || e)
+    }
+  }
 
   const { password: _p, ...safe } = user
   return safe
