@@ -73,6 +73,13 @@ export async function getSessionUser() {
 
     return session.user
   } catch (e) {
+    // If Next.js is attempting to statically render a route that uses cookies(),
+    // it throws a Dynamic Server Usage error to signal that the route must be dynamic.
+    // Do not swallow that error, otherwise the route may incorrectly remain static.
+    if (e?.digest === 'DYNAMIC_SERVER_USAGE' || String(e?.message || '').includes('Dynamic server usage')) {
+      throw e
+    }
+
     // eslint-disable-next-line no-console
     console.error('getSessionUser error:', e)
     return null
