@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { Suspense, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -8,18 +8,21 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default function LoginClient() {
+  return (
+    <Suspense fallback={null}>
+      <LoginClientForm />
+    </Suspense>
+  )
+}
+
+function LoginClientForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [mounted, setMounted] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
   const router = useRouter()
   const params = useSearchParams()
-
-  useEffect(() => setMounted(true), [])
-
-  if (!mounted) return null
 
   async function handleSubmit(e) {
     e.preventDefault()
