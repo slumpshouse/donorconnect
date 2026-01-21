@@ -150,7 +150,7 @@ export default function SegmentDetailPage() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <Link href="/segments" className="text-sm underline">Back to segments</Link>
+            
             <button
               type="button"
               onClick={openAddDonors}

@@ -166,132 +166,135 @@ export default async function DashboardPage() {
   const totalAmount = donationSumResult?._sum?.amount ?? 0
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-background text-foreground">
       <div className="max-w-7xl mx-auto">
         <div className="flex">
           {/* Sidebar */}
-          <aside className="w-64 bg-white border-r h-screen p-4 sticky top-0">
+          <aside className="w-64 bg-card border-r border-border h-screen p-4 sticky top-0">
             <div className="mb-6">
               <h2 className="text-lg font-bold">DonorConnect</h2>
-              <div className="text-sm text-gray-500 mt-1">{user.firstName} {user.lastName}</div>
+              <div className="text-sm text-muted-foreground mt-1">{user.firstName} {user.lastName}</div>
             </div>
 
             <nav className="space-y-1">
-              <Link href="/donors" className="block px-3 py-2 rounded hover:bg-gray-100">Donors</Link>
-              <Link href="/donations" className="block px-3 py-2 rounded hover:bg-gray-100">Donations</Link>
-              <Link href="/campaigns" className="block px-3 py-2 rounded hover:bg-gray-100">Campaigns</Link>
-              <Link href="/segments" className="block px-3 py-2 rounded hover:bg-gray-100">Segments</Link>
-              <Link href="/workflows" className="block px-3 py-2 rounded hover:bg-gray-100">Workflows</Link>
-              <Link href="/tasks" className="block px-3 py-2 rounded hover:bg-gray-100">Tasks</Link>
+              <Link href="/donors" className="block px-3 py-2 rounded hover:bg-muted">Donors</Link>
+              <Link href="/donations" className="block px-3 py-2 rounded hover:bg-muted">Donations</Link>
+              <Link href="/campaigns" className="block px-3 py-2 rounded hover:bg-muted">Campaigns</Link>
+              <Link href="/segments" className="block px-3 py-2 rounded hover:bg-muted">Segments</Link>
+              <Link href="/workflows" className="block px-3 py-2 rounded hover:bg-muted">Workflows</Link>
+              <Link href="/tasks" className="block px-3 py-2 rounded hover:bg-muted">Tasks</Link>
               {user?.role === 'ADMIN' ? (
                 <>
-                  <Link href="/evidence-rubric" className="block px-3 py-2 rounded hover:bg-gray-100">Evidence / Rubric</Link>
-                  <Link href="/reflection" className="block px-3 py-2 rounded hover:bg-gray-100">Reflection</Link>
+                  <Link href="/evidence-rubric" className="block px-3 py-2 rounded hover:bg-muted">Evidence / Rubric</Link>
+                  <Link href="/reflection" className="block px-3 py-2 rounded hover:bg-muted">Reflection</Link>
                 </>
               ) : null}
             </nav>
 
-              <div className="mt-6">
-                <Link href="/donors/new" className="block">
-                  <button
-                    type="button"
-                    className="w-full text-center px-3 py-2 bg-blue-500 text-black rounded hover:bg-blue-600"
-                  >
-                    Add a new Donor
-                  </button>
-                </Link>
-              </div>
-              <div className="mt-4">
-                <LogoutButton />
-              </div>
+            <div className="mt-6">
+              <Link href="/donors/new" className="block">
+                <button
+                  type="button"
+                  className="w-full text-center px-3 py-2 rounded bg-teal-600 text-white hover:bg-teal-500"
+                >
+                  Add a new Donor
+                </button>
+              </Link>
+            </div>
+
+            <div className="mt-4">
+              <LogoutButton />
+            </div>
           </aside>
 
           {/* Main content */}
           <main className="flex-1 p-6">
-            <div className="mb-6">
-              <h1 className="text-3xl font-bold">Dashboard</h1>
-              <p className="text-gray-600 mt-2">Welcome to your donor retention platform</p>
+            <div className="mb-6 flex items-start justify-between gap-4">
+              <div>
+                <h1 className="text-3xl font-bold">Dashboard</h1>
+                <p className="text-muted-foreground mt-2">Welcome to your donor retention platform</p>
+              </div>
+
+              <Link
+                href="/"
+                className="inline-flex items-center justify-center rounded-md border border-border bg-card px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
+              >
+                Home
+              </Link>
             </div>
 
-            <Link
-              href="/"
-              className="fixed top-6 right-6 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-900"
-            >
-              Back to Home
-            </Link>
-
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="p-4 bg-white rounded shadow">
-                <div className="text-sm text-gray-500">Total Donors</div>
-                <div className="text-2xl font-semibold">{totalDonors}</div>
+              <div className="p-5 rounded-xl shadow bg-gradient-to-r from-teal-700 to-cyan-600 text-white">
+                <div className="text-sm text-white/80">Total Donors</div>
+                <div className="text-3xl font-semibold mt-2">{totalDonors}</div>
               </div>
 
-              <div className="p-4 bg-white rounded shadow">
-                <div className="text-sm text-gray-500">Total Donations</div>
-                <div className="text-2xl font-semibold">{donationCount}</div>
+              <div className="p-5 rounded-xl shadow bg-gradient-to-r from-emerald-600 to-teal-600 text-white">
+                <div className="text-sm text-white/80">Total Donations</div>
+                <div className="text-3xl font-semibold mt-2">{donationCount}</div>
               </div>
 
-              <div className="p-4 bg-white rounded shadow">
-                <div className="text-sm text-gray-500">Amount Received</div>
-                <div className="text-2xl font-semibold">${totalAmount.toFixed(2)}</div>
+              <div className="p-5 rounded-xl shadow bg-gradient-to-r from-cyan-700 to-teal-600 text-white">
+                <div className="text-sm text-white/80">Amount Received</div>
+                <div className="text-3xl font-semibold mt-2">${totalAmount.toFixed(2)}</div>
               </div>
             </div>
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
-                        <div className="p-4 bg-white rounded shadow">
+                        <div className="p-4 bg-card border border-border rounded-xl shadow">
                           <div className="flex items-center justify-between">
                             <div>
-                              <div className="text-sm text-gray-500">At-risk Donors</div>
+                              <div className="text-sm text-muted-foreground">At-risk Donors</div>
                               <div className="text-2xl font-semibold">{atRiskDonors.length}</div>
                             </div>
                           </div>
-                          <p className="mt-3 text-sm text-gray-600">Donors with high or critical retention risk.</p>
+                          <p className="mt-3 text-sm text-muted-foreground">Donors with high or critical retention risk.</p>
 
                           {atRiskDonors.length ? (
                             <ul className="mt-3 space-y-2 max-h-56 overflow-auto">
                               {atRiskDonors.map((d) => (
-                                <li key={d.id} className="flex items-center justify-between p-2 rounded bg-gray-50">
+                                <li key={d.id} className="flex items-center justify-between p-2 rounded bg-muted">
                                   <div>
                                     <div className="font-medium">{d.firstName} {d.lastName}</div>
-                                    <div className="text-sm text-gray-500">{d.email || 'No email'} — {d.retentionRisk}</div>
+                                    <div className="text-sm text-muted-foreground">{d.email || 'No email'} — {d.retentionRisk}</div>
                                   </div>
-                                  <div className="text-sm text-gray-700">Gifts: {d.totalGifts ?? 0} — ${((d.totalAmount)||0).toFixed(2)}</div>
+                                  <div className="text-sm text-muted-foreground">Gifts: {d.totalGifts ?? 0} — ${((d.totalAmount)||0).toFixed(2)}</div>
                                 </li>
                               ))}
                             </ul>
                           ) : (
-                            <div className="mt-3 text-sm text-gray-500">No at-risk donors</div>
+                            <div className="mt-3 text-sm text-muted-foreground">No at-risk donors</div>
                           )}
                         </div>
 
-              <div className="p-4 bg-white rounded shadow">
-                <div className="text-sm text-gray-500">Recent Donations</div>
+              <div className="p-4 bg-card border border-border rounded-xl shadow">
+                <div className="text-sm text-muted-foreground">Recent Donations</div>
                 <ul className="mt-3 space-y-2">
                   {recentDonations.length ? (
                     recentDonations.map((d) => (
                       <li key={d.id} className="flex justify-between">
                         <div>
                           <div className="font-medium">{d.donor?.firstName} {d.donor?.lastName}</div>
-                          <div className="text-sm text-gray-500">{d.campaign?.name ?? 'General'}</div>
+                          <div className="text-sm text-muted-foreground">{d.campaign?.name ?? 'General'}</div>
                         </div>
                         <div className="text-right">
                           <div className="font-semibold">${d.amount.toFixed(2)}</div>
-                          <div className="text-sm text-gray-500">{new Date(d.createdAt).toLocaleDateString()}</div>
+                          <div className="text-sm text-muted-foreground">{new Date(d.createdAt).toLocaleDateString()}</div>
                         </div>
                       </li>
                     ))
                   ) : (
-                    <li className="text-sm text-gray-500">No recent donations</li>
+                    <li className="text-sm text-muted-foreground">No recent donations</li>
                   )}
                 </ul>
               </div>
             </div>
 
             <div className="mt-6">
-              <div className="p-4 bg-white rounded shadow">
+              <div className="p-4 bg-card border border-border rounded-xl shadow">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-sm text-gray-500">Campaign Insights</div>
+                    <div className="text-sm text-muted-foreground">Campaign Insights</div>
                     <div className="text-lg font-semibold">Trending up/down (last 30 days)</div>
                   </div>
                   <Link href="/campaigns" className="text-sm underline">View campaigns</Link>
@@ -300,10 +303,10 @@ export default async function DashboardPage() {
                 {campaignInsights.length ? (
                   <ul className="mt-4 space-y-2">
                     {campaignInsights.slice(0, 6).map((c) => (
-                      <li key={c.id} className="flex items-center justify-between p-2 rounded bg-gray-50">
+                      <li key={c.id} className="flex items-center justify-between p-2 rounded bg-muted">
                         <div>
                           <div className="font-medium">{c.name}</div>
-                          <div className="text-sm text-gray-500">
+                          <div className="text-sm text-muted-foreground">
                             30d: {formatCurrency(c.recentAmount)} · {c.recentCount} gifts
                             <span className="mx-2">•</span>
                             Prev 30d: {formatCurrency(c.previousAmount)} · {c.previousCount} gifts
@@ -316,12 +319,12 @@ export default async function DashboardPage() {
                     ))}
                   </ul>
                 ) : (
-                  <div className="mt-4 text-sm text-gray-500">No campaign donations in the last 60 days.</div>
+                  <div className="mt-4 text-sm text-muted-foreground">No campaign donations in the last 60 days.</div>
                 )}
 
                 <div className="mt-5">
-                  <div className="text-sm text-gray-500">What to do next</div>
-                  <ul className="mt-2 space-y-1 text-sm text-gray-700">
+                  <div className="text-sm text-muted-foreground">What to do next</div>
+                  <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
                     {nextSteps.slice(0, 3).map((item) => (
                       <li key={item}>- {item}</li>
                     ))}

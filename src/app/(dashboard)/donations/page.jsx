@@ -44,43 +44,43 @@ export default function DonationsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-gradient-to-r from-indigo-500 to-purple-500 p-8 rounded-lg text-white">
+      <div className="bg-gradient-to-r from-teal-700 to-emerald-600 p-8 rounded-lg text-white">
         <h1 className="text-4xl font-bold">Donation List</h1>
-        <p className="mt-2 text-indigo-100">Search, filter, and manage all your donors</p>
+        <p className="mt-2 text-white/80">Search, filter, and manage all your donors</p>
       </div>
 
-      <div className="bg-white p-6 rounded-xl shadow">
+      <div className="bg-card border border-border p-6 rounded-xl shadow">
         <div className="flex gap-4 items-center">
-          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search by name, email, ID, or phone number..." className="flex-1 border rounded px-4 py-3" />
+          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search by name, email, ID, or phone number..." className="flex-1 border rounded px-4 py-3 bg-background text-foreground placeholder:text-muted-foreground" />
           <button className="px-4 py-3 bg-indigo-600 text-white rounded">🔍 Search</button>
         </div>
 
         <div className="mt-4 flex flex-wrap gap-3">
-          <button className={`px-4 py-2 rounded ${filter === 'all' ? 'bg-indigo-600 text-white' : 'bg-gray-100'}`} onClick={() => setFilter('all')}>All Donations</button>
-          <button className={`px-4 py-2 rounded ${filter === 'online' ? 'bg-indigo-600 text-white' : 'bg-gray-100'}`} onClick={() => setFilter('online')}>Online</button>
-          <button className={`px-4 py-2 rounded ${filter === 'offline' ? 'bg-indigo-600 text-white' : 'bg-gray-100'}`} onClick={() => setFilter('offline')}>Offline</button>
-          <button className={`px-4 py-2 rounded ${filter === 'recurring' ? 'bg-indigo-600 text-white' : 'bg-gray-100'}`} onClick={() => setFilter('recurring')}>Recurring</button>
+          <button className={`px-4 py-2 rounded ${filter === 'all' ? 'bg-indigo-600 text-white' : 'bg-muted'}`} onClick={() => setFilter('all')}>All Donations</button>
+          <button className={`px-4 py-2 rounded ${filter === 'online' ? 'bg-indigo-600 text-white' : 'bg-muted'}`} onClick={() => setFilter('online')}>Online</button>
+          <button className={`px-4 py-2 rounded ${filter === 'offline' ? 'bg-indigo-600 text-white' : 'bg-muted'}`} onClick={() => setFilter('offline')}>Offline</button>
+          <button className={`px-4 py-2 rounded ${filter === 'recurring' ? 'bg-indigo-600 text-white' : 'bg-muted'}`} onClick={() => setFilter('recurring')}>Recurring</button>
         </div>
       </div>
 
-      <div className="bg-white p-6 rounded-xl shadow">
+      <div className="bg-card border border-border p-6 rounded-xl shadow">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="text-center">
             <div className="text-3xl font-bold">{totalCount}</div>
-            <div className="text-sm text-gray-500 uppercase">TOTAL DONATIONS</div>
+            <div className="text-sm text-muted-foreground uppercase">TOTAL DONATIONS</div>
           </div>
           <div className="text-center">
             <div className="text-3xl font-bold">${totalAmount.toLocaleString()}</div>
-            <div className="text-sm text-gray-500 uppercase">TOTAL AMOUNT</div>
+            <div className="text-sm text-muted-foreground uppercase">TOTAL AMOUNT</div>
           </div>
           <div className="text-center">
             <div className="text-3xl font-bold">{onlineCount}</div>
-            <div className="text-sm text-gray-500 uppercase">ONLINE</div>
+            <div className="text-sm text-muted-foreground uppercase">ONLINE</div>
           </div>
         </div>
       </div>
 
-      <div className="bg-white p-6 rounded-xl shadow">
+      <div className="bg-card border border-border p-6 rounded-xl shadow">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">Recent Donations</h2>
           <Link href="/donations/new">
@@ -92,18 +92,18 @@ export default function DonationsPage() {
         </div>
 
         <div className="space-y-3">
-          {loading && <div className="text-sm text-gray-500">Loading donations…</div>}
+          {loading && <div className="text-sm text-muted-foreground">Loading donations…</div>}
           {error && <div className="text-sm text-red-600">Failed to load donations</div>}
-          {!loading && !donations.length && <div className="text-sm text-gray-500">No donations recorded.</div>}
+          {!loading && !donations.length && <div className="text-sm text-muted-foreground">No donations recorded.</div>}
           {!loading && donations.map((d) => (
             <div key={d.id} className="p-4 border rounded flex justify-between items-center">
               <div>
-                <div className="font-medium">{d.donor?.firstName} {d.donor?.lastName} <span className="text-sm text-gray-500">• {d.campaign?.name ?? 'General'}</span></div>
-                {d.notes && <div className="text-sm text-gray-500">{d.notes}</div>}
+                <div className="font-medium">{d.donor?.firstName} {d.donor?.lastName} <span className="text-sm text-muted-foreground">• {d.campaign?.name ?? 'General'}</span></div>
+                {d.notes && <div className="text-sm text-muted-foreground">{d.notes}</div>}
               </div>
               <div className="text-right">
                 <div className="font-semibold">${(d.amount ?? 0).toFixed(2)}</div>
-                <div className="text-sm text-gray-500">{d.date ? new Date(d.date).toLocaleDateString() : new Date(d.createdAt).toLocaleDateString()}</div>
+                <div className="text-sm text-muted-foreground">{d.date ? new Date(d.date).toLocaleDateString() : new Date(d.createdAt).toLocaleDateString()}</div>
               </div>
             </div>
           ))}

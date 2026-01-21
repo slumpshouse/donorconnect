@@ -79,15 +79,15 @@ export default function NewDonorPage() {
       
       <div>
         <h1 className="text-3xl font-bold">Add New Donor</h1>
-        <p className="text-gray-600 mt-2">Create a new donor profile</p>
+        <p className="text-foreground mt-2">Create a new donor profile</p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-lg">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">First Name</label>
+            <label className="block text-sm font-medium text-foreground">First Name</label>
             <input
-              className="mt-1 block w-full rounded border px-3 py-2"
+              className="mt-1 block w-full rounded border border-border bg-background px-3 py-2 text-foreground placeholder:text-foreground/70"
               {...register('firstName')}
               aria-invalid={errors.firstName ? 'true' : 'false'}
             />
@@ -95,9 +95,9 @@ export default function NewDonorPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Last Name</label>
+            <label className="block text-sm font-medium text-foreground">Last Name</label>
             <input
-              className="mt-1 block w-full rounded border px-3 py-2"
+              className="mt-1 block w-full rounded border border-border bg-background px-3 py-2 text-foreground placeholder:text-foreground/70"
               {...register('lastName')}
               aria-invalid={errors.lastName ? 'true' : 'false'}
             />
@@ -106,29 +106,29 @@ export default function NewDonorPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Email Address</label>
-          <input className="mt-1 block w-full rounded border px-3 py-2" {...register('email')} />
+          <label className="block text-sm font-medium text-foreground">Email Address</label>
+          <input className="mt-1 block w-full rounded border border-border bg-background px-3 py-2 text-foreground placeholder:text-foreground/70" {...register('email')} />
           {errors.email && <p className="text-sm text-red-600">{errors.email.message}</p>}
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Phone Number</label>
-          <input className="mt-1 block w-full rounded border px-3 py-2" {...register('phone')} />
+          <label className="block text-sm font-medium text-foreground">Phone Number</label>
+          <input className="mt-1 block w-full rounded border border-border bg-background px-3 py-2 text-foreground placeholder:text-foreground/70" {...register('phone')} />
           {errors.phone && <p className="text-sm text-red-600">{errors.phone.message}</p>}
         </div>
 
         <fieldset className="mt-2">
-          <legend className="text-sm font-medium text-gray-700">Preferred Communication Channel</legend>
+          <legend className="text-sm font-medium text-foreground">Preferred Communication Channel</legend>
           <div className="mt-2 flex items-center gap-6">
-            <label className="inline-flex items-center">
+            <label className="inline-flex items-center text-foreground">
               <input type="radio" value="email" {...register('preferred')} className="mr-2" />
               Email
             </label>
-            <label className="inline-flex items-center">
+            <label className="inline-flex items-center text-foreground">
               <input type="radio" value="sms" {...register('preferred')} className="mr-2" />
               SMS
             </label>
-            <label className="inline-flex items-center">
+            <label className="inline-flex items-center text-foreground">
               <input type="radio" value="both" {...register('preferred')} className="mr-2" />
               Both
             </label>
@@ -136,14 +136,14 @@ export default function NewDonorPage() {
         </fieldset>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Tags</label>
-          <input className="mt-1 block w-full rounded border px-3 py-2" placeholder="First-time donor, Volunteer" {...register('tags')} />
-          <p className="text-xs text-gray-400 mt-1">Comma separated</p>
+          <label className="block text-sm font-medium text-foreground">Tags</label>
+          <input className="mt-1 block w-full rounded border border-border bg-background px-3 py-2 text-foreground placeholder:text-foreground/70" placeholder="First-time donor, Volunteer" {...register('tags')} />
+          <p className="text-xs text-foreground mt-1">Comma separated</p>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Notes</label>
-          <textarea className="mt-1 block w-full rounded border px-3 py-2" rows={4} {...register('notes')} />
+          <label className="block text-sm font-medium text-foreground">Notes</label>
+          <textarea className="mt-1 block w-full rounded border border-border bg-background px-3 py-2 text-foreground placeholder:text-foreground/70" rows={4} {...register('notes')} />
         </div>
 
         <div>

@@ -56,7 +56,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-slate-50">
+    <div className="min-h-screen flex items-center justify-center p-6 bg-background text-foreground">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Create your account</CardTitle>
@@ -67,27 +67,27 @@ export default function RegisterPage() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">First name</label>
+              <label className="block text-sm font-medium text-muted-foreground">First name</label>
               <Input value={firstName} onChange={(e) => setFirstName(e.target.value)} className="mt-1" required />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Last name</label>
+              <label className="block text-sm font-medium text-muted-foreground">Last name</label>
               <Input value={lastName} onChange={(e) => setLastName(e.target.value)} className="mt-1" required />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Email</label>
+              <label className="block text-sm font-medium text-muted-foreground">Email</label>
               <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="mt-1" required />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Password</label>
+              <label className="block text-sm font-medium text-muted-foreground">Password</label>
               <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="mt-1" required />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Organization (optional)</label>
+              <label className="block text-sm font-medium text-muted-foreground">Organization (optional)</label>
               <Input value={organization} onChange={(e) => setOrganization(e.target.value)} className="mt-1" />
             </div>
 
@@ -99,8 +99,8 @@ export default function RegisterPage() {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">Already have an account?{' '}
-              <Link href="/login" className="text-blue-600 hover:underline">Sign in</Link>
+            <p className="text-sm text-muted-foreground">Already have an account?{' '}
+              <Link href="/login" className="text-teal-400 hover:underline">Sign in</Link>
             </p>
           </div>
         </CardContent>

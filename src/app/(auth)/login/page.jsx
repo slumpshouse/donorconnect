@@ -55,7 +55,7 @@ function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-slate-50">
+    <div className="min-h-screen flex items-center justify-center p-6 bg-background text-foreground">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Sign in to your account</CardTitle>
@@ -66,7 +66,7 @@ function LoginForm() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Email</label>
+              <label className="block text-sm font-medium text-muted-foreground">Email</label>
               <Input
                 type="email"
                 value={email}
@@ -78,7 +78,7 @@ function LoginForm() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Password</label>
+              <label className="block text-sm font-medium text-muted-foreground">Password</label>
               <Input
                 type="password"
                 value={password}
@@ -93,14 +93,14 @@ function LoginForm() {
               <Button type="submit" disabled={loading}>
                 {loading ? 'Signing in…' : 'Sign in'}
               </Button>
-              <Link href="/register" className="text-sm text-gray-600 hover:underline">
+              <Link href="/register" className="text-sm text-muted-foreground hover:underline">
                 Create account
               </Link>
             </div>
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">Demo credentials: admin@hopefoundation.org / password123</p>
+            <p className="text-sm text-muted-foreground">Demo credentials: admin@hopefoundation.org / password123</p>
           </div>
         </CardContent>
       </Card>

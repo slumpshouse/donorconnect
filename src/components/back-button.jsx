@@ -23,7 +23,7 @@ export default function BackButton({ fallback = '/dashboard' }) {
     <button
       type="button"
       onClick={handleBack}
-      className="inline-flex items-center px-3 py-2 rounded-md text-sm border bg-white hover:bg-gray-50"
+      className="inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm border border-border bg-card text-foreground hover:bg-muted shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       aria-label="Go back"
     >
       ← Back

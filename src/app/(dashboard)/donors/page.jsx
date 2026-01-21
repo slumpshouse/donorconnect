@@ -28,7 +28,7 @@ export default function DonorsPage() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold">Donors</h1>
-          <p className="text-gray-600 mt-2">Manage your donor relationships and track engagement</p>
+          <p className="text-muted-foreground mt-2">Manage your donor relationships and track engagement</p>
         </div>
         <Link href="/donors/new">
           <Button size="lg" className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg transform-gpu hover:scale-105">
@@ -38,22 +38,22 @@ export default function DonorsPage() {
         </Link>
       </div>
 
-      <div className="bg-white p-4 rounded shadow">
+      <div className="bg-card border border-border p-4 rounded shadow">
         <div className="flex gap-3 items-center mb-4">
           <input
             value={search}
             onChange={(e) => { setSearch(e.target.value); setPage(1) }}
             placeholder="Search donors by name or email"
-            className="border rounded px-3 py-2 w-1/3"
+            className="border rounded px-3 py-2 w-1/3 bg-background text-foreground placeholder:text-muted-foreground"
           />
 
-          <select value={status} onChange={(e) => { setStatus(e.target.value); setPage(1) }} className="border rounded px-2 py-2">
+          <select value={status} onChange={(e) => { setStatus(e.target.value); setPage(1) }} className="border rounded px-2 py-2 bg-background text-foreground">
             <option value="">All status</option>
             <option value="ACTIVE">Active</option>
             <option value="INACTIVE">Inactive</option>
           </select>
 
-          <select value={retentionRisk} onChange={(e) => { setRetentionRisk(e.target.value); setPage(1) }} className="border rounded px-2 py-2">
+          <select value={retentionRisk} onChange={(e) => { setRetentionRisk(e.target.value); setPage(1) }} className="border rounded px-2 py-2 bg-background text-foreground">
             <option value="">All risk</option>
             <option value="UNKNOWN">Unknown</option>
             <option value="LOW">Low</option>
@@ -62,7 +62,7 @@ export default function DonorsPage() {
             <option value="CRITICAL">Critical</option>
           </select>
 
-          <select value={limit} onChange={(e) => { setLimit(Number(e.target.value)); setPage(1) }} className="border rounded px-2 py-2 ml-auto">
+          <select value={limit} onChange={(e) => { setLimit(Number(e.target.value)); setPage(1) }} className="border rounded px-2 py-2 ml-auto bg-background text-foreground">
             <option value={5}>5 / page</option>
             <option value={10}>10 / page</option>
             <option value={20}>20 / page</option>
@@ -99,8 +99,8 @@ export default function DonorsPage() {
                           {d.firstName} {d.lastName}
                         </Link>
                       </td>
-                      <td className="p-2 text-sm text-gray-600">{d.email || '-'}</td>
-                      <td className="p-2 text-sm text-gray-600">{d.phone || '-'}</td>
+                      <td className="p-2 text-sm text-muted-foreground">{d.email || '-'}</td>
+                      <td className="p-2 text-sm text-muted-foreground">{d.phone || '-'}</td>
                       <td className="p-2">{d.status}</td>
                       <td className="p-2">
                         <RetentionRiskBadge risk={d?.aiInsights?.level || d.retentionRisk} />
@@ -114,14 +114,14 @@ export default function DonorsPage() {
                   ))
                 ) : (
                   <tr>
-                    <td className="p-4 text-sm text-gray-500" colSpan={8}>No donors found</td>
+                    <td className="p-4 text-sm text-muted-foreground" colSpan={8}>No donors found</td>
                   </tr>
                 )}
               </tbody>
             </table>
 
             <div className="flex items-center justify-between mt-4">
-              <div className="text-sm text-gray-600">Showing page {pagination.page} of {totalPages} — {pagination.total} donors</div>
+              <div className="text-sm text-muted-foreground">Showing page {pagination.page} of {totalPages} — {pagination.total} donors</div>
               <div className="flex items-center gap-2">
                 <button className="px-3 py-1 border rounded" disabled={page <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>Prev</button>
                 <button className="px-3 py-1 border rounded" disabled={page >= totalPages} onClick={() => setPage((p) => Math.min(totalPages, p + 1))}>Next</button>

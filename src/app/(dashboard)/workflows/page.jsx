@@ -45,10 +45,10 @@ export default function WorkflowsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-gradient-to-r from-indigo-500 to-purple-500 p-8 rounded-lg text-white flex items-center justify-between">
+      <div className="bg-gradient-to-r from-teal-700 to-emerald-600 p-8 rounded-lg text-white flex items-center justify-between">
         <div>
           <h1 className="text-4xl font-bold">Automation Workflows</h1>
-          <p className="mt-2 text-indigo-100">Automate thank-yous, follow-ups, and donor journeys</p>
+          <p className="mt-2 text-white/80">Automate thank-yous, follow-ups, and donor journeys</p>
         </div>
         <div className="flex items-center gap-3">
           {/* New Workflow creation removed */}
@@ -57,18 +57,18 @@ export default function WorkflowsPage() {
 
       <div>
         {workflows.map((wf) => (
-          <div key={wf.id} className="bg-white p-6 rounded-xl shadow mb-4">
+          <div key={wf.id} className="bg-card border border-border p-6 rounded-xl shadow mb-4">
             <div className="flex justify-between">
               <div>
                 <h2 className="text-lg font-semibold">{wf.name}</h2>
-                <div className="text-sm text-gray-600 mt-1">Trigger: <span className="font-medium text-gray-800">{wf.trigger}</span></div>
+                <div className="text-sm text-muted-foreground mt-1">Trigger: <span className="font-medium text-foreground">{wf.trigger}</span></div>
                 {wf.conditions && wf.conditions.length > 0 && (
-                  <div className="text-sm text-gray-500 mt-2">Conditions: {wf.conditions.join('; ')}</div>
+                  <div className="text-sm text-muted-foreground mt-2">Conditions: {wf.conditions.join('; ')}</div>
                 )}
 
                 <div className="mt-3">
-                  <div className="text-sm text-gray-600">Actions:</div>
-                  <ul className="list-disc ml-5 text-sm text-gray-700 mt-1">
+                  <div className="text-sm text-muted-foreground">Actions:</div>
+                  <ul className="list-disc ml-5 text-sm text-muted-foreground mt-1">
                     {wf.actions.map((a, i) => <li key={i}>{a}</li>)}
                   </ul>
                 </div>

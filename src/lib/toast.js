@@ -83,27 +83,27 @@ export function Toaster() {
         <div
           key={t.id}
           role="status"
-          className={`max-w-sm w-full rounded p-3 shadow-md text-sm flex justify-between items-start gap-4 bg-white border ${
+          className={`max-w-sm w-full rounded p-3 shadow-md text-sm flex justify-between items-start gap-4 bg-card text-foreground border ${
             t.type === 'success'
-              ? 'border-green-200'
+              ? 'border-emerald-500/30'
               : t.type === 'error'
-              ? 'border-red-200'
+              ? 'border-red-500/30'
               : t.type === 'warning'
-              ? 'border-yellow-200'
-              : 'border-slate-200'
+              ? 'border-yellow-500/30'
+              : 'border-border'
           }`}
         >
           <div className="flex-1">
             <div className="font-medium">
               {t.type === 'success' ? 'Success' : t.type === 'error' ? 'Error' : t.type === 'warning' ? 'Warning' : 'Info'}
             </div>
-            <div className="mt-1 text-sm text-gray-700">{t.message}</div>
+            <div className="mt-1 text-sm text-muted-foreground">{t.message}</div>
           </div>
           <div className="ml-2">
             <button
               aria-label="Close"
               onClick={() => removeToast(t.id)}
-              className="text-gray-500 hover:text-gray-800"
+              className="text-muted-foreground hover:text-foreground"
             >
               ×
             </button>

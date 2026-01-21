@@ -1,28 +1,16 @@
 // Dashboard layout - Protected area
 import { getSessionUser } from '@/lib/session'
 import { redirect } from 'next/navigation'
-import Link from 'next/link'
-import { Home, Users, Gift, TrendingUp, CheckSquare, FolderTree, Workflow } from 'lucide-react'
 import BackButton from '@/components/back-button'
 
 export const dynamic = 'force-dynamic'
-
-const navigation = [
-  { name: 'Dashboard', href: '/dashboard', icon: Home },
-  { name: 'Donors', href: '/donors', icon: Users },
-  { name: 'Donations', href: '/donations', icon: Gift },
-  { name: 'Campaigns', href: '/campaigns', icon: TrendingUp },
-  { name: 'Segments', href: '/segments', icon: FolderTree },
-  { name: 'Workflows', href: '/workflows', icon: Workflow },
-  { name: 'Tasks', href: '/tasks', icon: CheckSquare },
-]
 
 export default async function DashboardLayout({ children }) {
   const user = await getSessionUser()
   if (!user) redirect('/login')
   
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background text-foreground">
       {/* TODO: Implement navigation header */}
       {/* TODO: Implement main content area */}
       <main className="py-10">

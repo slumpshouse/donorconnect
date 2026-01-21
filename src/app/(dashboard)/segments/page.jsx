@@ -46,20 +46,20 @@ export default function SegmentsPage() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold">Donor Segments</h1>
-          <p className="text-gray-600 mt-2">Create and manage donor segments</p>
+          <p className="text-muted-foreground mt-2">Create and manage donor segments</p>
         </div>
       </div>
 
-      <div className="bg-white p-4 rounded shadow">
+      <div className="bg-card border border-border p-4 rounded shadow">
         <div className="flex gap-3 items-center mb-4">
           <input
             value={search}
             onChange={(e) => { setSearch(e.target.value); setPage(1) }}
             placeholder="Search segments by name or description"
-            className="border rounded px-3 py-2 w-1/3"
+            className="border rounded px-3 py-2 w-1/3 bg-background text-foreground placeholder:text-muted-foreground"
           />
 
-          <select value={limit} onChange={(e) => { setLimit(Number(e.target.value)); setPage(1) }} className="border rounded px-2 py-2 ml-auto">
+          <select value={limit} onChange={(e) => { setLimit(Number(e.target.value)); setPage(1) }} className="border rounded px-2 py-2 ml-auto bg-background text-foreground">
             <option value={5}>5 / page</option>
             <option value={10}>10 / page</option>
             <option value={20}>20 / page</option>
@@ -77,8 +77,8 @@ export default function SegmentsPage() {
                 <li key={s.id} className="p-3 border rounded flex justify-between items-center">
                   <div>
                     <div className="font-medium">{s.name}</div>
-                    <div className="text-sm text-gray-600">{s.description || ''}</div>
-                    <div className="text-xs text-gray-500 mt-1">Members: {s.memberCount ?? 0}</div>
+                    <div className="text-sm text-muted-foreground">{s.description || ''}</div>
+                    <div className="text-xs text-muted-foreground mt-1">Members: {s.memberCount ?? 0}</div>
                   </div>
                   <div className="flex gap-2">
                     <Link href={`/segments/${s.id}`} className="text-sm text-primary underline">View</Link>
@@ -94,18 +94,18 @@ export default function SegmentsPage() {
                   </div>
                 </li>
               )) : (
-                <div className="p-4 text-sm text-gray-500">No segments found</div>
+                <div className="p-4 text-sm text-muted-foreground">No segments found</div>
               )}
             </ul>
             <div className="mt-6">
               <h3 className="text-lg font-semibold">Suggested segments</h3>
               <ul className="mt-3 space-y-2">
                 {sampleSegments.map((s) => (
-                  <li key={s.id} className="p-3 border rounded flex justify-between items-center bg-gray-50">
+                  <li key={s.id} className="p-3 border rounded flex justify-between items-center bg-muted">
                     <div>
                       <div className="font-medium">{s.name}</div>
-                      <div className="text-sm text-gray-600">{s.description}</div>
-                      <div className="text-xs text-gray-500 mt-1">Approx members: {s.memberCount}</div>
+                      <div className="text-sm text-muted-foreground">{s.description}</div>
+                      <div className="text-xs text-muted-foreground mt-1">Approx members: {s.memberCount}</div>
                     </div>
                     <div className="flex gap-2">
                       {/* 'Use' template removed */}
@@ -116,7 +116,7 @@ export default function SegmentsPage() {
             </div>
 
             <div className="flex items-center justify-between mt-4">
-              <div className="text-sm text-gray-600">Page {pagination.page} of {totalPages} — {pagination.total} segments</div>
+              <div className="text-sm text-muted-foreground">Page {pagination.page} of {totalPages} — {pagination.total} segments</div>
               <div className="flex items-center gap-2">
                 <button className="px-3 py-1 border rounded" disabled={page <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>Prev</button>
                 <button className="px-3 py-1 border rounded" disabled={page >= totalPages} onClick={() => setPage((p) => Math.min(totalPages, p + 1))}>Next</button>

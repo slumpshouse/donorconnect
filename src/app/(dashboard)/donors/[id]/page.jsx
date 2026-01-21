@@ -78,14 +78,14 @@ export default function DonorDetailPage() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white p-4 rounded shadow flex items-center justify-between">
+      <div className="bg-card border border-border p-4 rounded shadow flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center text-xl">
+          <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center text-xl">
             {donor ? (donor.firstName?.[0] ?? '?') : 'D'}
           </div>
           <div>
             <div className="text-xl font-semibold">{donor ? `${donor.firstName} ${donor.lastName}` : 'Loading...'}</div>
-            <div className="text-sm text-gray-500">{donor?.email ?? 'No email'} • {donor?.phone ?? 'No phone'}</div>
+            <div className="text-sm text-muted-foreground">{donor?.email ?? 'No email'} • {donor?.phone ?? 'No phone'}</div>
           </div>
         </div>
 
@@ -94,11 +94,10 @@ export default function DonorDetailPage() {
           <button onClick={handleDelete} disabled={deleting} className="px-3 py-2 bg-red-600 text-white rounded disabled:opacity-60">
             {deleting ? 'Deleting…' : 'Delete'}
           </button>
-          <Link href="/donors" className="px-3 py-2 bg-gray-100 rounded">Back</Link>
         </div>
       </div>
 
-      <div className="bg-white p-4 rounded shadow">
+      <div className="bg-card border border-border p-4 rounded shadow">
         <div className="flex gap-4 border-b pb-3">
           <button onClick={() => setTab('overview')} className={`pb-2 ${tab === 'overview' ? 'border-b-2 border-primary' : ''}`}>Overview</button>
           <button onClick={() => setTab('donations')} className={`pb-2 ${tab === 'donations' ? 'border-b-2 border-primary' : ''}`}>Donations</button>
@@ -114,16 +113,16 @@ export default function DonorDetailPage() {
               <div className="p-3 border rounded">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-sm text-gray-500">AI Insights</div>
+                    <div className="text-sm text-muted-foreground">AI Insights</div>
                     <div className="text-sm">Retention risk prediction</div>
                   </div>
                   <RetentionRiskBadge risk={donor?.aiInsights?.level || donor?.retentionRisk} />
                 </div>
                 {donor?.aiInsights?.summary && (
-                  <div className="mt-2 text-sm text-gray-700">{donor.aiInsights.summary}</div>
+                  <div className="mt-2 text-sm text-muted-foreground">{donor.aiInsights.summary}</div>
                 )}
                 {donor?.aiInsights?.factors && (
-                  <div className="mt-2 text-xs text-gray-500">
+                  <div className="mt-2 text-xs text-muted-foreground">
                     {typeof donor.aiInsights.factors.daysSinceLastGift === 'number'
                       ? `Days since last gift: ${donor.aiInsights.factors.daysSinceLastGift} • `
                       : ''}
@@ -135,42 +134,42 @@ export default function DonorDetailPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="p-3 border rounded">
-                  <div className="text-sm text-gray-500">Status</div>
+                  <div className="text-sm text-muted-foreground">Status</div>
                   <div className="text-lg font-semibold">{donor?.status ?? '—'}</div>
                 </div>
                 <div className="p-3 border rounded">
-                  <div className="text-sm text-gray-500">Retention Risk</div>
+                  <div className="text-sm text-muted-foreground">Retention Risk</div>
                   <div className="text-lg font-semibold">{donor?.retentionRisk ?? '—'}</div>
                 </div>
                 <div className="p-3 border rounded">
-                  <div className="text-sm text-gray-500">Created</div>
+                  <div className="text-sm text-muted-foreground">Created</div>
                   <div className="text-lg font-semibold">{donor?.createdAt ? new Date(donor.createdAt).toLocaleDateString() : '—'}</div>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="p-3 border rounded">
-                <div className="text-sm text-gray-500">Total Gifts</div>
+                <div className="text-sm text-muted-foreground">Total Gifts</div>
                 <div className="text-lg font-semibold">{donor?.totalGifts ?? 0}</div>
               </div>
               <div className="p-3 border rounded">
-                <div className="text-sm text-gray-500">Total Amount</div>
+                <div className="text-sm text-muted-foreground">Total Amount</div>
                 <div className="text-lg font-semibold">${(donor?.totalAmount ?? 0).toFixed(2)}</div>
               </div>
               <div className="p-3 border rounded">
-                <div className="text-sm text-gray-500">Last Gift</div>
+                <div className="text-sm text-muted-foreground">Last Gift</div>
                 <div className="text-lg font-semibold">{donor?.lastGiftDate ? new Date(donor.lastGiftDate).toLocaleDateString() : '—'}</div>
               </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="p-3 border rounded">
-                  <div className="text-sm text-gray-500">Address</div>
+                  <div className="text-sm text-muted-foreground">Address</div>
                   <div className="text-sm">{donor?.address || '—'}</div>
                   <div className="text-sm">{[donor?.city, donor?.state, donor?.zipCode].filter(Boolean).join(', ') || '—'}</div>
                 </div>
                 <div className="p-3 border rounded">
-                  <div className="text-sm text-gray-500">Contact</div>
+                  <div className="text-sm text-muted-foreground">Contact</div>
                   <div className="text-sm">Email: {donor?.email || '—'}</div>
                   <div className="text-sm">Phone: {donor?.phone || '—'}</div>
                 </div>
@@ -186,14 +185,14 @@ export default function DonorDetailPage() {
                     <li key={d.id} className="flex justify-between p-2 border rounded">
                       <div>
                         <div className="font-medium">${d.amount.toFixed(2)}</div>
-                        <div className="text-sm text-gray-500">{d.campaign?.name ?? 'General'}</div>
+                        <div className="text-sm text-muted-foreground">{d.campaign?.name ?? 'General'}</div>
                       </div>
-                      <div className="text-sm text-gray-500">{new Date(d.date).toLocaleDateString()}</div>
+                      <div className="text-sm text-muted-foreground">{new Date(d.date).toLocaleDateString()}</div>
                     </li>
                   ))}
                 </ul>
               ) : (
-                <div className="text-sm text-gray-500">No donations recorded.</div>
+                <div className="text-sm text-muted-foreground">No donations recorded.</div>
               )}
             </div>
           )}
@@ -205,13 +204,13 @@ export default function DonorDetailPage() {
                   {interactions.map((i) => (
                     <li key={i.id} className="p-2 border rounded">
                       <div className="font-medium">{i.type}</div>
-                      <div className="text-sm text-gray-500">{i.subject}</div>
-                      <div className="text-xs text-gray-400">{new Date(i.date).toLocaleString()}</div>
+                      <div className="text-sm text-muted-foreground">{i.subject}</div>
+                      <div className="text-xs text-muted-foreground">{new Date(i.date).toLocaleString()}</div>
                     </li>
                   ))}
                 </ul>
               ) : (
-                <div className="text-sm text-gray-500">No interactions.</div>
+                <div className="text-sm text-muted-foreground">No interactions.</div>
               )}
             </div>
           )}

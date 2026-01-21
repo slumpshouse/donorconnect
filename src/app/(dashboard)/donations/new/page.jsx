@@ -133,18 +133,18 @@ export default function NewDonationPage() {
     <div className="max-w-3xl mx-auto space-y-6">
       <div>
         <h1 className="text-2xl font-semibold">Log a Donation</h1>
-        <p className="text-sm text-gray-500">Record a new donation and trigger thank-you workflow</p>
+        <p className="text-sm text-muted-foreground">Record a new donation and trigger thank-you workflow</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-lg shadow">
+      <form onSubmit={handleSubmit} className="space-y-6 bg-card border border-border p-6 rounded-lg shadow">
         {/* Donor select + card */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">Donor *</label>
+          <label className="block text-sm font-medium text-muted-foreground">Donor *</label>
           <div className="mt-2">
             <select
               value={selectedDonor?.id || ''}
               onChange={(e) => setSelectedDonor(donors.find(d => d.id === e.target.value) || null)}
-              className="w-full rounded-md border px-3 py-2"
+              className="w-full rounded-md border px-3 py-2 bg-background text-foreground"
             >
               {donors.map((d) => (
                 <option key={d.id} value={d.id}>{d.firstName} {d.lastName} {d.email ? `(${d.email})` : ''}</option>
@@ -153,11 +153,11 @@ export default function NewDonationPage() {
           </div>
 
           {selectedDonor && (
-            <div className="mt-3 p-4 rounded border border-blue-300 bg-blue-50 flex items-center gap-4">
+            <div className="mt-3 p-4 rounded border border-border bg-muted flex items-center gap-4">
               <div className="h-12 w-12 rounded-md bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-semibold">{(selectedDonor.firstName?.[0]||'').toUpperCase()}{(selectedDonor.lastName?.[0]||'').toUpperCase()}</div>
               <div>
                 <div className="font-medium">{selectedDonor.firstName} {selectedDonor.lastName}</div>
-                <div className="text-sm text-gray-600">{selectedDonor.email ? selectedDonor.email : 'No email'} • Total giving: ${selectedDonor.totalAmount?.toLocaleString?.() ?? '0'}</div>
+                <div className="text-sm text-muted-foreground">{selectedDonor.email ? selectedDonor.email : 'No email'} • Total giving: ${selectedDonor.totalAmount?.toLocaleString?.() ?? '0'}</div>
               </div>
             </div>
           )}
@@ -165,29 +165,29 @@ export default function NewDonationPage() {
 
         {/* Amount */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">Donation Amount *</label>
+          <label className="block text-sm font-medium text-muted-foreground">Donation Amount *</label>
           <input
             type="number"
             step="0.01"
             min="0"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            className="mt-2 w-full rounded-md border px-4 py-3 text-lg"
+            className="mt-2 w-full rounded-md border px-4 py-3 text-lg bg-background text-foreground placeholder:text-muted-foreground"
             placeholder="0.00"
             required
           />
-          <p className="text-xs text-gray-400 mt-1">Enter the donation amount in USD</p>
+          <p className="text-xs text-muted-foreground mt-1">Enter the donation amount in USD</p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Date Received *</label>
-            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="mt-2 w-full rounded-md border px-3 py-2" required />
+            <label className="block text-sm font-medium text-muted-foreground">Date Received *</label>
+            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="mt-2 w-full rounded-md border px-3 py-2 bg-background text-foreground" required />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Payment Method *</label>
-            <select value={method} onChange={(e) => setMethod(e.target.value)} className="mt-2 w-full rounded-md border px-3 py-2">
+            <label className="block text-sm font-medium text-muted-foreground">Payment Method *</label>
+            <select value={method} onChange={(e) => setMethod(e.target.value)} className="mt-2 w-full rounded-md border px-3 py-2 bg-background text-foreground">
               <option>Credit Card</option>
               <option>Check</option>
               <option>Cash</option>
@@ -198,18 +198,18 @@ export default function NewDonationPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Campaign</label>
+          <label className="block text-sm font-medium text-muted-foreground">Campaign</label>
           <div className="mt-2">
             {campaigns.length ? (
-              <select value={campaign} onChange={(e) => setCampaign(e.target.value)} className="w-full rounded-md border px-3 py-2">
+              <select value={campaign} onChange={(e) => setCampaign(e.target.value)} className="w-full rounded-md border px-3 py-2 bg-background text-foreground">
                 {campaigns.map((c) => (
                   <option key={c.id ?? c.name} value={c.id ?? c.name}>{c.name ?? c.id}</option>
                 ))}
               </select>
             ) : (
-              <input value={campaign} onChange={(e) => setCampaign(e.target.value)} className="w-full rounded-md border px-3 py-2" />
+              <input value={campaign} onChange={(e) => setCampaign(e.target.value)} className="w-full rounded-md border px-3 py-2 bg-background text-foreground" />
             )}
-            <p className="text-xs text-gray-400 mt-1">Optional: Link this donation to a specific campaign</p>
+            <p className="text-xs text-muted-foreground mt-1">Optional: Link this donation to a specific campaign</p>
           </div>
         </div>
 
@@ -218,17 +218,17 @@ export default function NewDonationPage() {
             <input type="checkbox" checked={recurring} onChange={(e) => setRecurring(e.target.checked)} className="mr-3" />
             <div>
               <div className="font-medium">This is a recurring donation</div>
-              <div className="text-sm text-gray-500">Donor has committed to regular giving</div>
+              <div className="text-sm text-muted-foreground">Donor has committed to regular giving</div>
             </div>
           </label>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Notes</label>
-          <textarea value={notes} onChange={(e) => setNotes(e.target.value)} className="mt-2 w-full rounded-md border px-3 py-2 h-28" placeholder="Add any additional notes about this donation (optional)" />
+          <label className="block text-sm font-medium text-muted-foreground">Notes</label>
+          <textarea value={notes} onChange={(e) => setNotes(e.target.value)} className="mt-2 w-full rounded-md border px-3 py-2 h-28 bg-background text-foreground placeholder:text-muted-foreground" placeholder="Add any additional notes about this donation (optional)" />
         </div>
 
-        <div className="p-4 rounded border border-green-300 bg-green-50">
+        <div className="p-4 rounded border border-border bg-muted">
           <div className="font-medium mb-2">Thank You Workflow</div>
           <label className="flex items-center gap-3"><input type="checkbox" checked={sendEmail} onChange={(e) => setSendEmail(e.target.checked)} /> <span>Send thank you email automatically</span></label>
           <label className="flex items-center gap-3 mt-2"><input type="checkbox" checked={sendReceipt} onChange={(e) => setSendReceipt(e.target.checked)} /> <span>Generate and email tax receipt</span></label>
@@ -236,7 +236,7 @@ export default function NewDonationPage() {
         </div>
 
         <div>
-          <Button type="submit" className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white">
+          <Button type="submit" className="w-full bg-gradient-to-r from-teal-700 to-emerald-600 text-white">
             {loading ? 'Saving...' : '💰  Log Donation & Send Thank You'}
           </Button>
         </div>

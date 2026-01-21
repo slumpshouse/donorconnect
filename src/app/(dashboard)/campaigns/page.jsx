@@ -38,10 +38,10 @@ export default function CampaignsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-gradient-to-r from-indigo-500 to-purple-500 p-8 rounded-lg text-white flex items-center justify-between">
+      <div className="bg-gradient-to-r from-teal-700 to-emerald-600 p-8 rounded-lg text-white flex items-center justify-between">
         <div>
           <h1 className="text-4xl font-bold">Campaigns</h1>
-          <p className="mt-2 text-indigo-100">Create and manage fundraising campaigns</p>
+          <p className="mt-2 text-white/80">Create and manage fundraising campaigns</p>
         </div>
         <div>
           <Link href="/campaigns/new">
@@ -52,9 +52,9 @@ export default function CampaignsPage() {
 
       <div className="space-y-4">
         {loading ? (
-          <div className="bg-white p-6 rounded-xl shadow">Loading campaigns...</div>
+          <div className="bg-card border border-border p-6 rounded-xl shadow">Loading campaigns...</div>
         ) : error ? (
-          <div className="bg-white p-6 rounded-xl shadow text-red-600">Error loading campaigns: {String(error.message || error)}</div>
+          <div className="bg-card border border-border p-6 rounded-xl shadow text-red-600">Error loading campaigns: {String(error.message || error)}</div>
         ) : localCampaigns.length ? localCampaigns.map((c) => {
           const remaining = Math.max(0, (c.goal ?? 0) - (c.totalAmount ?? 0))
           const progress = c.goal ? Math.min(100, ((c.totalAmount ?? 0) / c.goal) * 100) : 0
@@ -62,13 +62,13 @@ export default function CampaignsPage() {
           const start = c.startDate ? new Date(c.startDate) : null
           const end = c.endDate ? new Date(c.endDate) : null
           return (
-            <div key={c.id} className="bg-white p-6 rounded-xl shadow">
+            <div key={c.id} className="bg-card border border-border p-6 rounded-xl shadow">
               <div className="flex items-start justify-between">
                 <div>
                   <Link href={`/campaigns/${c.id}`} className="inline-block">
-                    <h2 className="text-3xl font-extrabold text-gray-900 hover:underline">{c.name}</h2>
+                    <h2 className="text-3xl font-extrabold text-foreground hover:underline">{c.name}</h2>
                   </Link>
-                  <div className="text-sm text-gray-500 mt-2">{start ? start.toLocaleDateString() : '—'} - {end ? end.toLocaleDateString() : '—'}</div>
+                  <div className="text-sm text-muted-foreground mt-2">{start ? start.toLocaleDateString() : '—'} - {end ? end.toLocaleDateString() : '—'}</div>
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="inline-flex items-center px-3 py-1 rounded-full bg-emerald-100 text-emerald-800">✓ {String(c.status || 'DRAFT')}</span>
@@ -86,33 +86,33 @@ export default function CampaignsPage() {
               <div className="mt-6">
                 <div className="flex items-baseline gap-4">
                   <div className="text-4xl font-extrabold text-emerald-600">${(c.totalAmount || 0).toLocaleString()}</div>
-                  <div className="text-gray-500">/ ${(c.goal || 0).toLocaleString()}</div>
+                  <div className="text-muted-foreground">/ ${(c.goal || 0).toLocaleString()}</div>
                 </div>
 
-                <div className="mt-4 bg-gray-100 rounded-full h-3 overflow-hidden">
+                <div className="mt-4 bg-muted rounded-full h-3 overflow-hidden">
                   <div className="h-3 bg-gradient-to-r from-indigo-500 to-purple-600" style={{ width: `${progress}%` }} />
                 </div>
                 <div className="text-center text-indigo-600 mt-2">{progress.toFixed(1)}% of goal reached</div>
               </div>
 
               <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="p-4 bg-gray-50 rounded text-center">
+                <div className="p-4 bg-muted rounded text-center">
                   <div className="text-2xl font-bold">{c.totalDonors}</div>
-                  <div className="text-sm text-gray-500">TOTAL DONORS</div>
+                  <div className="text-sm text-muted-foreground">TOTAL DONORS</div>
                 </div>
-                <div className="p-4 bg-gray-50 rounded text-center">
+                <div className="p-4 bg-muted rounded text-center">
                   <div className="text-2xl font-bold">${c.averageGift.toLocaleString()}</div>
-                  <div className="text-sm text-gray-500">AVERAGE GIFT</div>
+                  <div className="text-sm text-muted-foreground">AVERAGE GIFT</div>
                 </div>
-                <div className="p-4 bg-gray-50 rounded text-center">
+                <div className="p-4 bg-muted rounded text-center">
                   <div className="text-2xl font-bold">${remaining.toLocaleString()}</div>
-                  <div className="text-sm text-gray-500">REMAINING</div>
+                  <div className="text-sm text-muted-foreground">REMAINING</div>
                 </div>
               </div>
             </div>
           )
         }) : (
-          <div className="bg-white p-6 rounded-xl shadow text-gray-600">No campaigns found</div>
+          <div className="bg-card border border-border p-6 rounded-xl shadow text-muted-foreground">No campaigns found</div>
         )}
       </div>
     </div>
