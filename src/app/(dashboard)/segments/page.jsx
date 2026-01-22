@@ -8,12 +8,19 @@ import { Plus } from 'lucide-react'
 import { useSegments } from '@/hooks/use-segments'
 
 export default function SegmentsPage() {
+  const [searchDraft, setSearchDraft] = useState('')
   const [search, setSearch] = useState('')
+  const [filter, setFilter] = useState('all')
   const [page, setPage] = useState(1)
   const [limit, setLimit] = useState(10)
 
   const { segments, loading, error, pagination, refetch } = useSegments(page, limit, { search })
   const [deletingId, setDeletingId] = useState(null)
+
+  function runSearch() {
+    setPage(1)
+    setSearch(searchDraft)
+  }
 
   async function handleDelete(id, name) {
     const ok = window.confirm(`Delete segment "${name || 'this segment'}"? This cannot be undone.`)
@@ -43,51 +50,103 @@ export default function SegmentsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="bg-gradient-to-r from-teal-700 to-emerald-600 p-8 rounded-lg text-white flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Donor Segments</h1>
-          <p className="text-muted-foreground mt-2">Create and manage donor segments</p>
+          <h1 className="text-4xl font-bold">Donor Segments</h1>
+          <p className="mt-2 text-white/80">Build dynamic groups of donors</p>
         </div>
+        <Link href="/segments/new">
+          <Button size="lg" className="bg-white/15 text-white hover:bg-white/20 border border-white/20">
+            <Plus className="mr-2 h-4 w-4" />
+            New Segment
+          </Button>
+        </Link>
       </div>
 
-      <div className="bg-card border border-border p-4 rounded shadow">
-        <div className="flex gap-3 items-center mb-4">
+      <div className="bg-card border border-border p-6 rounded-xl shadow">
+        <div className="flex gap-4 items-center">
           <input
-            value={search}
-            onChange={(e) => { setSearch(e.target.value); setPage(1) }}
-            placeholder="Search segments by name or description"
-            className="border rounded px-3 py-2 w-1/3 bg-background text-foreground placeholder:text-muted-foreground"
+            value={searchDraft}
+            onChange={(e) => setSearchDraft(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') runSearch()
+            }}
+            placeholder="Search segments by name or description..."
+            className="flex-1 border rounded px-4 py-3 bg-background text-foreground placeholder:text-muted-foreground"
           />
+          <button type="button" className="px-4 py-3 bg-indigo-600 text-white rounded" onClick={runSearch}>
+            🔍 Search
+          </button>
+        </div>
 
-          <select value={limit} onChange={(e) => { setLimit(Number(e.target.value)); setPage(1) }} className="border rounded px-2 py-2 ml-auto bg-background text-foreground">
+        <div className="mt-4 flex flex-wrap gap-3 items-center">
+          <button type="button" className={`px-4 py-2 rounded ${filter === 'all' ? 'bg-indigo-600 text-white' : 'bg-muted'}`} onClick={() => setFilter('all')}>
+            All Segments
+          </button>
+          <button type="button" className={`px-4 py-2 rounded ${filter === 'suggested' ? 'bg-indigo-600 text-white' : 'bg-muted'}`} onClick={() => setFilter('suggested')}>
+            Suggested
+          </button>
+
+          <select
+            value={limit}
+            onChange={(e) => { setLimit(Number(e.target.value)); setPage(1) }}
+            className="border rounded px-2 py-2 ml-auto bg-background text-foreground"
+          >
             <option value={5}>5 / page</option>
             <option value={10}>10 / page</option>
             <option value={20}>20 / page</option>
           </select>
         </div>
+      </div>
 
+      <div className="bg-card border border-border p-6 rounded-xl shadow">
         {loading ? (
           <div className="text-center py-8">Loading segments...</div>
         ) : error ? (
           <div className="text-red-600">Error loading segments: {String(error.message || error)}</div>
+        ) : filter === 'suggested' ? (
+          <div>
+            <h2 className="text-xl font-semibold">Suggested segments</h2>
+            <p className="text-sm text-muted-foreground mt-1">Common segment ideas you can create in one click.</p>
+            <ul className="mt-4 space-y-3">
+              {sampleSegments.map((s) => (
+                <li key={s.id} className="p-4 border border-border rounded flex justify-between items-center">
+                  <div>
+                    <div className="font-medium">{s.name}</div>
+                    <div className="text-sm text-muted-foreground">{s.description}</div>
+                    <div className="text-xs text-muted-foreground mt-1">Approx members: {s.memberCount}</div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
         ) : (
           <div>
-            <ul className="space-y-3">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold">Your segments</h2>
+              <div className="text-sm text-muted-foreground">{pagination.total} total</div>
+            </div>
+
+            <ul className="mt-4 space-y-3">
               {segments.length ? segments.map((s) => (
-                <li key={s.id} className="p-3 border rounded flex justify-between items-center">
+                <li key={s.id} className="p-4 border border-border rounded flex justify-between items-center">
                   <div>
                     <div className="font-medium">{s.name}</div>
                     <div className="text-sm text-muted-foreground">{s.description || ''}</div>
                     <div className="text-xs text-muted-foreground mt-1">Members: {s.memberCount ?? 0}</div>
                   </div>
                   <div className="flex gap-2">
-                    <Link href={`/segments/${s.id}`} className="text-sm text-primary underline">View</Link>
-                    <Link href={`/segments/${s.id}`} className="text-sm text-primary underline">Add donors</Link>
+                    <Link
+                      href={`/segments/${s.id}`}
+                      className="text-sm text-primary underline underline-offset-4 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                    >
+                      View
+                    </Link>
                     <button
                       type="button"
                       onClick={() => handleDelete(s.id, s.name)}
                       disabled={deletingId === s.id}
-                      className="text-sm text-red-700 underline disabled:opacity-60"
+                      className="px-3 py-1 rounded bg-red-50 text-red-700 text-sm disabled:opacity-60"
                     >
                       {deletingId === s.id ? 'Deleting…' : 'Delete'}
                     </button>
@@ -97,29 +156,12 @@ export default function SegmentsPage() {
                 <div className="p-4 text-sm text-muted-foreground">No segments found</div>
               )}
             </ul>
-            <div className="mt-6">
-              <h3 className="text-lg font-semibold">Suggested segments</h3>
-              <ul className="mt-3 space-y-2">
-                {sampleSegments.map((s) => (
-                  <li key={s.id} className="p-3 border rounded flex justify-between items-center bg-muted">
-                    <div>
-                      <div className="font-medium">{s.name}</div>
-                      <div className="text-sm text-muted-foreground">{s.description}</div>
-                      <div className="text-xs text-muted-foreground mt-1">Approx members: {s.memberCount}</div>
-                    </div>
-                    <div className="flex gap-2">
-                      {/* 'Use' template removed */}
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
 
-            <div className="flex items-center justify-between mt-4">
+            <div className="flex items-center justify-between mt-6">
               <div className="text-sm text-muted-foreground">Page {pagination.page} of {totalPages} — {pagination.total} segments</div>
               <div className="flex items-center gap-2">
-                <button className="px-3 py-1 border rounded" disabled={page <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>Prev</button>
-                <button className="px-3 py-1 border rounded" disabled={page >= totalPages} onClick={() => setPage((p) => Math.min(totalPages, p + 1))}>Next</button>
+                <button className="px-3 py-1 border border-border rounded bg-background hover:bg-muted disabled:opacity-60" disabled={page <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>Prev</button>
+                <button className="px-3 py-1 border border-border rounded bg-background hover:bg-muted disabled:opacity-60" disabled={page >= totalPages} onClick={() => setPage((p) => Math.min(totalPages, p + 1))}>Next</button>
               </div>
             </div>
           </div>

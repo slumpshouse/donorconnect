@@ -45,7 +45,8 @@ export default function NewDonationPage() {
         const data = await res.json().catch(() => ({}))
         const list = Array.isArray(data?.campaigns) ? data.campaigns : []
         setCampaigns(list)
-        if (list.length) setCampaign(list[0].id)
+        // Default to "General" (no campaign) unless user picks one.
+        setCampaign('')
       } catch (e) {
         setCampaigns([])
       }
@@ -144,7 +145,8 @@ export default function NewDonationPage() {
             <select
               value={selectedDonor?.id || ''}
               onChange={(e) => setSelectedDonor(donors.find(d => d.id === e.target.value) || null)}
-              className="w-full rounded-md border px-3 py-2 bg-background text-foreground"
+              className="dc-select-light-options w-full rounded-md border px-3 py-2 bg-background text-foreground"
+              style={{ colorScheme: 'light' }}
             >
               {donors.map((d) => (
                 <option key={d.id} value={d.id}>{d.firstName} {d.lastName} {d.email ? `(${d.email})` : ''}</option>
@@ -187,7 +189,12 @@ export default function NewDonationPage() {
 
           <div>
             <label className="block text-sm font-medium text-muted-foreground">Payment Method *</label>
-            <select value={method} onChange={(e) => setMethod(e.target.value)} className="mt-2 w-full rounded-md border px-3 py-2 bg-background text-foreground">
+            <select
+              value={method}
+              onChange={(e) => setMethod(e.target.value)}
+              className="dc-select-light-options mt-2 w-full rounded-md border px-3 py-2 bg-background text-foreground"
+              style={{ colorScheme: 'light' }}
+            >
               <option>Credit Card</option>
               <option>Check</option>
               <option>Cash</option>
@@ -198,17 +205,21 @@ export default function NewDonationPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-muted-foreground">Campaign</label>
+          <label className="block text-sm font-medium text-muted-foreground">Type of Donation</label>
           <div className="mt-2">
-            {campaigns.length ? (
-              <select value={campaign} onChange={(e) => setCampaign(e.target.value)} className="w-full rounded-md border px-3 py-2 bg-background text-foreground">
-                {campaigns.map((c) => (
-                  <option key={c.id ?? c.name} value={c.id ?? c.name}>{c.name ?? c.id}</option>
-                ))}
-              </select>
-            ) : (
-              <input value={campaign} onChange={(e) => setCampaign(e.target.value)} className="w-full rounded-md border px-3 py-2 bg-background text-foreground" />
-            )}
+            <select
+              value={campaign}
+              onChange={(e) => setCampaign(e.target.value)}
+              className="dc-select-light-options w-full rounded-md border px-3 py-2 bg-background text-foreground"
+              style={{ colorScheme: 'light' }}
+            >
+              <option value="">General</option>
+              {campaigns.map((c) => (
+                <option key={c.id ?? c.name} value={c.id ?? c.name}>
+                  {c.name ?? c.id}
+                </option>
+              ))}
+            </select>
             <p className="text-xs text-muted-foreground mt-1">Optional: Link this donation to a specific campaign</p>
           </div>
         </div>

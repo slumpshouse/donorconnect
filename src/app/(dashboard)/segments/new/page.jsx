@@ -112,40 +112,55 @@ export default function NewSegmentPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">New Segment</h1>
-        <p className="text-gray-600 mt-2">Create a donor segment</p>
+        <p className="text-foreground mt-2">Create a donor segment</p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-lg">
         <div>
-          <label className="block text-sm font-medium text-gray-700">Name</label>
-          <input className="mt-1 block w-full rounded border px-3 py-2" {...register('name')} aria-invalid={errors.name ? 'true' : 'false'} />
+          <label className="block text-sm font-medium text-foreground">Name</label>
+          <input
+            className="mt-1 block w-full rounded border border-border bg-background px-3 py-2 text-foreground placeholder:text-foreground/70"
+            {...register('name')}
+            aria-invalid={errors.name ? 'true' : 'false'}
+          />
           {errors.name && <p className="text-sm text-red-600">{errors.name.message}</p>}
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Description</label>
-          <textarea className="mt-1 block w-full rounded border px-3 py-2" rows={3} {...register('description')} />
+          <label className="block text-sm font-medium text-foreground">Description</label>
+          <textarea
+            className="mt-1 block w-full rounded border border-border bg-background px-3 py-2 text-foreground placeholder:text-foreground/70"
+            rows={3}
+            {...register('description')}
+          />
         </div>
 
         <div>
           <div className="flex items-center justify-between">
-            <label className="block text-sm font-medium text-gray-700">Presets</label>
+            <label className="block text-sm font-medium text-foreground">Presets</label>
             <div className="flex gap-2">
               {presets.map((p) => (
-                <button key={p.id} type="button" onClick={() => applyPreset(p)} className="px-3 py-1 bg-gray-100 rounded text-sm">{p.name}</button>
+                <button
+                  key={p.id}
+                  type="button"
+                  onClick={() => applyPreset(p)}
+                  className="px-3 py-1 bg-muted text-foreground rounded text-sm hover:bg-muted/80"
+                >
+                  {p.name}
+                </button>
               ))}
             </div>
           </div>
 
           <div className="mt-2">
-            <label className="block text-sm font-medium text-gray-700">Rules</label>
-            <p className="text-xs text-gray-400 mt-1">Build simple rules to define who belongs in this segment.</p>
+            <label className="block text-sm font-medium text-foreground">Rules</label>
+            <p className="text-xs text-muted-foreground mt-1">Build simple rules to define who belongs in this segment.</p>
           </div>
 
           <div className="mt-3 grid grid-cols-3 gap-2 items-end">
             <div>
-              <label className="text-xs text-gray-600">Field</label>
-              <select className="mt-1 block w-full rounded border px-2 py-2" value={condField} onChange={(e) => setCondField(e.target.value)}>
+              <label className="text-xs text-muted-foreground">Field</label>
+              <select className="mt-1 block w-full rounded border border-border bg-background px-2 py-2 text-foreground" value={condField} onChange={(e) => setCondField(e.target.value)}>
                 <option value="lastGiftDate">Last gift date</option>
                 <option value="totalAmount">Total amount</option>
                 <option value="totalGifts">Total gifts</option>
@@ -155,8 +170,8 @@ export default function NewSegmentPage() {
             </div>
 
             <div>
-              <label className="text-xs text-gray-600">Operator</label>
-              <select className="mt-1 block w-full rounded border px-2 py-2" value={condOp} onChange={(e) => setCondOp(e.target.value)}>
+              <label className="text-xs text-muted-foreground">Operator</label>
+              <select className="mt-1 block w-full rounded border border-border bg-background px-2 py-2 text-foreground" value={condOp} onChange={(e) => setCondOp(e.target.value)}>
                 <option value="equals">equals</option>
                 <option value="contains">contains</option>
                 <option value="lt">less than</option>
@@ -167,19 +182,24 @@ export default function NewSegmentPage() {
             </div>
 
             <div>
-              <label className="text-xs text-gray-600">Value</label>
-              <input className="mt-1 block w-full rounded border px-2 py-2" value={condValue} onChange={(e) => setCondValue(e.target.value)} placeholder="value (e.g. 2025-01-01 or 100)" />
+              <label className="text-xs text-muted-foreground">Value</label>
+              <input
+                className="mt-1 block w-full rounded border border-border bg-background px-2 py-2 text-foreground placeholder:text-foreground/70"
+                value={condValue}
+                onChange={(e) => setCondValue(e.target.value)}
+                placeholder="value (e.g. 2025-01-01 or 100)"
+              />
             </div>
           </div>
 
           <div className="mt-2">
-            <button type="button" onClick={addCondition} className="px-3 py-1 bg-indigo-600 text-white rounded text-sm">Add Condition</button>
+            <button type="button" onClick={addCondition} className="px-3 py-1 bg-primary text-primary-foreground rounded text-sm hover:bg-primary/90">Add Condition</button>
           </div>
 
           {conditions.length > 0 && (
             <ul className="mt-3 space-y-2">
               {conditions.map((c, i) => (
-                <li key={i} className="flex items-center justify-between bg-gray-50 p-2 rounded">
+                <li key={i} className="flex items-center justify-between bg-muted p-2 rounded">
                   <div className="text-sm">{c.field} {c.operator} <span className="font-medium">{c.value}</span></div>
                   <button type="button" onClick={() => removeCondition(i)} className="text-sm text-red-600">Remove</button>
                 </li>

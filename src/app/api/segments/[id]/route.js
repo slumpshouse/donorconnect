@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getSession } from '@/lib/session'
 import { prisma } from '@/lib/db'
+import { buildDonorWhereFromSegmentRules } from '@/lib/segment-rules'
 
 export async function GET(request, { params }) {
   try {
@@ -20,39 +21,77 @@ export async function GET(request, { params }) {
         id: true,
         name: true,
         description: true,
+        rules: true,
         memberCount: true,
         lastCalculated: true,
         createdAt: true,
         updatedAt: true,
-        members: {
-          take: 250,
-          orderBy: { createdAt: 'desc' },
-          select: {
-            id: true,
-            createdAt: true,
-            donor: {
-              select: {
-                id: true,
-                firstName: true,
-                lastName: true,
-                email: true,
-                status: true,
-                retentionRisk: true,
-                totalGifts: true,
-                totalAmount: true,
-                lastGiftDate: true,
-              },
-            },
-          },
-        },
       },
     })
 
     if (!segment) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
-    const donors = (segment.members || []).map((m) => m.donor).filter(Boolean)
+    const donorWhere = buildDonorWhereFromSegmentRules(segment.rules)
 
-    return NextResponse.json({ segment: { ...segment, donors } })
+    // Compute full membership and keep SegmentMember join table in sync.
+    const now = new Date()
+    const [matchingIds, matchingCount, donors] = await prisma.$transaction([
+      prisma.donor.findMany({
+        where: { organizationId: orgId, ...donorWhere },
+        select: { id: true },
+      }),
+      prisma.donor.count({ where: { organizationId: orgId, ...donorWhere } }),
+      prisma.donor.findMany({
+        where: { organizationId: orgId, ...donorWhere },
+        orderBy: [{ totalAmount: 'desc' }, { lastGiftDate: 'desc' }],
+        take: 1000,
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          email: true,
+          status: true,
+          retentionRisk: true,
+          totalGifts: true,
+          totalAmount: true,
+          lastGiftDate: true,
+        },
+      }),
+    ])
+
+    const donorIds = (matchingIds || []).map((d) => d.id)
+
+    await prisma.$transaction(async (tx) => {
+      if (donorIds.length === 0) {
+        await tx.segmentMember.deleteMany({ where: { segmentId: segment.id } })
+      } else {
+        await tx.segmentMember.deleteMany({
+          where: {
+            segmentId: segment.id,
+            donorId: { notIn: donorIds },
+          },
+        })
+
+        await tx.segmentMember.createMany({
+          data: donorIds.map((donorId) => ({ segmentId: segment.id, donorId })),
+          skipDuplicates: true,
+        })
+      }
+
+      await tx.segment.update({
+        where: { id: segment.id },
+        data: { memberCount: matchingCount, lastCalculated: now },
+      })
+    })
+
+    return NextResponse.json({
+      segment: {
+        ...segment,
+        memberCount: matchingCount,
+        lastCalculated: now,
+        donors,
+      },
+    })
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('GET /api/segments/[id] error', error)

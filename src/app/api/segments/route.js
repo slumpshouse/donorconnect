@@ -2,6 +2,7 @@
 import { NextResponse } from 'next/server'
 import { getSession } from '@/lib/session'
 import { prisma } from '@/lib/db'
+import { buildDonorWhereFromSegmentRules } from '@/lib/segment-rules'
 
 export async function GET(request) {
   try {
@@ -32,10 +33,33 @@ export async function GET(request) {
       skip: (page - 1) * limit,
       take: limit,
       orderBy: { updatedAt: 'desc' },
-      select: { id: true, name: true, description: true, memberCount: true, lastCalculated: true, createdAt: true },
+      select: { id: true, name: true, description: true, rules: true, memberCount: true, lastCalculated: true, createdAt: true },
     })
 
-    return NextResponse.json({ segments, pagination: { page, limit, total } })
+    // Keep memberCount fresh so segments are truly "automatic".
+    const now = new Date()
+    const updatedSegments = await Promise.all(
+      (segments || []).map(async (segment) => {
+        const donorWhere = buildDonorWhereFromSegmentRules(segment.rules)
+        const count = await prisma.donor.count({
+          where: {
+            organizationId: session.user.organizationId,
+            ...donorWhere,
+          },
+        })
+
+        // Persist for fast list rendering
+        const updated = await prisma.segment.update({
+          where: { id: segment.id },
+          data: { memberCount: count, lastCalculated: now },
+          select: { id: true, name: true, description: true, memberCount: true, lastCalculated: true, createdAt: true },
+        })
+
+        return updated
+      })
+    )
+
+    return NextResponse.json({ segments: updatedSegments, pagination: { page, limit, total } })
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('GET /api/segments error', error)

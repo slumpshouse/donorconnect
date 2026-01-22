@@ -113,8 +113,8 @@ export default function DonorDetailPage() {
               <div className="p-3 border rounded">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-sm text-muted-foreground">AI Insights</div>
-                    <div className="text-sm">Retention risk prediction</div>
+                    <div className="text-sm text-muted-foreground">Retention insights</div>
+                    <div className="text-sm">Retention risk overview</div>
                   </div>
                   <RetentionRiskBadge risk={donor?.aiInsights?.level || donor?.retentionRisk} />
                 </div>

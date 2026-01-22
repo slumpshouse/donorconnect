@@ -54,11 +54,13 @@ export default async function CampaignDetailPage({ params }) {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white p-6 rounded-lg shadow">
+      <div className="bg-teal-700/25 border border-teal-500/25 p-6 rounded-lg shadow text-white">
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-3xl font-bold">{campaign.name}</h1>
-            <div className="text-sm text-gray-500 mt-2">{campaign.startDate?.toDateString?.() || '—'} • {campaign.endDate?.toDateString?.() || '—'}</div>
+            <h1 className="text-3xl font-bold transition-colors duration-150 hover:underline hover:underline-offset-4">
+              {campaign.name}
+            </h1>
+            <div className="text-sm text-white/75 mt-2">{campaign.startDate?.toDateString?.() || '—'} • {campaign.endDate?.toDateString?.() || '—'}</div>
           </div>
           <div>
             <span className="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-800">{campaign.status?.toLowerCase?.() || 'Active'}</span>
@@ -66,60 +68,63 @@ export default async function CampaignDetailPage({ params }) {
         </div>
 
         <div className="mt-6">
-          <div className="text-4xl font-extrabold text-emerald-600">${totalAmount.toLocaleString()}</div>
-          <div className="text-sm text-gray-500"> / ${goal.toLocaleString()}</div>
+          <div className="text-4xl font-extrabold text-white">${totalAmount.toLocaleString()}</div>
+          <div className="text-sm text-white/75"> / ${goal.toLocaleString()}</div>
 
-          <div className="mt-4 bg-gray-100 rounded-full h-3 overflow-hidden">
+          <div className="mt-4 bg-black/20 rounded-full h-3 overflow-hidden">
             <div className="h-3 bg-gradient-to-r from-indigo-500 to-purple-600" style={{ width: `${progress}%` }} />
           </div>
-          <div className="text-sm text-center text-indigo-600 mt-2">{progress.toFixed(1)}% of goal reached</div>
+          <div className="text-sm text-center text-white/85 mt-2">{progress.toFixed(1)}% of goal reached</div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="md:col-span-2 space-y-4">
-          <div className="bg-white p-4 rounded shadow">
-            <h2 className="font-semibold">Top Donors</h2>
+          <div className="bg-teal-700/25 border border-teal-500/25 p-4 rounded shadow text-white">
+            <h2 className="font-semibold text-white">Top Donors</h2>
             <ul className="mt-3 space-y-3">
               {topDonations.map((d) => (
-                <li key={d.id} className="flex items-center justify-between p-3 border rounded">
+                <li key={d.id} className="flex items-center justify-between p-3 border border-teal-500/25 rounded bg-black/10">
                   <div className="flex items-center gap-3">
                     <div className="h-10 w-10 rounded-md bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-semibold">{(d.donor?.firstName?.[0]||'').toUpperCase()}{(d.donor?.lastName?.[0]||'').toUpperCase()}</div>
                     <div>
                       <div className="font-medium">{d.donor?.firstName} {d.donor?.lastName}</div>
-                      <div className="text-sm text-gray-500">{d.donor?.totalGifts ?? 1} donation{(d.donor?.totalGifts ?? 1) > 1 ? 's' : ''}</div>
+                      <div className="text-sm text-white/75">{d.donor?.totalGifts ?? 1} donation{(d.donor?.totalGifts ?? 1) > 1 ? 's' : ''}</div>
                     </div>
                   </div>
-                  <div className="text-emerald-600 font-semibold">${d.amount.toLocaleString()}</div>
+                  <div className="text-white font-semibold">${d.amount.toLocaleString()}</div>
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className="bg-white p-4 rounded shadow">
-            <h2 className="font-semibold">Campaign Donations</h2>
+          <div className="bg-teal-700/25 border border-teal-500/25 p-4 rounded shadow text-white">
+            <h2 className="font-semibold text-white">Campaign Donations</h2>
             <div className="mt-3 space-y-3">
               {recent.map((d) => (
-                <div key={d.id} className="p-3 border rounded flex justify-between items-center">
+                <div key={d.id} className="p-3 border border-teal-500/25 rounded flex justify-between items-center bg-black/10">
                   <div>
                     <div className="font-medium">
                       {d.donor?.id ? (
-                        <Link href={`/donors/${d.donor.id}`} className="hover:underline">
+                        <Link
+                          href={`/donors/${d.donor.id}`}
+                          className="rounded-sm transition-colors hover:underline hover:underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        >
                           {d.donor?.firstName} {d.donor?.lastName}
                         </Link>
                       ) : (
                         <span>{d.donor?.firstName} {d.donor?.lastName}</span>
                       )}
                     </div>
-                    <div className="text-sm text-gray-500">{d.donor?.id} • {new Date(d.createdAt).toLocaleDateString()}</div>
+                    <div className="text-sm text-white/75">{d.donor?.id} • {new Date(d.createdAt).toLocaleDateString()}</div>
                     <div className="mt-2">
-                      <Badge variant="secondary" className="font-medium">
+                      <Badge variant="secondary" className="font-medium bg-black/20 text-white border border-teal-500/25">
                         {formatDonationType(d.type)}
                       </Badge>
-                      {d.notes && <span className="inline-block px-2 py-1 ml-2 text-sm text-gray-500">{d.notes}</span>}
+                      {d.notes && <span className="inline-block px-2 py-1 ml-2 text-sm text-white/75">{d.notes}</span>}
                     </div>
                   </div>
-                  <div className="text-emerald-600 font-semibold">${d.amount.toLocaleString()}</div>
+                  <div className="text-white font-semibold">${d.amount.toLocaleString()}</div>
                 </div>
               ))}
             </div>
@@ -127,11 +132,11 @@ export default async function CampaignDetailPage({ params }) {
         </div>
 
         <div>
-          <div className="bg-white p-4 rounded shadow">
-            <h3 className="font-medium">Stats</h3>
+          <div className="bg-teal-700/25 border border-teal-500/25 p-4 rounded shadow text-white">
+            <h3 className="font-medium text-white">Stats</h3>
             <div className="mt-4 grid grid-cols-1 gap-3">
-              <div className="p-4 bg-gray-50 rounded"><div className="text-xl font-bold">{donationCount}</div><div className="text-sm text-gray-500">Total Donations</div></div>
-              <div className="p-4 bg-gray-50 rounded"><div className="text-xl font-bold">${(average).toFixed(0)}</div><div className="text-sm text-gray-500">Average Gift</div></div>
+              <div className="p-4 bg-black/10 border border-teal-500/25 rounded"><div className="text-xl font-bold text-white">{donationCount}</div><div className="text-sm text-white/75">Total Donations</div></div>
+              <div className="p-4 bg-black/10 border border-teal-500/25 rounded"><div className="text-xl font-bold text-white">${(average).toFixed(0)}</div><div className="text-sm text-white/75">Average Gift</div></div>
             </div>
           </div>
         </div>

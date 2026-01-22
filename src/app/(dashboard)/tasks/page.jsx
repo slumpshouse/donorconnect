@@ -20,7 +20,9 @@ export default function TasksPage() {
         if (!res.ok) return
         const data = await res.json().catch(() => ({}))
         const list = Array.isArray(data?.tasks) ? data.tasks : []
-        if (mounted) setTasks(list)
+        // Completed tasks should disappear from the active list.
+        const active = list.filter((t) => (t?.status || 'TODO') !== 'COMPLETED')
+        if (mounted) setTasks(active)
       } catch (e) {
         // ignore
       }
@@ -35,7 +37,11 @@ export default function TasksPage() {
     const nextStatus = currentStatus === 'COMPLETED' ? 'TODO' : 'COMPLETED'
 
     // optimistic update
-    setTasks((prev) => prev.map((t) => (t.id === task.id ? { ...t, status: nextStatus } : t)))
+    if (nextStatus === 'COMPLETED') {
+      setTasks((prev) => prev.filter((t) => t.id !== task.id))
+    } else {
+      setTasks((prev) => prev.map((t) => (t.id === task.id ? { ...t, status: nextStatus } : t)))
+    }
 
     try {
       const res = await fetch(`/api/tasks/${task.id}`, {
@@ -48,11 +54,19 @@ export default function TasksPage() {
       const data = await res.json().catch(() => ({}))
       const updated = data?.task
       if (updated?.id) {
-        setTasks((prev) => prev.map((t) => (t.id === updated.id ? updated : t)))
+        if ((updated.status || 'TODO') === 'COMPLETED') {
+          setTasks((prev) => prev.filter((t) => t.id !== updated.id))
+        } else {
+          setTasks((prev) => prev.map((t) => (t.id === updated.id ? updated : t)))
+        }
       }
     } catch (e) {
       // revert on failure
-      setTasks((prev) => prev.map((t) => (t.id === task.id ? task : t)))
+      if (nextStatus === 'COMPLETED') {
+        setTasks((prev) => (prev.some((t) => t.id === task.id) ? prev : [task, ...prev]))
+      } else {
+        setTasks((prev) => prev.map((t) => (t.id === task.id ? task : t)))
+      }
       window.alert(String(e?.message || e))
     }
   }
@@ -85,22 +99,22 @@ export default function TasksPage() {
 
       <div className="grid grid-cols-1 gap-6">
         <div className="bg-card border border-border rounded-xl p-6 shadow">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-            <div>
-              <div className="text-3xl font-bold">{sampleStats.open}</div>
-              <div className="text-sm text-muted-foreground uppercase">Open Tasks</div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="flex flex-col items-center justify-center rounded-lg bg-muted/20 p-4 text-center">
+              <div className="text-3xl font-bold tabular-nums leading-none">{sampleStats.open}</div>
+              <div className="mt-2 text-sm text-muted-foreground uppercase tracking-wide">Open Tasks</div>
             </div>
-            <div>
-              <div className="text-3xl font-bold">{sampleStats.dueToday}</div>
-              <div className="text-sm text-muted-foreground uppercase">Due Today</div>
+            <div className="flex flex-col items-center justify-center rounded-lg bg-muted/20 p-4 text-center">
+              <div className="text-3xl font-bold tabular-nums leading-none">{sampleStats.dueToday}</div>
+              <div className="mt-2 text-sm text-muted-foreground uppercase tracking-wide">Due Today</div>
             </div>
-            <div>
-              <div className="text-3xl font-bold">{sampleStats.overdue}</div>
-              <div className="text-sm text-muted-foreground uppercase">Overdue</div>
+            <div className="flex flex-col items-center justify-center rounded-lg bg-muted/20 p-4 text-center">
+              <div className="text-3xl font-bold tabular-nums leading-none">{sampleStats.overdue}</div>
+              <div className="mt-2 text-sm text-muted-foreground uppercase tracking-wide">Overdue</div>
             </div>
-            <div>
-              <div className="text-3xl font-bold">{sampleStats.completedThisMonth}</div>
-              <div className="text-sm text-muted-foreground uppercase">Completed This Month</div>
+            <div className="flex flex-col items-center justify-center rounded-lg bg-muted/20 p-4 text-center">
+              <div className="text-3xl font-bold tabular-nums leading-none">{sampleStats.completedThisMonth}</div>
+              <div className="mt-2 text-sm text-muted-foreground uppercase tracking-wide">Completed This Month</div>
             </div>
           </div>
         </div>

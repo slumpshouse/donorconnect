@@ -52,14 +52,14 @@ export default function DonationsPage() {
       <div className="bg-card border border-border p-6 rounded-xl shadow">
         <div className="flex gap-4 items-center">
           <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search by name, email, ID, or phone number..." className="flex-1 border rounded px-4 py-3 bg-background text-foreground placeholder:text-muted-foreground" />
-          <button className="px-4 py-3 bg-indigo-600 text-white rounded">🔍 Search</button>
+          <button className="px-4 py-3 bg-teal-600 hover:bg-teal-700 text-white rounded">🔍 Search</button>
         </div>
 
         <div className="mt-4 flex flex-wrap gap-3">
-          <button className={`px-4 py-2 rounded ${filter === 'all' ? 'bg-indigo-600 text-white' : 'bg-muted'}`} onClick={() => setFilter('all')}>All Donations</button>
-          <button className={`px-4 py-2 rounded ${filter === 'online' ? 'bg-indigo-600 text-white' : 'bg-muted'}`} onClick={() => setFilter('online')}>Online</button>
-          <button className={`px-4 py-2 rounded ${filter === 'offline' ? 'bg-indigo-600 text-white' : 'bg-muted'}`} onClick={() => setFilter('offline')}>Offline</button>
-          <button className={`px-4 py-2 rounded ${filter === 'recurring' ? 'bg-indigo-600 text-white' : 'bg-muted'}`} onClick={() => setFilter('recurring')}>Recurring</button>
+          <button className={`px-4 py-2 rounded ${filter === 'all' ? 'bg-teal-600 text-white' : 'bg-muted'}`} onClick={() => setFilter('all')}>All Donations</button>
+          <button className={`px-4 py-2 rounded ${filter === 'online' ? 'bg-teal-600 text-white' : 'bg-muted'}`} onClick={() => setFilter('online')}>Online</button>
+          <button className={`px-4 py-2 rounded ${filter === 'offline' ? 'bg-teal-600 text-white' : 'bg-muted'}`} onClick={() => setFilter('offline')}>Offline</button>
+          <button className={`px-4 py-2 rounded ${filter === 'recurring' ? 'bg-teal-600 text-white' : 'bg-muted'}`} onClick={() => setFilter('recurring')}>Recurring</button>
         </div>
       </div>
 

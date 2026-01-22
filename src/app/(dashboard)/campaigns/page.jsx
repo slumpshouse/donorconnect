@@ -65,13 +65,24 @@ export default function CampaignsPage() {
             <div key={c.id} className="bg-card border border-border p-6 rounded-xl shadow">
               <div className="flex items-start justify-between">
                 <div>
-                  <Link href={`/campaigns/${c.id}`} className="inline-block">
-                    <h2 className="text-3xl font-extrabold text-foreground hover:underline">{c.name}</h2>
+                  <Link
+                    href={`/campaigns/${c.id}`}
+                    className="group inline-block rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  >
+                    <h2 className="text-3xl font-extrabold text-foreground transition-colors duration-150 group-hover:text-primary group-hover:underline group-hover:underline-offset-4">
+                      {c.name}
+                    </h2>
                   </Link>
                   <div className="text-sm text-muted-foreground mt-2">{start ? start.toLocaleDateString() : '—'} - {end ? end.toLocaleDateString() : '—'}</div>
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="inline-flex items-center px-3 py-1 rounded-full bg-emerald-100 text-emerald-800">✓ {String(c.status || 'DRAFT')}</span>
+                  <Link
+                    href={`/campaigns/${c.id}`}
+                    className="px-3 py-1 rounded bg-muted text-foreground text-sm transition-colors hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  >
+                    View
+                  </Link>
                   <button
                     type="button"
                     onClick={() => handleDelete(c.id, c.name)}
