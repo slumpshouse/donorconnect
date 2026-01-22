@@ -74,16 +74,16 @@ export default function SegmentsPage() {
             placeholder="Search segments by name or description..."
             className="flex-1 border rounded px-4 py-3 bg-background text-foreground placeholder:text-muted-foreground"
           />
-          <button type="button" className="px-4 py-3 bg-indigo-600 text-white rounded" onClick={runSearch}>
+          <button type="button" className="px-4 py-3 bg-teal-600 hover:bg-teal-700 text-white rounded" onClick={runSearch}>
             🔍 Search
           </button>
         </div>
 
         <div className="mt-4 flex flex-wrap gap-3 items-center">
-          <button type="button" className={`px-4 py-2 rounded ${filter === 'all' ? 'bg-indigo-600 text-white' : 'bg-muted'}`} onClick={() => setFilter('all')}>
+          <button type="button" className={`px-4 py-2 rounded ${filter === 'all' ? 'bg-teal-600 text-white' : 'bg-muted'}`} onClick={() => setFilter('all')}>
             All Segments
           </button>
-          <button type="button" className={`px-4 py-2 rounded ${filter === 'suggested' ? 'bg-indigo-600 text-white' : 'bg-muted'}`} onClick={() => setFilter('suggested')}>
+          <button type="button" className={`px-4 py-2 rounded ${filter === 'suggested' ? 'bg-teal-600 text-white' : 'bg-muted'}`} onClick={() => setFilter('suggested')}>
             Suggested
           </button>
 

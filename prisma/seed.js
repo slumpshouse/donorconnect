@@ -36,6 +36,13 @@ async function main() {
   // Hash password for all users
   const hashedPassword = await bcrypt.hash('password123', 12)
 
+  // Launchpad demo users (distinct passwords)
+  const launchpadUsers = [
+    { email: 'rob@launchpadphilly.org', password: 'lpuser1', firstName: 'Rob', lastName: 'Launchpad', role: 'ADMIN' },
+    { email: 'sanaa@launchpadphilly.org', password: 'lpuser2', firstName: 'Sanaa', lastName: 'Launchpad', role: 'STAFF' },
+    { email: 'taheera@launchpadphilly.org', password: 'lpuser3', firstName: 'Taheera', lastName: 'Launchpad', role: 'STAFF' },
+  ]
+
   // Create 2 Organizations
   console.log('🏢 Creating organizations...')
   const org1 = await prisma.organization.create({
@@ -100,6 +107,20 @@ async function main() {
         organizationId: org1.id
       }
     }),
+
+    // Launchpad users (Org 1)
+    ...launchpadUsers.map((u) =>
+      prisma.user.create({
+        data: {
+          email: u.email,
+          password: bcrypt.hashSync(u.password, 12),
+          firstName: u.firstName,
+          lastName: u.lastName,
+          role: u.role,
+          organizationId: org1.id,
+        },
+      })
+    ),
     // Org 2 users
     prisma.user.create({
       data: {
