@@ -25,7 +25,8 @@ export default function NewDonationClientPage() {
     let mounted = true
     ;(async () => {
       try {
-        const res = await fetch('/api/donors')
+        // Request a large limit so we return all donors (including those with no donations yet)
+        const res = await fetch('/api/donors?limit=1000')
         if (!mounted) return
         const data = await res.json().catch(() => ({}))
         const donorList = Array.isArray(data?.donors) ? data.donors : (data?.donors ?? [])
@@ -52,6 +53,26 @@ export default function NewDonationClientPage() {
     })()
 
     return () => (mounted = false)
+  }, [])
+
+  // listen for donors created elsewhere and update local donors list
+  useEffect(() => {
+    function onDonorCreated(e) {
+      try {
+        const newDonor = e?.detail
+        if (!newDonor) return
+        setDonors((prev) => {
+          // avoid duplicates
+          if (prev.some((d) => d.id === newDonor.id)) return prev
+          return [newDonor, ...prev]
+        })
+        setSelectedDonor(newDonor)
+      } catch (err) {
+        // ignore
+      }
+    }
+    window.addEventListener('donor:created', onDonorCreated)
+    return () => window.removeEventListener('donor:created', onDonorCreated)
   }, [])
 
   const router = useRouter()
@@ -93,6 +114,12 @@ export default function NewDonationClientPage() {
 
       const created = await res.json().catch(() => null)
       setMessage({ type: 'success', text: 'Donation recorded.' })
+
+      try {
+        window.dispatchEvent(new CustomEvent('donation:created', { detail: created }))
+      } catch (e) {
+        // ignore if window not available
+      }
 
       // trigger workflows if options selected
       if (sendEmail || sendReceipt || createFollowUp) {

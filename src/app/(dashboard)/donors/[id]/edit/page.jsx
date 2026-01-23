@@ -154,7 +154,14 @@ export default function EditDonorPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-foreground">Phone</label>
-                  <input className="mt-1 block w-full rounded border border-border bg-background px-3 py-2 text-foreground placeholder:text-foreground/70" {...register('phone')} />
+                  <input
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    maxLength={10}
+                    onInput={(e) => { e.currentTarget.value = e.currentTarget.value.replace(/\D/g, '').slice(0, 10) }}
+                    className="mt-1 block w-full rounded border border-border bg-background px-3 py-2 text-foreground placeholder:text-foreground/70"
+                    {...register('phone')}
+                  />
                 </div>
               </div>
 
@@ -184,7 +191,7 @@ export default function EditDonorPage() {
               <div className="mt-4 grid grid-cols-1 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-foreground">Total Donations</label>
-                  <input value={donor?.totalAmount ? donor.totalAmount.toLocaleString() : ''} disabled className="mt-1 block w-full rounded border border-border bg-background px-3 py-2 text-foreground" />
+                  <input value={(donor?.totalGifts ?? 0).toString()} disabled className="mt-1 block w-full rounded border border-border bg-background px-3 py-2 text-foreground" />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

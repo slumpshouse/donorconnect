@@ -62,6 +62,15 @@ export default function NewDonorClientPage() {
       const created = await res.json().catch(() => null)
       setMessage({ type: 'success', text: 'Donor created successfully.' })
       reset()
+      // notify other parts of the app so they can refresh lists/selects
+      try {
+        const newDonor = (created && created.donor) ? created.donor : created
+        if (newDonor) {
+          window.dispatchEvent(new CustomEvent('donor:created', { detail: newDonor }))
+        }
+      } catch (e) {
+        // ignore
+      }
       // show success message briefly then navigate to dashboard
       setTimeout(() => router.push('/dashboard'), 900)
       return created
@@ -112,7 +121,14 @@ export default function NewDonorClientPage() {
 
         <div>
           <label className="block text-sm font-medium text-foreground">Phone Number</label>
-          <input className="mt-1 block w-full rounded border border-border bg-background px-3 py-2 text-foreground placeholder:text-foreground/70" {...register('phone')} />
+          <input
+            inputMode="numeric"
+            pattern="[0-9]*"
+            maxLength={10}
+            onInput={(e) => { e.currentTarget.value = e.currentTarget.value.replace(/\D/g, '').slice(0, 10) }}
+            className="mt-1 block w-full rounded border border-border bg-background px-3 py-2 text-foreground placeholder:text-foreground/70"
+            {...register('phone')}
+          />
           {errors.phone && <p className="text-sm text-red-600">{errors.phone.message}</p>}
         </div>
 

@@ -60,6 +60,18 @@ export async function PATCH(request, { params }) {
       }
     }
 
+    // sanitize phone if provided: digits-only, max length 10
+    if (Object.prototype.hasOwnProperty.call(data, 'phone') && data.phone !== undefined && data.phone !== null) {
+      if (typeof data.phone !== 'string') {
+        return NextResponse.json({ error: 'Invalid phone' }, { status: 400 })
+      }
+      const cleaned = String(data.phone).replace(/\D/g, '')
+      if (cleaned.length > 10) return NextResponse.json({ error: 'Phone must be at most 10 digits' }, { status: 400 })
+      data.phone = cleaned || null
+    }
+
+    // no-op: additional fields like tags/notes/preferredContact are not in DB schema
+
     const result = await prisma.donor.updateMany({ where: { id, organizationId: session.user.organizationId }, data })
     if (result.count === 0) return NextResponse.json({ error: 'Not found or unauthorized' }, { status: 404 })
 

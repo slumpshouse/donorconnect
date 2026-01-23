@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { getSessionUser } from '@/lib/session'
 import { prisma } from '@/lib/db'
 import { formatCurrency } from '@/lib/utils'
+import DashboardStatsClient from '@/components/dashboard/stats-client'
 
 export default async function DashboardPage() {
   let user = null
@@ -76,7 +77,6 @@ export default async function DashboardPage() {
       where: { donor: { organizationId: orgId } },
       include: { donor: true, campaign: true },
       orderBy: { createdAt: 'desc' },
-      take: 6,
     }),
     prisma.donation.groupBy({
       by: ['campaignId'],
@@ -193,22 +193,7 @@ export default async function DashboardPage() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="p-5 rounded-xl shadow bg-gradient-to-r from-teal-700 to-cyan-600 text-white">
-          <div className="text-sm text-white/80">Total Donors</div>
-          <div className="text-3xl font-semibold mt-2">{totalDonors}</div>
-        </div>
-
-        <div className="p-5 rounded-xl shadow bg-gradient-to-r from-emerald-600 to-teal-600 text-white">
-          <div className="text-sm text-white/80">Total Donations</div>
-          <div className="text-3xl font-semibold mt-2">{donationCount}</div>
-        </div>
-
-        <div className="p-5 rounded-xl shadow bg-gradient-to-r from-cyan-700 to-teal-600 text-white">
-          <div className="text-sm text-white/80">Amount Received</div>
-          <div className="text-3xl font-semibold mt-2">${totalAmount.toFixed(2)}</div>
-        </div>
-      </div>
+          <DashboardStatsClient initial={{ totalDonors, totalDonations: donationCount, totalAmount }} />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="p-4 bg-card border border-border rounded-xl shadow">
@@ -228,7 +213,7 @@ export default async function DashboardPage() {
                     <div className="font-medium">{d.firstName} {d.lastName}</div>
                     <div className="text-sm text-muted-foreground">{d.email || 'No email'} — {d.retentionRisk}</div>
                   </div>
-                  <div className="text-sm text-muted-foreground">Gifts: {d.totalGifts ?? 0} — ${((d.totalAmount) || 0).toFixed(2)}</div>
+                  <div className="text-sm text-muted-foreground">Donations: {d.totalGifts ?? 0}</div>
                 </li>
               ))}
             </ul>

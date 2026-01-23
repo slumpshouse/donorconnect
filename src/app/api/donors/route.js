@@ -27,11 +27,16 @@ export async function GET(request) {
     const where = { organizationId: session.user.organizationId }
 
     if (search) {
-      where.OR = [
-        { firstName: { contains: search, mode: 'insensitive' } },
-        { lastName: { contains: search, mode: 'insensitive' } },
-        { email: { contains: search, mode: 'insensitive' } },
+      const searchStr = String(search).trim()
+      const phoneSearch = String(search).replace(/\D/g, '')
+      const or = [
+        { firstName: { contains: searchStr, mode: 'insensitive' } },
+        { lastName: { contains: searchStr, mode: 'insensitive' } },
+        { email: { contains: searchStr, mode: 'insensitive' } },
+        { id: { contains: searchStr } },
       ]
+      if (phoneSearch) or.push({ phone: { contains: phoneSearch } })
+      where.OR = or
     }
 
     if (status) where.status = status
@@ -83,7 +88,7 @@ export async function POST(request) {
     }
 
     const body = await request.json().catch(() => ({}))
-    const { firstName, lastName, email, phone } = body || {}
+    const { firstName, lastName, email, phone, address, city, state, zipCode } = body || {}
 
     if (!firstName || !lastName) {
       return NextResponse.json({ error: 'firstName and lastName are required' }, { status: 400 })
@@ -96,12 +101,26 @@ export async function POST(request) {
       }
     }
 
+    // sanitize phone: keep digits only and enforce max length 10
+    let phoneClean = null
+    if (phone && typeof phone === 'string') {
+      phoneClean = String(phone).replace(/\D/g, '')
+      if (phoneClean.length > 10) {
+        return NextResponse.json({ error: 'Phone must be at most 10 digits' }, { status: 400 })
+      }
+      if (phoneClean === '') phoneClean = null
+    }
+
     const donorData = {
       organizationId: session.user.organizationId,
       firstName: String(firstName).slice(0, 50),
       lastName: String(lastName).slice(0, 50),
       email: email ? String(email).slice(0, 191) : null,
-      phone: phone ? String(phone).slice(0, 20) : null,
+      phone: phoneClean,
+      address: address ? String(address).slice(0, 191) : null,
+      city: city ? String(city).slice(0, 100) : null,
+      state: state ? String(state).slice(0, 100) : null,
+      zipCode: zipCode ? String(zipCode).slice(0, 20) : null,
       status: 'ACTIVE',
       retentionRisk: 'UNKNOWN',
     }

@@ -109,6 +109,13 @@ export default function CampaignAddDonorPage() {
       const donor = donorJson?.donor
       if (!donor?.id) throw new Error('Donor created, but no donor id returned')
 
+      // notify other parts of the app so the new donor shows up immediately
+      try {
+        window.dispatchEvent(new CustomEvent('donor:created', { detail: donor }))
+      } catch (e) {
+        // ignore
+      }
+
       // 2) Optionally log the initial donation to this campaign
       if (values.logDonation) {
         const parsedAmount = Number(values.amount)

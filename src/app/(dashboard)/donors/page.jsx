@@ -1,7 +1,7 @@
 "use client"
 
 // Donors list page (client)
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Plus } from 'lucide-react'
@@ -9,17 +9,36 @@ import { useDonors } from '@/hooks/use-donors'
 import { RetentionRiskBadge } from '@/components/donors/retention-risk-badge'
 
 export default function DonorsPage() {
+  const [searchDraft, setSearchDraft] = useState('')
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState('')
   const [retentionRisk, setRetentionRisk] = useState('')
   const [page, setPage] = useState(1)
   const [limit, setLimit] = useState(10)
 
-  const { donors, loading, error, pagination } = useDonors(page, limit, {
+  const { donors, loading, error, pagination, refetch } = useDonors(page, limit, {
     search,
     status,
     retentionRisk,
   })
+
+  function runSearch() {
+    setPage(1)
+    setSearch(searchDraft)
+  }
+  
+  // refresh when a donor is created elsewhere
+  useEffect(() => {
+    function onDonorCreated() {
+      try {
+        refetch && refetch()
+      } catch (e) {
+        // ignore
+      }
+    }
+    window.addEventListener('donor:created', onDonorCreated)
+    return () => window.removeEventListener('donor:created', onDonorCreated)
+  }, [refetch])
 
   const totalPages = Math.max(1, Math.ceil((pagination?.total || 0) / (pagination?.limit || limit)))
 
@@ -41,11 +60,16 @@ export default function DonorsPage() {
       <div className="bg-card border border-border p-4 rounded shadow">
         <div className="flex gap-3 items-center mb-4">
           <input
-            value={search}
-            onChange={(e) => { setSearch(e.target.value); setPage(1) }}
+            value={searchDraft}
+            onChange={(e) => { setSearchDraft(e.target.value) }}
+            onKeyDown={(e) => { if (e.key === 'Enter') runSearch() }}
             placeholder="Search donors by name or email"
             className="border rounded px-3 py-2 w-1/3 bg-background text-foreground placeholder:text-muted-foreground"
           />
+
+          <button type="button" className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded" onClick={runSearch}>
+            🔍 Search
+          </button>
 
           <select value={status} onChange={(e) => { setStatus(e.target.value); setPage(1) }} className="border rounded px-2 py-2 bg-background text-foreground">
             <option value="">All status</option>

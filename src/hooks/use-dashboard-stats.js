@@ -6,25 +6,26 @@ export default function useDashboardStats() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
+  async function fetchStats() {
+    setLoading(true)
+    try {
+      const res = await fetch('/api/dashboard', { credentials: 'same-origin' })
+      if (!res.ok) throw await res.json()
+      const data = await res.json()
+      setStats({ donations: data.donations || {}, tasks: data.tasks || {} })
+      setError(null)
+    } catch (err) {
+      setError(err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   useEffect(() => {
     let mounted = true
-    fetch('/api/dashboard', { credentials: 'same-origin' })
-      .then(async (res) => {
-        if (!res.ok) throw await res.json()
-        return res.json()
-      })
-      .then((data) => {
-        if (!mounted) return
-        setStats({ donations: data.donations || {}, tasks: data.tasks || {} })
-        setLoading(false)
-      })
-      .catch((err) => {
-        if (!mounted) return
-        setError(err)
-        setLoading(false)
-      })
+    if (mounted) fetchStats()
     return () => { mounted = false }
   }, [])
 
-  return { stats, loading, error }
+  return { stats, loading, error, refetch: fetchStats }
 }
