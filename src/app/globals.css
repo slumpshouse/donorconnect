@@ -2,53 +2,57 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    --background: 0 0% 100%; /* white background */
+    --foreground: 220 15% 12%; /* dark text */
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card-foreground: 220 15% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
+    --popover-foreground: 220 15% 12%;
+
+    /* Primary blue (used for buttons, accents, links) */
+    --primary: 212 100% 45%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Lighter blue variants for secondary/muted/accent */
+    --secondary: 212 100% 94%;
+    --secondary-foreground: 212 100% 20%;
+    --muted: 212 100% 97%;
+    --muted-foreground: 212 100% 35%;
+    --accent: 212 100% 92%;
+    --accent-foreground: 212 100% 20%;
+
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 5.9% 10%;
+    --border: 210 16% 92%;
+    --input: 210 16% 94%;
+    --ring: 212 100% 45%;
     --radius: 0.5rem;
   }
 
   .dark {
-    /* Dark teal theme (matches dashboard screenshots) */
-    --background: 220 40% 5%;
-    --foreground: 210 40% 98%;
-    --card: 215 35% 10%;
-    --card-foreground: 210 40% 98%;
-    --popover: 215 35% 10%;
-    --popover-foreground: 210 40% 98%;
+    /* Keep white background and blue accents even if .dark class is present */
+    --background: 0 0% 100%;
+    --foreground: 220 15% 12%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 15% 12%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 15% 12%;
 
-    /* Teal primary */
-    --primary: 174 80% 40%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 212 100% 45%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 215 25% 14%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 215 25% 14%;
-    --muted-foreground: 215 15% 70%;
-    --accent: 215 25% 14%;
-    --accent-foreground: 210 40% 98%;
+    --secondary: 212 100% 94%;
+    --secondary-foreground: 212 100% 20%;
+    --muted: 212 100% 97%;
+    --muted-foreground: 212 100% 35%;
+    --accent: 212 100% 92%;
+    --accent-foreground: 212 100% 20%;
 
     --destructive: 0 75% 50%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 215 22% 18%;
-    --input: 215 22% 18%;
-    --ring: 174 80% 40%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 210 16% 92%;
+    --input: 210 16% 94%;
+    --ring: 212 100% 45%;
   }
 }
 

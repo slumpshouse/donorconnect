@@ -79,13 +79,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      <Link
-        href="/login"
-        className="fixed bottom-6 right-6 inline-flex items-center justify-center rounded-md bg-teal-600 px-4 py-2 text-sm font-medium text-white shadow hover:bg-teal-500"
-        aria-label="Get started"
-      >
-        Get started
-      </Link>
+      {/* Floating "Get started" button removed (duplicate) */}
     </main>
   )
 }
