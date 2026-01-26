@@ -7,10 +7,56 @@ import { Button } from '@/components/ui/button'
 export default function TasksPage() {
   const [tasks, setTasks] = useState([])
   const [sortBy, setSortBy] = useState('urgency')
+  const [showFilter, setShowFilter] = useState(false)
+  const [filters, setFilters] = useState({ status: 'all', priority: 'all', donor: '' })
   const { stats } = useDashboardStats()
   const sampleStats = stats?.tasks || { open: 0, dueToday: 0, overdue: 0, completedThisMonth: 0 }
 
-  const listItems = tasks.map((t) => ({ kind: 'task', ...t }))
+  function applyFiltersAndSort(list) {
+    let out = Array.isArray(list) ? list.slice() : []
+
+    // Filtering
+    if (filters.status && filters.status !== 'all') {
+      out = out.filter((t) => (t.status || 'TODO') === filters.status)
+    }
+    if (filters.priority && filters.priority !== 'all') {
+      out = out.filter((t) => String(t.priority || '').toLowerCase() === String(filters.priority || '').toLowerCase())
+    }
+    if (filters.donor && String(filters.donor).trim() !== '') {
+      const q = String(filters.donor).toLowerCase().trim()
+      out = out.filter((t) => {
+        const name = t.donor ? `${t.donor.firstName || ''} ${t.donor.lastName || ''}` : (t.donorId || '')
+        return String(name).toLowerCase().includes(q)
+      })
+    }
+
+    // Sorting
+    out.sort((a, b) => {
+      if (sortBy === 'due') {
+        const da = a.dueDate ? new Date(a.dueDate).getTime() : 0
+        const db = b.dueDate ? new Date(b.dueDate).getTime() : 0
+        return da - db
+      }
+      if (sortBy === 'donor') {
+        const na = a.donor ? `${a.donor.firstName || ''} ${a.donor.lastName || ''}` : (a.donorId || '')
+        const nb = b.donor ? `${b.donor.firstName || ''} ${b.donor.lastName || ''}` : (b.donorId || '')
+        return String(na).localeCompare(String(nb))
+      }
+      // urgency/priority default: High -> Low
+      const score = (p) => {
+        const val = String(p || '').toLowerCase()
+        if (val === 'high' || val === 'high' || val === 'urgent') return 1
+        if (val === 'medium') return 2
+        return 3
+      }
+      return score(a.priority) - score(b.priority)
+    })
+
+    return out
+  }
+
+  const displayedTasks = applyFiltersAndSort(tasks)
+  const listItems = displayedTasks.map((t) => ({ kind: 'task', ...t }))
 
   useEffect(() => {
     let mounted = true
@@ -136,9 +182,39 @@ export default function TasksPage() {
               </div>
             </div>
             <div>
-              <button className="px-4 py-2 bg-card border rounded text-sm text-muted-foreground">Filter</button>
+              <button onClick={() => setShowFilter((s) => !s)} className="px-4 py-2 bg-card border rounded text-sm text-muted-foreground">Filter</button>
             </div>
           </div>
+          {showFilter && (
+            <div className="mt-4 p-4 bg-muted/10 border border-border rounded">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                <div>
+                  <label className="text-sm text-muted-foreground block mb-1">Status</label>
+                  <select value={filters.status} onChange={(e) => setFilters((f) => ({ ...f, status: e.target.value }))} className="w-full p-2 rounded border bg-card">
+                    <option value="all">All</option>
+                    <option value="TODO">TODO</option>
+                    <option value="COMPLETED">COMPLETED</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-sm text-muted-foreground block mb-1">Priority</label>
+                  <select value={filters.priority} onChange={(e) => setFilters((f) => ({ ...f, priority: e.target.value }))} className="w-full p-2 rounded border bg-card">
+                    <option value="all">All</option>
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
+                  </select>
+                </div>
+                <div className="md:col-span-2">
+                  <label className="text-sm text-muted-foreground block mb-1">Donor</label>
+                  <div className="flex gap-2">
+                    <input value={filters.donor} onChange={(e) => setFilters((f) => ({ ...f, donor: e.target.value }))} placeholder="Search donor name or id" className="flex-1 p-2 rounded border bg-card" />
+                    <button onClick={() => setFilters({ status: 'all', priority: 'all', donor: '' })} className="px-3 py-2 bg-card border rounded text-sm text-muted-foreground">Clear</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="space-y-4">

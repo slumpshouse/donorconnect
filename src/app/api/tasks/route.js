@@ -81,15 +81,20 @@ export async function POST(request) {
 
     let assignedToUse = assignedTo || null
     if (assignedToUse) {
-      const user = await prisma.user.findUnique({ where: { id: assignedToUse }, select: { organizationId: true } })
+      const user = await prisma.user.findUnique({ where: { id: assignedToUse }, select: { organizationId: true, role: true } })
       if (!user || user.organizationId !== orgId) {
         return NextResponse.json({ error: 'Assigned user not found' }, { status: 404 })
+      }
+      if (user.role !== 'ADMIN') {
+        return NextResponse.json({ error: 'Assigned user must be an ADMIN' }, { status: 400 })
       }
     }
 
     // Ensure every task is tenant-scoped via either donor or assigned user.
     if (!donorIdToUse && !assignedToUse) {
-      assignedToUse = session.user.id
+      // Prefer assigning to an ADMIN user in the same org. Fall back to the current user.
+      const adminUser = await prisma.user.findFirst({ where: { organizationId: orgId, role: 'ADMIN' }, select: { id: true } })
+      assignedToUse = adminUser?.id || session.user.id
     }
 
     const data = {

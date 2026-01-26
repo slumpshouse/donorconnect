@@ -79,7 +79,7 @@ export default function CampaignsPage() {
                   <span className="inline-flex items-center px-3 py-1 rounded-full bg-emerald-100 text-emerald-800">✓ {String(c.status || 'DRAFT')}</span>
                   <Link
                     href={`/campaigns/${c.id}`}
-                    className="px-3 py-1 rounded bg-muted text-foreground text-sm transition-colors hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                    className="px-3 py-1 rounded bg-gradient-to-r from-emerald-500 to-emerald-600 text-white text-sm shadow-lg transform-gpu hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   >
                     View
                   </Link>
