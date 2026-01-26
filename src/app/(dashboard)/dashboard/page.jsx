@@ -77,6 +77,7 @@ export default async function DashboardPage() {
       where: { donor: { organizationId: orgId } },
       include: { donor: true, campaign: true },
       orderBy: { createdAt: 'desc' },
+      take: 10,
     }),
     prisma.donation.groupBy({
       by: ['campaignId'],

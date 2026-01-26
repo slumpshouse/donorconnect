@@ -158,6 +158,14 @@ export default function NewSegmentClientPage() {
             <div>
               <label className="text-xs text-muted-foreground">Field</label>
               <select className="mt-1 block w-full rounded border border-border bg-background px-2 py-2 text-foreground" value={condField} onChange={(e) => setCondField(e.target.value)}>
+                <option value="firstName">First name</option>
+                <option value="lastName">Last name</option>
+                <option value="email">Email</option>
+                <option value="phone">Phone</option>
+                <option value="city">City</option>
+                <option value="state">State</option>
+                <option value="zipCode">Zip code</option>
+                <option value="createdAt">Created date</option>
                 <option value="lastGiftDate">Last gift date</option>
                 <option value="totalAmount">Total amount</option>
                 <option value="totalGifts">Total gifts</option>
@@ -189,15 +197,33 @@ export default function NewSegmentClientPage() {
             </div>
           </div>
 
-          <div className="mt-2">
-            <button type="button" onClick={addCondition} className="px-3 py-1 bg-primary text-primary-foreground rounded text-sm hover:bg-primary/90">Add Condition</button>
-          </div>
+          
 
           {conditions.length > 0 && (
             <ul className="mt-3 space-y-2">
               {conditions.map((c, i) => (
                 <li key={i} className="flex items-center justify-between bg-muted p-2 rounded">
-                  <div className="text-sm">{c.field} {c.operator} <span className="font-medium">{c.value}</span></div>
+                  <div className="text-sm">
+                    {(() => {
+                      const labels = {
+                        firstName: 'First name',
+                        lastName: 'Last name',
+                        email: 'Email',
+                        phone: 'Phone',
+                        city: 'City',
+                        state: 'State',
+                        zipCode: 'Zip code',
+                        createdAt: 'Created date',
+                        lastGiftDate: 'Last gift date',
+                        totalAmount: 'Total amount',
+                        totalGifts: 'Total gifts',
+                        status: 'Donor status',
+                        retentionRisk: 'Retention risk',
+                      }
+                      const label = labels[c.field] || c.field
+                      return <>{label} {c.operator} <span className="font-medium">{c.value}</span></>
+                    })()}
+                  </div>
                   <button type="button" onClick={() => removeCondition(i)} className="text-sm text-red-600">Remove</button>
                 </li>
               ))}

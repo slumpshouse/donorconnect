@@ -236,7 +236,9 @@ export default function TasksPage() {
                       <div className="mt-3 text-sm text-gray-700">{item.description}</div>
                     </div>
                     <div className="ml-4 flex flex-col items-end gap-2">
-                      <button onClick={() => {/* placeholder edit */}} className="px-3 py-1 bg-white border border-gray-200 text-sm rounded text-blue-600">Edit</button>
+                      <Link href={`/tasks/${item.id}/edit`}>
+                        <button className="px-3 py-1 bg-white border border-gray-200 text-sm rounded text-blue-600">Edit</button>
+                      </Link>
                       <div className="flex items-center gap-2">
                         <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${String(item.priority).toLowerCase().startsWith('h') ? 'bg-red-100 text-red-700' : String(item.priority).toLowerCase().startsWith('m') ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-800'}`}>{String(item.priority || 'LOW')}</span>
                         <button onClick={() => toggleComplete(item)} className="px-3 py-1 bg-green-50 text-green-700 rounded text-sm">Complete</button>

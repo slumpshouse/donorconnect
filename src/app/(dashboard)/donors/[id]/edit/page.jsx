@@ -1,6 +1,7 @@
-'use client'
+"use client"
 
 import { useEffect, useState } from 'react'
+import { formatDate } from '@/lib/utils'
 import { useForm } from 'react-hook-form'
 import { useParams, useRouter } from 'next/navigation'
 import { z } from 'zod'
@@ -18,6 +19,7 @@ const editSchema = z.object({
   zipCode: z.string().optional().or(z.literal('')),
   tags: z.string().optional().or(z.literal('')),
   notes: z.string().optional().or(z.literal('')),
+  status: z.enum(['ACTIVE','LAPSED','INACTIVE','DO_NOT_CONTACT']).optional(),
 })
 
 export default function EditDonorPage() {
@@ -36,7 +38,6 @@ export default function EditDonorPage() {
     reset,
     formState: { errors },
   } = useForm({ resolver: zodResolver(editSchema) })
-
   useEffect(() => {
     let mounted = true
     if (!donorId) return
@@ -60,6 +61,7 @@ export default function EditDonorPage() {
           zipCode: data.zipCode || '',
           tags: (data.tags && Array.isArray(data.tags) ? data.tags.join(', ') : data.tags) || '',
           notes: data.notes || '',
+          status: data.status || 'ACTIVE',
         })
       } catch (e) {
         // eslint-disable-next-line no-console
@@ -87,6 +89,7 @@ export default function EditDonorPage() {
         city: values.city || null,
         state: values.state || null,
         zipCode: values.zipCode || null,
+        status: values.status || undefined,
       }
 
       const res = await fetch(`/api/donors/${donorId}`, {
@@ -212,6 +215,16 @@ export default function EditDonorPage() {
               <div className="mt-4">
                 <label className="block text-sm font-medium text-foreground">Tags</label>
                 <input className="mt-1 block w-full rounded border border-border bg-background px-3 py-2 text-foreground placeholder:text-foreground/70" {...register('tags')} />
+              </div>
+
+              <div className="mt-4">
+                <label className="block text-sm font-medium text-foreground">Status</label>
+                <select className="mt-1 block w-full rounded border border-border bg-background px-3 py-2 text-foreground" {...register('status')}>
+                  <option value="ACTIVE">Active</option>
+                  <option value="LAPSED">Lapsed</option>
+                  <option value="INACTIVE">Inactive</option>
+                  <option value="DO_NOT_CONTACT">Do Not Contact</option>
+                </select>
               </div>
 
               <div className="mt-4">
