@@ -74,9 +74,6 @@ export default function SegmentsPage() {
             placeholder="Search segments by name or description..."
             className="flex-1 border rounded px-4 py-3 bg-background text-foreground placeholder:text-muted-foreground"
           />
-          <button type="button" className="px-4 py-3 bg-teal-600 hover:bg-teal-700 text-white rounded" onClick={runSearch}>
-            🔍 Search
-          </button>
         </div>
 
         <div className="mt-4 flex flex-wrap gap-3 items-center">

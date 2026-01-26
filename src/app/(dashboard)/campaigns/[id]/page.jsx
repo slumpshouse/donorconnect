@@ -3,6 +3,7 @@ import { getSessionUser } from '@/lib/session'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
+import { formatDate } from '@/lib/utils'
 
 function formatDonationType(type) {
   if (!type) return '—'
@@ -60,7 +61,7 @@ export default async function CampaignDetailPage({ params }) {
             <h1 className="text-3xl font-bold transition-colors duration-150 hover:underline hover:underline-offset-4">
               {campaign.name}
             </h1>
-            <div className="text-sm text-white/75 mt-2">{campaign.startDate?.toDateString?.() || '—'} • {campaign.endDate?.toDateString?.() || '—'}</div>
+            <div className="text-sm text-white/75 mt-2">{campaign.startDate ? formatDate(campaign.startDate) : '—'} • {campaign.endDate ? formatDate(campaign.endDate) : '—'}</div>
           </div>
           <div>
             <span className="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-800">{campaign.status?.toLowerCase?.() || 'Active'}</span>
@@ -116,7 +117,7 @@ export default async function CampaignDetailPage({ params }) {
                         <span>{d.donor?.firstName} {d.donor?.lastName}</span>
                       )}
                     </div>
-                    <div className="text-sm text-white/75">{d.donor?.id} • {new Date(d.createdAt).toLocaleDateString()}</div>
+                    <div className="text-sm text-white/75">{d.donor?.id} • {formatDate(d.createdAt)}</div>
                     <div className="mt-2">
                       <Badge variant="secondary" className="font-medium bg-black/20 text-white border border-teal-500/25">
                         {formatDonationType(d.type)}

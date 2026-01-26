@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import { getSessionUser } from '@/lib/session'
 import { prisma } from '@/lib/db'
-import { formatCurrency } from '@/lib/utils'
+import { formatCurrency, formatDate } from '@/lib/utils'
 import DashboardStatsClient from '@/components/dashboard/stats-client'
 
 export default async function DashboardPage() {
@@ -234,7 +234,7 @@ export default async function DashboardPage() {
                   </div>
                   <div className="text-right">
                     <div className="font-semibold">${d.amount.toFixed(2)}</div>
-                    <div className="text-sm text-muted-foreground">{new Date(d.createdAt).toLocaleDateString()}</div>
+                    <div className="text-sm text-muted-foreground">{formatDate(d.createdAt)}</div>
                   </div>
                 </li>
               ))

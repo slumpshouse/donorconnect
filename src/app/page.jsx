@@ -1,5 +1,6 @@
 // Home page (public). If authenticated, redirect to dashboard.
 import Link from 'next/link'
+import HomeSessionButton from '@/components/auth/home-session-client'
 
 export default function HomePage() {
   return (
@@ -70,12 +71,8 @@ export default function HomePage() {
         </div>
 
         <div className="mt-10">
-          <Link
-            href="/login"
-            className="inline-flex w-full items-center justify-center rounded-md bg-teal-600 px-4 py-2 text-sm font-medium text-white sm:w-auto hover:bg-teal-500"
-          >
-            Get started
-          </Link>
+          {/* Show dashboard link if already authenticated, otherwise show login */}
+          <HomeSessionButton />
         </div>
       </div>
 

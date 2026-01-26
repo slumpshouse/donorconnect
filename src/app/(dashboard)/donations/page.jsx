@@ -13,6 +13,7 @@ export default function DonationsPage() {
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState('all')
   const [donations, setDonations] = useState([])
+  const [allDonations, setAllDonations] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -31,7 +32,9 @@ export default function DonationsPage() {
       })
       .then((data) => {
         if (!mounted) return
-        setDonations(Array.isArray(data?.donations) ? data.donations : [])
+        const list = Array.isArray(data?.donations) ? data.donations : []
+        setAllDonations(list)
+        setDonations(list)
         setLoading(false)
       })
       .catch((err) => {
@@ -42,6 +45,31 @@ export default function DonationsPage() {
     return () => { mounted = false }
   }, [])
 
+  function runSearch() {
+    const q = String(query || '').trim()
+    if (!q) {
+      setDonations(allDonations)
+      return
+    }
+    const qLower = q.toLowerCase()
+    const phoneDigits = q.replace(/\D/g, '')
+    const filtered = (allDonations || []).filter((d) => {
+      const first = String(d.donor?.firstName || '').toLowerCase()
+      const last = String(d.donor?.lastName || '').toLowerCase()
+      const email = String(d.donor?.email || '').toLowerCase()
+      const id = String(d.id || '').toLowerCase()
+      const phone = String(d.donor?.phone || '').replace(/\D/g, '')
+      return (
+        first.includes(qLower) ||
+        last.includes(qLower) ||
+        email.includes(qLower) ||
+        id.includes(qLower) ||
+        (phoneDigits && phone.includes(phoneDigits))
+      )
+    })
+    setDonations(filtered)
+  }
+
   return (
     <div className="space-y-6">
       <div className="bg-gradient-to-r from-teal-700 to-emerald-600 p-8 rounded-lg text-white">
@@ -51,8 +79,20 @@ export default function DonationsPage() {
 
       <div className="bg-card border border-border p-6 rounded-xl shadow">
         <div className="flex gap-4 items-center">
-          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search by name, email, ID, or phone number..." className="flex-1 border rounded px-4 py-3 bg-background text-foreground placeholder:text-muted-foreground" />
-          <button className="px-4 py-3 bg-teal-600 hover:bg-teal-700 text-white rounded">🔍 Search</button>
+          <input
+            value={query}
+            onChange={(e) => {
+              const v = e.target.value
+              setQuery(v)
+              if (String(v || '').trim() === '') {
+                setDonations(allDonations)
+              }
+            }}
+            onKeyDown={(e) => { if (e.key === 'Enter') runSearch() }}
+            placeholder="Search by name, email, ID, or phone number..."
+            className="flex-1 border rounded px-4 py-3 bg-background text-foreground placeholder:text-muted-foreground"
+          />
+          <button className="px-4 py-3 bg-teal-600 hover:bg-teal-700 text-white rounded" onClick={() => runSearch()}>🔍 Search</button>
         </div>
 
         <div className="mt-4 flex flex-wrap gap-3">

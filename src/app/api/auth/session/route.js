@@ -4,11 +4,14 @@ import { getSession } from '@/lib/session'
 
 export async function GET(request) {
   try {
-    // TODO: Get session token from cookies
-    // TODO: Validate session using getSession function
-    // TODO: Return user data if valid session
-    // TODO: Return 401 if invalid session
+    const token = request.cookies.get('session')?.value
+    const session = await getSession(token)
+    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const user = session.user
+    return NextResponse.json({ user })
   } catch (error) {
-    // TODO: Handle errors and return 500 response
+    // eslint-disable-next-line no-console
+    console.error('session check error:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
