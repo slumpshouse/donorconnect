@@ -1,5 +1,6 @@
 "use client"
 import { useEffect, useState } from 'react'
+import { formatDate } from '@/lib/utils'
 import Link from 'next/link'
 import useDashboardStats from '@/hooks/use-dashboard-stats'
 import { Button } from '@/components/ui/button'
@@ -219,31 +220,32 @@ export default function TasksPage() {
 
         <div className="space-y-4">
           {listItems.length ? listItems.map((item) => (
-              <div key={item.id} className="bg-card border border-border p-4 rounded-xl shadow flex items-start gap-4">
-              <div>
-                <input type="checkbox" checked={Boolean(item.status === 'COMPLETED')} onChange={() => toggleComplete(item)} className="h-5 w-5" />
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="text-lg font-medium">{item.title}</div>
-                    <div className="text-sm text-muted-foreground">Assigned to: <span className="font-medium">{item.assignedUser ? `${item.assignedUser.firstName} ${item.assignedUser.lastName}` : (item.assignedTo || '—')}</span></div>
-                    <div className="text-sm text-muted-foreground">Donor: <span className="font-medium">{item.donor ? `${item.donor.firstName} ${item.donor.lastName}` : (item.donorId || '—')}</span></div>
-                    <div className="text-sm text-muted-foreground mt-1">Due: <span className="font-medium">{item.dueDate ? new Date(item.dueDate).toLocaleDateString() : '—'}</span></div>
-                    <div className="text-sm mt-1">Status: <strong>{item.status || 'TODO'}</strong></div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className={`text-sm px-2 py-1 rounded-full ${item.priority === 'High' || item.priority === 'HIGH' || item.priority === 'URGENT' ? 'bg-red-100 text-red-700' : item.priority === 'Medium' || item.priority === 'MEDIUM' ? 'bg-yellow-100 text-yellow-700' : 'bg-muted text-foreground'}`}>{String(item.priority || 'Low')}</div>
-                    <div className="flex flex-col gap-2">
-                      <button onClick={() => {/* placeholder edit */}} className="px-3 py-1 bg-blue-50 text-blue-700 rounded text-sm">Edit</button>
-                      <button onClick={() => toggleComplete(item)} className="px-3 py-1 bg-green-50 text-green-700 rounded text-sm">Complete</button>
-                      <button onClick={() => deleteTask(item.id, item.title)} className="px-3 py-1 bg-red-50 text-red-700 rounded text-sm">Delete</button>
+              <div key={item.id} className="bg-white border border-gray-200 p-6 rounded-xl shadow-sm flex items-start gap-6">
+                <div className="pt-1">
+                  <input type="checkbox" checked={Boolean(item.status === 'COMPLETED')} onChange={() => toggleComplete(item)} className="h-5 w-5" />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-start justify-between">
+                    <div className="min-w-0">
+                      <div className="text-xl font-semibold text-gray-900 truncate">{item.title}</div>
+                      <div className="mt-2 grid grid-cols-1 md:grid-cols-3 gap-2 text-sm text-gray-600">
+                        <div>Assigned to: <span className="font-medium text-gray-900">{item.assignedUser ? `${item.assignedUser.firstName} ${item.assignedUser.lastName}` : (item.assignedTo || '—')}</span></div>
+                        <div>Donor: <span className="font-medium text-gray-900">{item.donor ? `${item.donor.firstName} ${item.donor.lastName}` : '—'}</span></div>
+                        <div>Due: <span className="font-medium text-gray-900">{item.dueDate ? formatDate(item.dueDate) : '—'}</span></div>
+                      </div>
+                      <div className="mt-3 text-sm text-gray-700">{item.description}</div>
+                    </div>
+                    <div className="ml-4 flex flex-col items-end gap-2">
+                      <button onClick={() => {/* placeholder edit */}} className="px-3 py-1 bg-white border border-gray-200 text-sm rounded text-blue-600">Edit</button>
+                      <div className="flex items-center gap-2">
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${String(item.priority).toLowerCase().startsWith('h') ? 'bg-red-100 text-red-700' : String(item.priority).toLowerCase().startsWith('m') ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-800'}`}>{String(item.priority || 'LOW')}</span>
+                        <button onClick={() => toggleComplete(item)} className="px-3 py-1 bg-green-50 text-green-700 rounded text-sm">Complete</button>
+                        <button onClick={() => deleteTask(item.id, item.title)} className="px-3 py-1 bg-red-50 text-red-700 rounded text-sm">Delete</button>
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div className="text-sm text-muted-foreground mt-2">{item.description}</div>
               </div>
-            </div>
           )) : (
             <div className="bg-card border border-border p-6 rounded-xl shadow text-muted-foreground">No tasks found</div>
           )}

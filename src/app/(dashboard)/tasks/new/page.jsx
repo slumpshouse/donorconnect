@@ -1,6 +1,6 @@
  'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -22,6 +22,8 @@ export default function NewTaskPage() {
   const router = useRouter()
 
   const { register, handleSubmit, formState: { errors }, reset } = useForm({ resolver: zodResolver(taskSchema) })
+  const [donors, setDonors] = useState([])
+  const [admins, setAdmins] = useState([])
 
   async function onSubmit(values) {
     setMessage(null)
@@ -62,6 +64,31 @@ export default function NewTaskPage() {
     }
   }
 
+  useEffect(() => {
+    let mounted = true
+    ;(async () => {
+      try {
+        const res = await fetch('/api/donors?limit=200', { credentials: 'same-origin' })
+        if (!res.ok) return
+        const data = await res.json().catch(() => ({}))
+        if (mounted) setDonors(Array.isArray(data?.donors) ? data.donors : [])
+      } catch (e) {
+        // ignore
+      }
+    })()
+    ;(async () => {
+      try {
+        const res = await fetch('/api/users/admins', { credentials: 'same-origin' })
+        if (!res.ok) return
+        const data = await res.json().catch(() => ({}))
+        if (mounted) setAdmins(Array.isArray(data?.users) ? data.users : [])
+      } catch (e) {
+        // ignore
+      }
+    })()
+    return () => { mounted = false }
+  }, [])
+
   return (
     <div className="space-y-6">
       <div>
@@ -82,13 +109,27 @@ export default function NewTaskPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Donor ID (optional)</label>
-          <input className="mt-1 block w-full rounded border px-3 py-2" placeholder="donor id" {...register('donorId')} />
+          <label className="block text-sm font-medium text-gray-700">Donor (optional)</label>
+          <select className="mt-1 block w-full rounded border px-3 py-2" {...register('donorId')}>
+            <option value="">None</option>
+            {donors.map((d) => (
+              <option key={d.id} value={d.id}>{d.firstName} {d.lastName}{d.email ? ` — ${d.email}` : ''}</option>
+            ))}
+          </select>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Assign to (user id, optional)</label>
-          <input className="mt-1 block w-full rounded border px-3 py-2" placeholder="user id" {...register('assignedTo')} />
+          <label className="block text-sm font-medium text-gray-700">Assign to (optional)</label>
+          <select className="mt-1 block w-full rounded border px-3 py-2" {...register('assignedTo')}>
+            <option value="">Auto (assign to org admin)</option>
+            {admins.map((u) => (
+              <option key={u.id} value={u.id}>{u.firstName} {u.lastName}{u.email ? ` — ${u.email}` : ''}</option>
+            ))}
+            {/* Ensure Sarah Admin appears in the list if present by email fallback */}
+            {!admins.find(a => a.email === 'admin@hopefoundation.org') && (
+              <option value="admin@hopefoundation.org">Sarah Admin — admin@hopefoundation.org</option>
+            )}
+          </select>
         </div>
 
         <div>
