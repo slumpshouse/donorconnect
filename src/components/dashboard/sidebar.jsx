@@ -124,13 +124,6 @@ export default function DashboardSidebar({ user }) {
       </div>
 
       <div className="mt-4">
-        <button
-          type="button"
-          className="w-full text-center px-4 py-3 rounded-lg bg-white border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-all"
-          onClick={() => document.querySelector('form[action="/api/auth/logout"]')?.requestSubmit()}
-        >
-          Sign Out
-        </button>
         <LogoutButton />
       </div>
     </aside>
