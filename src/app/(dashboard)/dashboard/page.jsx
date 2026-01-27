@@ -1,5 +1,6 @@
 // Dashboard home page with sidebar
 import Link from 'next/link'
+import { Button } from '@/components/ui/button'
 import { getSessionUser } from '@/lib/session'
 import { prisma } from '@/lib/db'
 import { formatCurrency, formatDate } from '@/lib/utils'
@@ -179,118 +180,143 @@ export default async function DashboardPage() {
   const totalAmount = donationSumResult?._sum?.amount ?? 0
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" suppressHydrationWarning>
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Dashboard</h1>
-          <p className="text-muted-foreground mt-2">Welcome to your donor retention platform</p>
+          <h1 className="text-4xl font-bold text-gray-800" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Dashboard</h1>
+          <p className="text-base text-gray-600 mt-2" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Welcome to your donor retention platform</p>
         </div>
 
-        <Link
-          href="/"
-          className="inline-flex items-center justify-center rounded-md border border-border bg-card px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
-        >
-          Home
+        <Link href="/">
+          <button className="px-6 py-2 rounded-full border-2 border-blue-500 text-blue-500 font-medium hover:bg-blue-50 transition-colors">
+            Home
+          </button>
         </Link>
       </div>
 
           <DashboardStatsClient initial={{ totalDonors, totalDonations: donationCount, totalAmount }} />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="p-4 bg-card border border-border rounded-xl shadow">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-sm text-muted-foreground">At-risk Donors</div>
-              <div className="text-2xl font-semibold">{atRiskDonors.length}</div>
-            </div>
+        <div className="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
+          <div className="mb-6">
+            <h3 className="text-xl font-bold text-gray-900 mb-3" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>At-risk Donors</h3>
+            <div className="text-5xl font-bold mb-3" style={{color: '#5B9FDF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{atRiskDonors.length}</div>
+            <p className="text-sm" style={{color: '#7B68A6', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Donors with high or critical retention risk</p>
           </div>
-          <p className="mt-3 text-sm text-muted-foreground">Donors with high or critical retention risk.</p>
 
           {atRiskDonors.length ? (
-            <ul className="mt-3 space-y-2 max-h-56 overflow-auto">
-              {atRiskDonors.map((d) => (
-                <li key={d.id} className="flex items-center justify-between p-2 rounded bg-muted">
-                  <div>
-                    <div className="font-medium">{d.firstName} {d.lastName}</div>
-                    <div className="text-sm text-muted-foreground">{d.email || 'No email'} — {d.retentionRisk}</div>
+            <div className="border-t border-gray-200 pt-6 space-y-6">
+              {atRiskDonors.slice(0, 3).map((d) => (
+                <div key={d.id} className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="font-bold text-gray-900 mb-1" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', fontSize: '15px'}}>{d.firstName} {d.lastName}</div>
+                    <div className="text-sm flex items-center gap-2" style={{color: '#7B68A6', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
+                      <span>{d.email || 'No email'}</span>
+                      <span className="px-2 py-0.5 text-xs font-semibold rounded" style={{backgroundColor: '#FEE2E2', color: '#DC2626'}}>HIGH</span>
+                    </div>
                   </div>
-                  <div className="text-sm text-muted-foreground">Donations: {d.totalGifts ?? 0}</div>
-                </li>
+                  <div className="text-sm ml-4" style={{color: '#9CA3AF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{d.totalGifts ?? 0} donations</div>
+                </div>
               ))}
-            </ul>
+            </div>
           ) : (
-            <div className="mt-3 text-sm text-muted-foreground">No at-risk donors</div>
+            <div className="mt-3 text-sm text-gray-500">No at-risk donors</div>
           )}
         </div>
 
-        <div className="p-4 bg-card border border-border rounded-xl shadow">
-          <div className="text-sm text-muted-foreground">Recent Donations</div>
-          <ul className="mt-3 space-y-2">
+        <div className="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
+          <h3 className="text-xl font-bold text-gray-900 mb-2" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Recent Donations</h3>
+          <p className="text-sm mb-6" style={{color: '#7B68A6', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Latest contributions from your donors</p>
+          
+          <div className="border-t border-gray-200 pt-4 mt-4">
+            <div className="grid grid-cols-3 gap-4 mb-6 pb-3 border-b border-gray-200">
+              <div className="text-xs font-semibold uppercase tracking-wide" style={{color: '#9CA3AF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Donor</div>
+              <div className="text-xs font-semibold uppercase tracking-wide text-center" style={{color: '#9CA3AF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Amount</div>
+              <div className="text-xs font-semibold uppercase tracking-wide text-right" style={{color: '#9CA3AF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Date</div>
+            </div>
+            
             {recentDonations.length ? (
-              recentDonations.map((d) => (
-                <li key={d.id} className="flex justify-between">
-                  <div>
-                    <div className="font-medium">{d.donor?.firstName} {d.donor?.lastName}</div>
-                    <div className="text-sm text-muted-foreground">{d.campaign?.name ?? 'General'}</div>
+              <div className="space-y-6">
+                {recentDonations.map((d) => (
+                  <div key={d.id} className="grid grid-cols-3 gap-4">
+                    <div>
+                      <div className="font-medium" style={{color: '#374151', fontSize: '15px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{d.donor?.firstName} {d.donor?.lastName}</div>
+                      <div className="text-sm mt-1" style={{color: '#9CA3AF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{d.campaign?.name ?? 'General'}</div>
+                    </div>
+                    <div className="text-center font-bold" style={{color: '#5FBF6F', fontSize: '15px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>${d.amount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
+                    <div className="text-right" style={{color: '#374151', fontSize: '15px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{formatDate(d.createdAt)}</div>
                   </div>
-                  <div className="text-right">
-                    <div className="font-semibold">${d.amount.toFixed(2)}</div>
-                    <div className="text-sm text-muted-foreground">{formatDate(d.createdAt)}</div>
-                  </div>
-                </li>
-              ))
+                ))}
+              </div>
             ) : (
-              <li className="text-sm text-muted-foreground">No recent donations</li>
+              <div className="text-sm text-gray-500">No recent donations</div>
             )}
-          </ul>
+          </div>
         </div>
       </div>
 
-      <div className="p-4 bg-card border border-border rounded-xl shadow">
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="text-sm text-muted-foreground">Campaign Insights</div>
-            <div className="text-lg font-semibold">Trending up/down (last 30 days)</div>
-          </div>
-          <Link href="/campaigns" className="text-sm underline transition-colors hover:text-primary">
-            View campaigns
-          </Link>
+      <div className="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
+        <div className="mb-6">
+          <h3 className="text-xl font-bold text-gray-900 mb-1" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Campaign Insights</h3>
+          <p className="text-sm text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Trending up/down over the last 30 days</p>
         </div>
 
         {campaignInsights.length ? (
-          <ul className="mt-4 space-y-2">
+          <div className="space-y-6">
             {campaignInsights.slice(0, 6).map((c) => (
-              <li key={c.id} className="flex items-center justify-between p-2 rounded bg-muted">
-                <div>
+              <div key={c.id} className="flex items-start justify-between pb-6 border-b border-gray-200 last:border-b-0 last:pb-0">
+                <div className="flex-1">
                   <Link
                     href={`/campaigns/${c.id}`}
-                    className="inline-block rounded-sm font-medium transition-colors duration-150 hover:text-primary hover:underline hover:underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    className="font-semibold text-gray-900 hover:text-blue-600 transition-colors text-base"
+                    style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}
                   >
                     {c.name}
                   </Link>
-                  <div className="text-sm text-muted-foreground">
-                    30d: {formatCurrency(c.recentAmount)} · {c.recentCount} gifts
-                    <span className="mx-2">•</span>
-                    Prev 30d: {formatCurrency(c.previousAmount)} · {c.previousCount} gifts
+                  <div className="text-sm text-gray-600 mt-1.5" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
+                    30d: <span className="text-blue-600 font-medium">{formatCurrency(c.recentAmount)}</span> • {c.recentCount} gift{c.recentCount !== 1 ? 's' : ''}
+                  </div>
+                  <div className="text-sm text-gray-600 mt-0.5" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
+                    Prev 30d: <span className="text-gray-700">{formatCurrency(c.previousAmount)}</span> • {c.previousCount} gift{c.previousCount !== 1 ? 's' : ''}
                   </div>
                 </div>
-                <div className="text-sm font-semibold">
-                  {c.trend === 'UP' ? 'Up' : c.trend === 'DOWN' ? 'Down' : 'Flat'}
+                <div className="ml-4">
+                  {c.trend === 'UP' ? (
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border-2 border-green-500 text-green-600 bg-white">
+                      ✓ UP
+                    </span>
+                  ) : c.trend === 'DOWN' ? (
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border-2 border-red-400 text-red-500 bg-white">
+                      ↘ DOWN
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border-2 border-gray-400 text-gray-600 bg-white">
+                      →
+                    </span>
+                  )}
                 </div>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         ) : (
-          <div className="mt-4 text-sm text-muted-foreground">No campaign donations in the last 60 days.</div>
+          <div className="text-sm text-gray-500">No campaign donations in the last 60 days.</div>
         )}
 
-        <div className="mt-5">
-          <div className="text-sm text-muted-foreground">What to do next</div>
-          <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
-            {nextSteps.slice(0, 3).map((item) => (
-              <li key={item}>- {item}</li>
+        <div className="mt-8 p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-lg">📋</span>
+            <h4 className="font-semibold text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>What to do next</h4>
+          </div>
+          <div className="space-y-3">
+            {nextSteps.slice(0, 3).map((item, idx) => (
+              <div key={item} className="flex items-start gap-3 p-3 bg-white rounded-lg border-l-4" style={{borderLeftColor: idx === 0 ? '#5FBF6F' : idx === 1 ? '#FF8C42' : '#4A9EE0'}}>
+                <span className="text-lg flex-shrink-0">
+                  {idx === 0 ? '✅' : idx === 1 ? '⚠️' : '📊'}
+                </span>
+                <p className="text-sm text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{item}</p>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
       </div>
     </div>

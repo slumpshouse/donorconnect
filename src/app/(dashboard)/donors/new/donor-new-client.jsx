@@ -86,16 +86,17 @@ export default function NewDonorClientPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Add New Donor</h1>
-        <p className="text-foreground mt-2">Create a new donor profile</p>
+        <h1 className="text-4xl font-bold text-gray-800" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Add New Donor</h1>
+        <p className="text-base text-gray-600 mt-2" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Create a new donor profile</p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-lg">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-foreground">First Name</label>
+            <label className="block text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>First Name</label>
             <input
-              className="mt-1 block w-full rounded border border-border bg-background px-3 py-2 text-foreground placeholder:text-foreground/70"
+              className="mt-1 block w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-gray-900"
+              style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}
               {...register('firstName')}
               aria-invalid={errors.firstName ? 'true' : 'false'}
             />
@@ -103,9 +104,10 @@ export default function NewDonorClientPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-foreground">Last Name</label>
+            <label className="block text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Last Name</label>
             <input
-              className="mt-1 block w-full rounded border border-border bg-background px-3 py-2 text-foreground placeholder:text-foreground/70"
+              className="mt-1 block w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-gray-900"
+              style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}
               {...register('lastName')}
               aria-invalid={errors.lastName ? 'true' : 'false'}
             />
@@ -114,36 +116,37 @@ export default function NewDonorClientPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-foreground">Email Address</label>
-          <input className="mt-1 block w-full rounded border border-border bg-background px-3 py-2 text-foreground placeholder:text-foreground/70" {...register('email')} />
+          <label className="block text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Email Address</label>
+          <input className="mt-1 block w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}} {...register('email')} />
           {errors.email && <p className="text-sm text-red-600">{errors.email.message}</p>}
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-foreground">Phone Number</label>
+          <label className="block text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Phone Number</label>
           <input
             inputMode="numeric"
             pattern="[0-9]*"
             maxLength={10}
             onInput={(e) => { e.currentTarget.value = e.currentTarget.value.replace(/\D/g, '').slice(0, 10) }}
-            className="mt-1 block w-full rounded border border-border bg-background px-3 py-2 text-foreground placeholder:text-foreground/70"
+            className="mt-1 block w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-gray-900"
+            style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}
             {...register('phone')}
           />
           {errors.phone && <p className="text-sm text-red-600">{errors.phone.message}</p>}
         </div>
 
         <fieldset className="mt-2">
-          <legend className="text-sm font-medium text-foreground">Preferred Communication Channel</legend>
+          <legend className="text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Preferred Communication Channel</legend>
           <div className="mt-2 flex items-center gap-6">
-            <label className="inline-flex items-center text-foreground">
+            <label className="inline-flex items-center text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
               <input type="radio" value="email" {...register('preferred')} className="mr-2" />
               Email
             </label>
-            <label className="inline-flex items-center text-foreground">
+            <label className="inline-flex items-center text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
               <input type="radio" value="sms" {...register('preferred')} className="mr-2" />
               SMS
             </label>
-            <label className="inline-flex items-center text-foreground">
+            <label className="inline-flex items-center text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
               <input type="radio" value="both" {...register('preferred')} className="mr-2" />
               Both
             </label>
@@ -151,20 +154,20 @@ export default function NewDonorClientPage() {
         </fieldset>
 
         <div>
-          <label className="block text-sm font-medium text-foreground">Tags</label>
-          <input className="mt-1 block w-full rounded border border-border bg-background px-3 py-2 text-foreground placeholder:text-foreground/70" placeholder="First-time donor, Volunteer" {...register('tags')} />
-          <p className="text-xs text-foreground mt-1">Comma separated</p>
+          <label className="block text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Tags</label>
+          <input className="mt-1 block w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}} placeholder="First-time donor, Volunteer" {...register('tags')} />
+          <p className="text-xs text-gray-600 mt-1" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Comma separated</p>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-foreground">Notes</label>
-          <textarea className="mt-1 block w-full rounded border border-border bg-background px-3 py-2 text-foreground placeholder:text-foreground/70" rows={4} {...register('notes')} />
+          <label className="block text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Notes</label>
+          <textarea className="mt-1 block w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}} rows={4} {...register('notes')} />
         </div>
 
         <div>
-          <Button type="submit" disabled={submitting} className="inline-flex items-center px-4 py-2">
+          <button type="submit" disabled={submitting} className="inline-flex items-center px-6 py-3 rounded-lg text-white font-medium shadow-sm" style={{backgroundColor: '#5B9FDF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
             {submitting ? 'Creating...' : 'Create Donor'}
-          </Button>
+          </button>
         </div>
       </form>
 

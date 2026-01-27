@@ -30,11 +30,11 @@ export default function AiPolicyPage() {
               In DonorConnect, AI is used to assist staff with prioritization and decision-making (like retention risk insights),
               but it does not automatically contact donors, change records, or complete tasks.
             </p>
-            <p className="mt-2 text-sm text-muted-foreground">
-              The Campaign Insights on the Dashboard (trending up/down and “what to do next”) are generated from donation totals and gift counts
+            <p className="mt-2 text-sm text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
+              The Campaign Insights on the Dashboard (trending up/down and "what to do next") are generated from donation totals and gift counts
               using deterministic calculations, so organizations get helpful guidance without relying on an external model.
             </p>
-            <ul className="mt-3 list-disc pl-5 text-sm text-muted-foreground space-y-2">
+            <ul className="mt-3 list-disc pl-5 text-sm text-gray-600 space-y-2" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
               <li><span className="font-medium">Human-in-the-loop:</span> staff review insights and decide what to do next.</li>
               <li><span className="font-medium">Non-automated actions:</span> AI outputs are suggestions only—no outreach is sent by AI.</li>
               <li><span className="font-medium">Data minimization:</span> only relevant donation history and basic donor context is used for insights.</li>
@@ -43,17 +43,17 @@ export default function AiPolicyPage() {
             </ul>
           </section>
 
-          <section className="rounded-lg border border-border bg-card p-5">
-            <h2 className="text-base font-semibold text-foreground">AI Model used and AI Policy Page</h2>
-            <p className="mt-2 text-sm text-muted-foreground">
+          <section className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+            <h2 className="text-base font-semibold text-gray-800" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>AI Model used and AI Policy Page</h2>
+            <p className="mt-2 text-sm text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
               The app can optionally use an LLM via an API key for enrichment, but it primarily relies on deterministic logic.
               This page documents the guardrails and intended use of AI features.
             </p>
           </section>
 
-          <section className="rounded-lg border border-border bg-card p-5">
-            <h2 className="text-base font-semibold text-foreground">Explain how you crafted prompts to generate the desired results</h2>
-            <ul className="mt-3 list-disc pl-5 text-sm text-muted-foreground space-y-2">
+          <section className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+            <h2 className="text-base font-semibold text-gray-800" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Explain how you crafted prompts to generate the desired results</h2>
+            <ul className="mt-3 list-disc pl-5 text-sm text-gray-600 space-y-2" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
               <li>I only included the minimum context needed for the insight (donation recency, total gifts, total amount, and basic donor status).</li>
               <li>I asked for a short, structured output (a 1–2 sentence summary + a few bullet “reasons”) so it fits cleanly in the UI.</li>
               <li>I constrained tone and content to stewardship actions (follow-up ideas), not sensitive inferences about the donor.</li>
@@ -62,9 +62,9 @@ export default function AiPolicyPage() {
             </ul>
           </section>
 
-          <section className="rounded-lg border border-border bg-card p-5">
-            <h2 className="text-base font-semibold text-foreground">How AI improves your solution</h2>
-            <ul className="mt-3 list-disc pl-5 text-sm text-muted-foreground space-y-2">
+          <section className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+            <h2 className="text-base font-semibold text-gray-800" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>How AI improves your solution</h2>
+            <ul className="mt-3 list-disc pl-5 text-sm text-gray-600 space-y-2" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
               <li>Highlights donors with higher retention risk so staff can prioritize outreach instead of guessing who needs follow-up.</li>
               <li>Explains “why” (based on donation history and recency) so decisions are faster and more consistent across the team.</li>
               <li>Adds Campaign Insights on the Dashboard (trending up/down + next steps) so staff can adjust fundraising strategy using recent results.</li>
@@ -76,7 +76,8 @@ export default function AiPolicyPage() {
 
       <Link
         href="/login"
-        className="fixed bottom-6 right-6 inline-flex items-center justify-center rounded-md bg-teal-600 px-4 py-2 text-sm font-medium text-white shadow hover:bg-teal-500"
+        className="fixed bottom-6 right-6 inline-flex items-center justify-center rounded-lg px-6 py-3 text-sm font-medium text-white shadow-lg hover:opacity-90"
+        style={{backgroundColor: '#5B9FDF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}
         aria-label="Get started"
       >
         Get started

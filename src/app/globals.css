@@ -2,57 +2,69 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%; /* white background */
-    --foreground: 220 15% 12%; /* dark text */
+    /* clean light background with subtle blue-gray tint */
+    --background: 220 20% 97%;
+    --foreground: 220 15% 25%;
+    
+    /* pure white cards */
     --card: 0 0% 100%;
-    --card-foreground: 220 15% 12%;
+    --card-foreground: 220 15% 25%;
     --popover: 0 0% 100%;
-    --popover-foreground: 220 15% 12%;
+    --popover-foreground: 220 15% 25%;
 
-    /* Primary blue (used for buttons, accents, links) */
-    --primary: 212 100% 45%;
+    /* clean blue primary */
+    --primary: 210 80% 55%;
     --primary-foreground: 0 0% 100%;
 
-    /* Lighter blue variants for secondary/muted/accent */
-    --secondary: 212 100% 94%;
-    --secondary-foreground: 212 100% 20%;
-    --muted: 212 100% 97%;
-    --muted-foreground: 212 100% 35%;
-    --accent: 212 100% 92%;
-    --accent-foreground: 212 100% 20%;
+    /* orange secondary */
+    --secondary: 25 90% 60%;
+    --secondary-foreground: 0 0% 100%;
+    
+    /* light muted areas */
+    --muted: 220 15% 96%;
+    --muted-foreground: 220 10% 50%;
+    
+    /* green accent for success */
+    --accent: 140 60% 50%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 210 16% 92%;
-    --input: 210 16% 94%;
-    --ring: 212 100% 45%;
+    /* coral/red for errors */
+    --destructive: 0 70% 60%;
+    --destructive-foreground: 0 0% 100%;
+    
+    /* subtle borders */
+    --border: 220 15% 90%;
+    --input: 220 15% 92%;
+    --ring: 210 80% 55%;
     --radius: 0.5rem;
+    
+    /* custom colors */
+    --blue-card: 210 100% 95%;
+    --orange-card: 25 100% 95%;
+    --green-card: 140 60% 95%;
   }
 
   .dark {
-    /* Keep white background and blue accents even if .dark class is present */
-    --background: 0 0% 100%;
-    --foreground: 220 15% 12%;
+    /* keep light theme */
+    --background: 220 20% 97%;
+    --foreground: 220 15% 25%;
     --card: 0 0% 100%;
-    --card-foreground: 220 15% 12%;
+    --card-foreground: 220 15% 25%;
     --popover: 0 0% 100%;
-    --popover-foreground: 220 15% 12%;
-
-    --primary: 212 100% 45%;
+    --popover-foreground: 220 15% 25%;
+    --primary: 210 80% 55%;
     --primary-foreground: 0 0% 100%;
-
-    --secondary: 212 100% 94%;
-    --secondary-foreground: 212 100% 20%;
-    --muted: 212 100% 97%;
-    --muted-foreground: 212 100% 35%;
-    --accent: 212 100% 92%;
-    --accent-foreground: 212 100% 20%;
-
-    --destructive: 0 75% 50%;
+    --secondary: 25 90% 60%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 220 15% 96%;
+    --muted-foreground: 220 10% 50%;
+    --accent: 140 60% 50%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 70% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 210 16% 92%;
-    --input: 210 16% 94%;
-    --ring: 212 100% 45%;
+    --border: 220 15% 90%;
+    --input: 220 15% 92%;
+    --ring: 210 80% 55%;
   }
 }
 
@@ -64,27 +76,33 @@
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
+    font-family: 'Karla', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-feature-settings: "kern" 1, "liga" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 500;
   }
 
   ::selection {
-    background-color: hsl(var(--primary) / 0.55);
-    color: #000;
+    background-color: rgba(59, 130, 246, 0.2);
+    color: hsl(var(--foreground));
   }
 
   ::-moz-selection {
-    background-color: hsl(var(--primary) / 0.55);
-    color: #000;
+    background-color: rgba(59, 130, 246, 0.2);
+    color: hsl(var(--foreground));
   }
 
-  /* Native <select> dropdown options can inherit dark text colors.
-     This scoped class forces readable option colors in the popup list. */
   .dc-select-light-options option,
   .dc-select-light-options optgroup {
     color: #000;
     background-color: #fff;
   }
 
-  /* Make native buttons visually interactive with a subtle lift and shadow on hover */
   button {
     cursor: pointer;
     transition: transform 150ms ease-in-out, box-shadow 150ms ease-in-out;
@@ -92,11 +110,10 @@
   }
 
   button:not(:disabled):hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(16,24,40,0.08), 0 4px 6px rgba(16,24,40,0.06);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   }
 
-  /* Keep focus visible and consistent */
   button:focus-visible {
     outline: 2px solid hsl(var(--ring));
     outline-offset: 2px;

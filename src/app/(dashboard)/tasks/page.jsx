@@ -132,74 +132,74 @@ export default function TasksPage() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-gradient-to-r from-teal-700 to-emerald-600 p-10 rounded-lg text-white flex items-center justify-between">
+      <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-4xl font-bold">Tasks & Follow-ups</h1>
-          <p className="mt-2 text-white/80">Manage your donor engagement and follow-up tasks</p>
+          <h1 className="text-4xl font-bold text-gray-800" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Tasks & Follow-ups</h1>
+          <p className="text-base text-gray-600 mt-2" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Manage your donor engagement and follow-up tasks</p>
         </div>
-        <div>
-          <Link href="/tasks/new">
-            <Button>New Task</Button>
-          </Link>
-        </div>
+        <Link href="/tasks/new">
+          <button className="px-6 py-3 rounded-lg text-white font-medium shadow-sm" style={{backgroundColor: '#5B9FDF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
+            New Task
+          </button>
+        </Link>
       </div>
 
       <div className="grid grid-cols-1 gap-6">
-        <div className="bg-card border border-border rounded-xl p-6 shadow">
+        <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="flex flex-col items-center justify-center rounded-lg bg-muted/20 p-4 text-center">
-              <div className="text-3xl font-bold tabular-nums leading-none">{sampleStats.open}</div>
-              <div className="mt-2 text-sm text-muted-foreground uppercase tracking-wide">Open Tasks</div>
+            <div className="flex flex-col items-center justify-center rounded-lg bg-blue-50 p-4 text-center">
+              <div className="text-3xl font-bold tabular-nums leading-none text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{sampleStats.open}</div>
+              <div className="mt-2 text-sm text-gray-600 uppercase tracking-wide" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Open Tasks</div>
             </div>
-            <div className="flex flex-col items-center justify-center rounded-lg bg-muted/20 p-4 text-center">
-              <div className="text-3xl font-bold tabular-nums leading-none">{sampleStats.dueToday}</div>
-              <div className="mt-2 text-sm text-muted-foreground uppercase tracking-wide">Due Today</div>
+            <div className="flex flex-col items-center justify-center rounded-lg bg-orange-50 p-4 text-center">
+              <div className="text-3xl font-bold tabular-nums leading-none text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{sampleStats.dueToday}</div>
+              <div className="mt-2 text-sm text-gray-600 uppercase tracking-wide" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Due Today</div>
             </div>
-            <div className="flex flex-col items-center justify-center rounded-lg bg-muted/20 p-4 text-center">
-              <div className="text-3xl font-bold tabular-nums leading-none">{sampleStats.overdue}</div>
-              <div className="mt-2 text-sm text-muted-foreground uppercase tracking-wide">Overdue</div>
+            <div className="flex flex-col items-center justify-center rounded-lg bg-red-50 p-4 text-center">
+              <div className="text-3xl font-bold tabular-nums leading-none text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{sampleStats.overdue}</div>
+              <div className="mt-2 text-sm text-gray-600 uppercase tracking-wide" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Overdue</div>
             </div>
-            <div className="flex flex-col items-center justify-center rounded-lg bg-muted/20 p-4 text-center">
-              <div className="text-3xl font-bold tabular-nums leading-none">{sampleStats.completedThisMonth}</div>
-              <div className="mt-2 text-sm text-muted-foreground uppercase tracking-wide">Completed This Month</div>
+            <div className="flex flex-col items-center justify-center rounded-lg bg-green-50 p-4 text-center">
+              <div className="text-3xl font-bold tabular-nums leading-none text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{sampleStats.completedThisMonth}</div>
+              <div className="mt-2 text-sm text-gray-600 uppercase tracking-wide" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Completed This Month</div>
             </div>
           </div>
         </div>
 
-        <div className="bg-card border border-border rounded-xl p-4 shadow">
+        <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <span className="text-sm text-muted-foreground">Sort by:</span>
+              <span className="text-sm text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Sort by:</span>
               <div className="inline-flex items-center gap-2">
-                <button onClick={() => setSortBy('urgency')} className={`px-4 py-2 rounded-md ${sortBy === 'urgency' ? 'bg-indigo-600 text-white' : 'bg-muted text-foreground'}`}>
+                <button onClick={() => setSortBy('urgency')} className={`px-4 py-2 rounded-md font-medium ${sortBy === 'urgency' ? 'text-white' : 'bg-gray-100 text-gray-700'}`} style={sortBy === 'urgency' ? {backgroundColor: '#5B9FDF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'} : {fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
                   🔥 Urgency
                 </button>
-                <button onClick={() => setSortBy('due')} className={`px-4 py-2 rounded-md ${sortBy === 'due' ? 'bg-indigo-600 text-white' : 'bg-muted text-foreground'}`}>
+                <button onClick={() => setSortBy('due')} className={`px-4 py-2 rounded-md font-medium ${sortBy === 'due' ? 'text-white' : 'bg-gray-100 text-gray-700'}`} style={sortBy === 'due' ? {backgroundColor: '#5B9FDF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'} : {fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
                   📅 Due Date
                 </button>
-                <button onClick={() => setSortBy('donor')} className={`px-4 py-2 rounded-md ${sortBy === 'donor' ? 'bg-indigo-600 text-white' : 'bg-muted text-foreground'}`}>
+                <button onClick={() => setSortBy('donor')} className={`px-4 py-2 rounded-md font-medium ${sortBy === 'donor' ? 'text-white' : 'bg-gray-100 text-gray-700'}`} style={sortBy === 'donor' ? {backgroundColor: '#5B9FDF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'} : {fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
                   👤 Donor Name
                 </button>
               </div>
             </div>
             <div>
-              <button onClick={() => setShowFilter((s) => !s)} className="px-4 py-2 bg-card border rounded text-sm text-muted-foreground">Filter</button>
+              <button onClick={() => setShowFilter((s) => !s)} className="px-4 py-2 bg-white border border-gray-200 rounded text-sm text-gray-700 font-medium" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Filter</button>
             </div>
           </div>
           {showFilter && (
-            <div className="mt-4 p-4 bg-muted/10 border border-border rounded">
+            <div className="mt-4 p-4 bg-gray-50 border border-gray-200 rounded">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
                 <div>
-                  <label className="text-sm text-muted-foreground block mb-1">Status</label>
-                  <select value={filters.status} onChange={(e) => setFilters((f) => ({ ...f, status: e.target.value }))} className="w-full p-2 rounded border bg-card">
+                  <label className="text-sm text-gray-700 block mb-1 font-medium" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Status</label>
+                  <select value={filters.status} onChange={(e) => setFilters((f) => ({ ...f, status: e.target.value }))} className="w-full p-2 rounded border border-gray-200 bg-white text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
                     <option value="all">All</option>
                     <option value="TODO">TODO</option>
                     <option value="COMPLETED">COMPLETED</option>
                   </select>
                 </div>
                 <div>
-                  <label className="text-sm text-muted-foreground block mb-1">Priority</label>
-                  <select value={filters.priority} onChange={(e) => setFilters((f) => ({ ...f, priority: e.target.value }))} className="w-full p-2 rounded border bg-card">
+                  <label className="text-sm text-gray-700 block mb-1 font-medium" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Priority</label>
+                  <select value={filters.priority} onChange={(e) => setFilters((f) => ({ ...f, priority: e.target.value }))} className="w-full p-2 rounded border border-gray-200 bg-white text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
                     <option value="all">All</option>
                     <option value="Low">Low</option>
                     <option value="Medium">Medium</option>
@@ -207,10 +207,10 @@ export default function TasksPage() {
                   </select>
                 </div>
                 <div className="md:col-span-2">
-                  <label className="text-sm text-muted-foreground block mb-1">Donor</label>
+                  <label className="text-sm text-gray-700 block mb-1 font-medium" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Donor</label>
                   <div className="flex gap-2">
-                    <input value={filters.donor} onChange={(e) => setFilters((f) => ({ ...f, donor: e.target.value }))} placeholder="Search donor name or id" className="flex-1 p-2 rounded border bg-card" />
-                    <button onClick={() => setFilters({ status: 'all', priority: 'all', donor: '' })} className="px-3 py-2 bg-card border rounded text-sm text-muted-foreground">Clear</button>
+                    <input value={filters.donor} onChange={(e) => setFilters((f) => ({ ...f, donor: e.target.value }))} placeholder="Search donor name or id" className="flex-1 p-2 rounded border border-gray-200 bg-white text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}} />
+                    <button onClick={() => setFilters({ status: 'all', priority: 'all', donor: '' })} className="px-3 py-2 bg-white border border-gray-200 rounded text-sm text-gray-700 font-medium" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Clear</button>
                   </div>
                 </div>
               </div>
@@ -249,7 +249,7 @@ export default function TasksPage() {
                 </div>
               </div>
           )) : (
-            <div className="bg-card border border-border p-6 rounded-xl shadow text-muted-foreground">No tasks found</div>
+            <div className="bg-white border border-gray-200 p-6 rounded-xl shadow-sm text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>No tasks found</div>
           )}
         </div>
       </div>

@@ -124,26 +124,25 @@ export default function EditDonorPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Edit Donor</h1>
-        <p className="text-foreground mt-2">Modify donor details and save changes</p>
+        <h1 className="text-4xl font-bold text-gray-800" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Edit Donor</h1>
+        <p className="text-base text-gray-600 mt-2" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Modify donor details and save changes</p>
       </div>
 
-      <div className="bg-card border border-border p-6 rounded">
-        {loading && <div>Loading donor...</div>}
+      <div className="bg-white border border-gray-200 p-6 rounded-xl shadow-sm">\n        {loading && <div style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Loading donor...</div>}
 
         {!loading && (
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-3xl">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-foreground">First Name</label>
-                <input className="mt-1 block w-full rounded border border-border bg-background px-3 py-2 text-foreground placeholder:text-foreground/70" {...register('firstName')} />
-                {errors.firstName && <p className="text-sm text-red-600">{errors.firstName.message}</p>}
+                <label className="block text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>First Name</label>
+                <input className="mt-1 block w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-gray-900 placeholder:text-gray-400" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}} {...register('firstName')} />
+                {errors.firstName && <p className="text-sm text-red-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{errors.firstName.message}</p>}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-foreground">Last Name</label>
-                <input className="mt-1 block w-full rounded border border-border bg-background px-3 py-2 text-foreground placeholder:text-foreground/70" {...register('lastName')} />
-                {errors.lastName && <p className="text-sm text-red-600">{errors.lastName.message}</p>}
+                <label className="block text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Last Name</label>
+                <input className="mt-1 block w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-gray-900 placeholder:text-gray-400" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}} {...register('lastName')} />
+                {errors.lastName && <p className="text-sm text-red-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{errors.lastName.message}</p>}
               </div>
             </div>
 
@@ -190,36 +189,36 @@ export default function EditDonorPage() {
             </div>
 
             <div>
-              <h2 className="text-lg font-semibold">Donation Information</h2>
+              <h2 className="text-xl font-semibold text-gray-800" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Donation Information</h2>
               <div className="mt-4 grid grid-cols-1 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-foreground">Total Donations</label>
-                  <input value={(donor?.totalGifts ?? 0).toString()} disabled className="mt-1 block w-full rounded border border-border bg-background px-3 py-2 text-foreground" />
+                  <label className="block text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Total Donations</label>
+                  <input value={(donor?.totalGifts ?? 0).toString()} disabled className="mt-1 block w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}} />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-foreground">Last Donation</label>
-                    <input value={donor?.lastGiftDate ? new Date(donor.lastGiftDate).toLocaleDateString() : ''} disabled className="mt-1 block w-full rounded border border-border bg-background px-3 py-2 text-foreground" />
+                    <label className="block text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Last Donation</label>
+                    <input value={donor?.lastGiftDate ? new Date(donor.lastGiftDate).toLocaleDateString() : ''} disabled className="mt-1 block w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}} />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-foreground">Donor Since</label>
-                    <input value={donor?.createdAt ? new Date(donor.createdAt).toLocaleDateString() : ''} disabled className="mt-1 block w-full rounded border border-border bg-background px-3 py-2 text-foreground" />
+                    <label className="block text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Donor Since</label>
+                    <input value={donor?.createdAt ? new Date(donor.createdAt).toLocaleDateString() : ''} disabled className="mt-1 block w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}} />
                   </div>
                 </div>
               </div>
             </div>
 
             <div>
-              <h2 className="text-lg font-semibold">Additional Information</h2>
+              <h2 className="text-xl font-semibold text-gray-800" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Additional Information</h2>
               <div className="mt-4">
-                <label className="block text-sm font-medium text-foreground">Tags</label>
-                <input className="mt-1 block w-full rounded border border-border bg-background px-3 py-2 text-foreground placeholder:text-foreground/70" {...register('tags')} />
+                <label className="block text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Tags</label>
+                <input className="mt-1 block w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-gray-900 placeholder:text-gray-400" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}} {...register('tags')} />
               </div>
 
               <div className="mt-4">
-                <label className="block text-sm font-medium text-foreground">Status</label>
-                <select className="mt-1 block w-full rounded border border-border bg-background px-3 py-2 text-foreground" {...register('status')}>
+                <label className="block text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Status</label>
+                <select className="mt-1 block w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}} {...register('status')}>
                   <option value="ACTIVE">Active</option>
                   <option value="LAPSED">Lapsed</option>
                   <option value="INACTIVE">Inactive</option>
@@ -228,17 +227,17 @@ export default function EditDonorPage() {
               </div>
 
               <div className="mt-4">
-                <label className="block text-sm font-medium text-foreground">Notes</label>
-                <textarea rows={4} className="mt-1 block w-full rounded border border-border bg-background px-3 py-2 text-foreground placeholder:text-foreground/70" {...register('notes')} />
+                <label className="block text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Notes</label>
+                <textarea rows={4} className="mt-1 block w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-gray-900 placeholder:text-gray-400" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}} {...register('notes')} />
               </div>
             </div>
 
             <div className="flex items-center gap-3">
-              <Button type="submit" disabled={submitting}>{submitting ? 'Saving...' : 'Save changes'}</Button>
-              <Button type="button" variant="ghost" onClick={() => router.push(`/donors/${donorId}`)} disabled={submitting}>Cancel</Button>
+              <button type="submit" disabled={submitting} className="px-6 py-3 rounded-lg text-white font-medium disabled:opacity-50" style={{backgroundColor: '#5B9FDF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{submitting ? 'Saving...' : 'Save changes'}</button>
+              <button type="button" onClick={() => router.push(`/donors/${donorId}`)} disabled={submitting} className="px-6 py-3 rounded-lg border border-gray-200 text-gray-700 font-medium bg-white disabled:opacity-50" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Cancel</button>
             </div>
 
-            {message && <div className={`text-sm ${message.type === 'error' ? 'text-red-600' : 'text-green-600'}`}>{message.text}</div>}
+            {message && <div className={`text-sm ${message.type === 'error' ? 'text-red-600' : 'text-green-600'}`} style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{message.text}</div>}
           </form>
         )}
       </div>

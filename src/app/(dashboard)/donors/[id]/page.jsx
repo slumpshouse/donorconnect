@@ -78,51 +78,51 @@ export default function DonorDetailPage() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-card border border-border p-4 rounded shadow flex items-center justify-between">
+      <div className="bg-white border border-gray-200 p-6 rounded-xl shadow-sm flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center text-xl">
+          <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center text-xl font-bold text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
             {donor ? (donor.firstName?.[0] ?? '?') : 'D'}
           </div>
           <div>
-            <div className="text-xl font-semibold">{donor ? `${donor.firstName} ${donor.lastName}` : 'Loading...'}</div>
-            <div className="text-sm text-muted-foreground">{donor?.email ?? 'No email'} • {donor?.phone ?? 'No phone'}</div>
+            <div className="text-2xl font-semibold text-gray-800" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{donor ? `${donor.firstName} ${donor.lastName}` : 'Loading...'}</div>
+            <div className="text-sm text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{donor?.email ?? 'No email'} • {donor?.phone ?? 'No phone'}</div>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
-          <Link href={`/donors/${donorId}/edit`} className="px-3 py-2 bg-blue-600 text-white rounded">Edit</Link>
-          <button onClick={handleDelete} disabled={deleting} className="px-3 py-2 bg-red-600 text-white rounded disabled:opacity-60">
+          <Link href={`/donors/${donorId}/edit`} className="px-4 py-2 rounded-lg text-white" style={{backgroundColor: '#5B9FDF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Edit</Link>
+          <button onClick={handleDelete} disabled={deleting} className="px-4 py-2 rounded-lg text-white disabled:opacity-60" style={{backgroundColor: '#ef4444', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
             {deleting ? 'Deleting…' : 'Delete'}
           </button>
         </div>
       </div>
 
-      <div className="bg-card border border-border p-4 rounded shadow">
-        <div className="flex gap-4 border-b pb-3">
-          <button onClick={() => setTab('overview')} className={`pb-2 ${tab === 'overview' ? 'border-b-2 border-primary' : ''}`}>Overview</button>
-          <button onClick={() => setTab('donations')} className={`pb-2 ${tab === 'donations' ? 'border-b-2 border-primary' : ''}`}>Donations</button>
-          <button onClick={() => setTab('interactions')} className={`pb-2 ${tab === 'interactions' ? 'border-b-2 border-primary' : ''}`}>Interactions</button>
+      <div className="bg-white border border-gray-200 p-6 rounded-xl shadow-sm">
+        <div className="flex gap-4 border-b border-gray-200 pb-3">
+          <button onClick={() => setTab('overview')} className={`pb-2 text-sm font-medium ${tab === 'overview' ? 'border-b-2 text-gray-900' : 'text-gray-600'}`} style={tab === 'overview' ? {borderColor: '#5B9FDF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'} : {fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Overview</button>
+          <button onClick={() => setTab('donations')} className={`pb-2 text-sm font-medium ${tab === 'donations' ? 'border-b-2 text-gray-900' : 'text-gray-600'}`} style={tab === 'donations' ? {borderColor: '#5B9FDF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'} : {fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Donations</button>
+          <button onClick={() => setTab('interactions')} className={`pb-2 text-sm font-medium ${tab === 'interactions' ? 'border-b-2 text-gray-900' : 'text-gray-600'}`} style={tab === 'interactions' ? {borderColor: '#5B9FDF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'} : {fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Interactions</button>
         </div>
 
         <div className="mt-4">
-          {loading && <div>Loading data...</div>}
-          {!loading && loadError && <div className="text-red-600">Error: {String(loadError.message || loadError)}</div>}
+          {loading && <div style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Loading data...</div>}
+          {!loading && loadError && <div className="text-red-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Error: {String(loadError.message || loadError)}</div>}
 
           {!loading && tab === 'overview' && (
             <div className="space-y-4">
-              <div className="p-3 border rounded">
+              <div className="p-4 border border-gray-200 rounded-lg bg-blue-50">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-sm text-muted-foreground">Retention insights</div>
-                    <div className="text-sm">Retention risk overview</div>
+                    <div className="text-sm text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Retention insights</div>
+                    <div className="text-sm text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Retention risk overview</div>
                   </div>
                   <RetentionRiskBadge risk={donor?.aiInsights?.level || donor?.retentionRisk} />
                 </div>
                 {donor?.aiInsights?.summary && (
-                  <div className="mt-2 text-sm text-muted-foreground">{donor.aiInsights.summary}</div>
+                  <div className="mt-2 text-sm text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{donor.aiInsights.summary}</div>
                 )}
                 {donor?.aiInsights?.factors && (
-                  <div className="mt-2 text-xs text-muted-foreground">
+                  <div className="mt-2 text-xs text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
                     {typeof donor.aiInsights.factors.daysSinceLastGift === 'number'
                       ? `Days since last gift: ${donor.aiInsights.factors.daysSinceLastGift} • `
                       : ''}
@@ -133,45 +133,45 @@ export default function DonorDetailPage() {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="p-3 border rounded">
-                  <div className="text-sm text-muted-foreground">Status</div>
-                  <div className="text-lg font-semibold">{donor?.status ?? '—'}</div>
+                <div className="p-4 border border-gray-200 rounded-lg bg-white">
+                  <div className="text-sm text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Status</div>
+                  <div className="text-lg font-semibold text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{donor?.status ?? '—'}</div>
                 </div>
-                <div className="p-3 border rounded">
-                  <div className="text-sm text-muted-foreground">Retention Risk</div>
-                  <div className="text-lg font-semibold">{donor?.retentionRisk ?? '—'}</div>
+                <div className="p-4 border border-gray-200 rounded-lg bg-white">
+                  <div className="text-sm text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Retention Risk</div>
+                  <div className="text-lg font-semibold text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{donor?.retentionRisk ?? '—'}</div>
                 </div>
-                <div className="p-3 border rounded">
-                  <div className="text-sm text-muted-foreground">Created</div>
-                  <div className="text-lg font-semibold">{donor?.createdAt ? new Date(donor.createdAt).toLocaleDateString() : '—'}</div>
+                <div className="p-4 border border-gray-200 rounded-lg bg-white">
+                  <div className="text-sm text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Created</div>
+                  <div className="text-lg font-semibold text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{donor?.createdAt ? new Date(donor.createdAt).toLocaleDateString() : '—'}</div>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="p-3 border rounded">
-                <div className="text-sm text-muted-foreground">Total Gifts</div>
-                <div className="text-lg font-semibold">{donor?.totalGifts ?? 0}</div>
+              <div className="p-4 border border-gray-200 rounded-lg bg-blue-50">
+                <div className="text-sm text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Total Gifts</div>
+                <div className="text-lg font-semibold text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{donor?.totalGifts ?? 0}</div>
               </div>
-              <div className="p-3 border rounded">
-                <div className="text-sm text-muted-foreground">Total Amount</div>
-                <div className="text-lg font-semibold">${(donor?.totalAmount ?? 0).toFixed(2)}</div>
+              <div className="p-4 border border-gray-200 rounded-lg bg-green-50">
+                <div className="text-sm text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Total Amount</div>
+                <div className="text-lg font-semibold text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>${(donor?.totalAmount ?? 0).toFixed(2)}</div>
               </div>
-              <div className="p-3 border rounded">
-                <div className="text-sm text-muted-foreground">Last Gift</div>
-                <div className="text-lg font-semibold">{donor?.lastGiftDate ? new Date(donor.lastGiftDate).toLocaleDateString() : '—'}</div>
+              <div className="p-4 border border-gray-200 rounded-lg bg-orange-50">
+                <div className="text-sm text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Last Gift</div>
+                <div className="text-lg font-semibold text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{donor?.lastGiftDate ? new Date(donor.lastGiftDate).toLocaleDateString() : '—'}</div>
               </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="p-3 border rounded">
-                  <div className="text-sm text-muted-foreground">Address</div>
-                  <div className="text-sm">{donor?.address || '—'}</div>
-                  <div className="text-sm">{[donor?.city, donor?.state, donor?.zipCode].filter(Boolean).join(', ') || '—'}</div>
+                <div className="p-4 border border-gray-200 rounded-lg bg-white">
+                  <div className="text-sm text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Address</div>
+                  <div className="text-sm text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{donor?.address || '—'}</div>
+                  <div className="text-sm text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{[donor?.city, donor?.state, donor?.zipCode].filter(Boolean).join(', ') || '—'}</div>
                 </div>
-                <div className="p-3 border rounded">
-                  <div className="text-sm text-muted-foreground">Contact</div>
-                  <div className="text-sm">Email: {donor?.email || '—'}</div>
-                  <div className="text-sm">Phone: {donor?.phone || '—'}</div>
+                <div className="p-4 border border-gray-200 rounded-lg bg-white">
+                  <div className="text-sm text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Contact</div>
+                  <div className="text-sm text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Email: {donor?.email || '—'}</div>
+                  <div className="text-sm text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Phone: {donor?.phone || '—'}</div>
                 </div>
               </div>
             </div>
@@ -182,17 +182,17 @@ export default function DonorDetailPage() {
               {donations.length ? (
                 <ul className="space-y-2">
                   {donations.map((d) => (
-                    <li key={d.id} className="flex justify-between p-2 border rounded">
+                    <li key={d.id} className="flex justify-between p-3 border border-gray-200 rounded-lg bg-white">
                       <div>
-                        <div className="font-medium">${d.amount.toFixed(2)}</div>
-                        <div className="text-sm text-muted-foreground">{d.campaign?.name ?? 'General'}</div>
+                        <div className="font-medium text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>${d.amount.toFixed(2)}</div>
+                        <div className="text-sm text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{d.campaign?.name ?? 'General'}</div>
                       </div>
-                      <div className="text-sm text-muted-foreground">{new Date(d.date).toLocaleDateString()}</div>
+                      <div className="text-sm text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{new Date(d.date).toLocaleDateString()}</div>
                     </li>
                   ))}
                 </ul>
               ) : (
-                <div className="text-sm text-muted-foreground">No donations recorded.</div>
+                <div className="text-sm text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>No donations recorded.</div>
               )}
             </div>
           )}
@@ -202,15 +202,15 @@ export default function DonorDetailPage() {
               {interactions.length ? (
                 <ul className="space-y-2">
                   {interactions.map((i) => (
-                    <li key={i.id} className="p-2 border rounded">
-                      <div className="font-medium">{i.type}</div>
-                      <div className="text-sm text-muted-foreground">{i.subject}</div>
-                      <div className="text-xs text-muted-foreground">{new Date(i.date).toLocaleString()}</div>
+                    <li key={i.id} className="p-3 border border-gray-200 rounded-lg bg-white">
+                      <div className="font-medium text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{i.type}</div>
+                      <div className="text-sm text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{i.subject}</div>
+                      <div className="text-xs text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{new Date(i.date).toLocaleString()}</div>
                     </li>
                   ))}
                 </ul>
               ) : (
-                <div className="text-sm text-muted-foreground">No interactions.</div>
+                <div className="text-sm text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>No interactions.</div>
               )}
             </div>
           )}

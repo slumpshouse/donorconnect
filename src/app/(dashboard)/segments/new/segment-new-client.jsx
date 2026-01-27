@@ -108,15 +108,16 @@ export default function NewSegmentClientPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">New Segment</h1>
-        <p className="text-foreground mt-2">Create a donor segment</p>
+        <h1 className="text-4xl font-bold text-gray-800" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>New Segment</h1>
+        <p className="text-base text-gray-600 mt-2" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Create a donor segment</p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-lg">
         <div>
-          <label className="block text-sm font-medium text-foreground">Name</label>
+          <label className="block text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Name</label>
           <input
-            className="mt-1 block w-full rounded border border-border bg-background px-3 py-2 text-foreground placeholder:text-foreground/70"
+            className="mt-1 block w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-gray-900"
+            style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}
             {...register('name')}
             aria-invalid={errors.name ? 'true' : 'false'}
           />
@@ -124,9 +125,10 @@ export default function NewSegmentClientPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-foreground">Description</label>
+          <label className="block text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Description</label>
           <textarea
-            className="mt-1 block w-full rounded border border-border bg-background px-3 py-2 text-foreground placeholder:text-foreground/70"
+            className="mt-1 block w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-gray-900"
+            style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}
             rows={3}
             {...register('description')}
           />
@@ -134,14 +136,15 @@ export default function NewSegmentClientPage() {
 
         <div>
           <div className="flex items-center justify-between">
-            <label className="block text-sm font-medium text-foreground">Presets</label>
+            <label className="block text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Presets</label>
             <div className="flex gap-2">
               {presets.map((p) => (
                 <button
                   key={p.id}
                   type="button"
                   onClick={() => applyPreset(p)}
-                  className="px-3 py-1 bg-muted text-foreground rounded text-sm hover:bg-muted/80"
+                  className="px-3 py-1 bg-gray-100 text-gray-700 rounded text-sm hover:bg-gray-200"
+                  style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}
                 >
                   {p.name}
                 </button>
@@ -150,14 +153,14 @@ export default function NewSegmentClientPage() {
           </div>
 
           <div className="mt-2">
-            <label className="block text-sm font-medium text-foreground">Rules</label>
-            <p className="text-xs text-muted-foreground mt-1">Build simple rules to define who belongs in this segment.</p>
+            <label className="block text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Rules</label>
+            <p className="text-xs text-gray-600 mt-1" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Build simple rules to define who belongs in this segment.</p>
           </div>
 
           <div className="mt-3 grid grid-cols-3 gap-2 items-end">
             <div>
-              <label className="text-xs text-muted-foreground">Field</label>
-              <select className="mt-1 block w-full rounded border border-border bg-background px-2 py-2 text-foreground" value={condField} onChange={(e) => setCondField(e.target.value)}>
+              <label className="text-xs text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Field</label>
+              <select className="mt-1 block w-full rounded-lg border border-gray-200 bg-white px-2 py-2 text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}} value={condField} onChange={(e) => setCondField(e.target.value)}>
                 <option value="firstName">First name</option>
                 <option value="lastName">Last name</option>
                 <option value="email">Email</option>
@@ -175,8 +178,8 @@ export default function NewSegmentClientPage() {
             </div>
 
             <div>
-              <label className="text-xs text-muted-foreground">Operator</label>
-              <select className="mt-1 block w-full rounded border border-border bg-background px-2 py-2 text-foreground" value={condOp} onChange={(e) => setCondOp(e.target.value)}>
+              <label className="text-xs text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Operator</label>
+              <select className="mt-1 block w-full rounded-lg border border-gray-200 bg-white px-2 py-2 text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}} value={condOp} onChange={(e) => setCondOp(e.target.value)}>
                 <option value="equals">equals</option>
                 <option value="contains">contains</option>
                 <option value="lt">less than</option>
@@ -187,9 +190,10 @@ export default function NewSegmentClientPage() {
             </div>
 
             <div>
-              <label className="text-xs text-muted-foreground">Value</label>
+              <label className="text-xs text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Value</label>
               <input
-                className="mt-1 block w-full rounded border border-border bg-background px-2 py-2 text-foreground placeholder:text-foreground/70"
+                className="mt-1 block w-full rounded-lg border border-gray-200 bg-white px-2 py-2 text-gray-900"
+                style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}
                 value={condValue}
                 onChange={(e) => setCondValue(e.target.value)}
                 placeholder="value (e.g. 2025-01-01 or 100)"
@@ -202,8 +206,8 @@ export default function NewSegmentClientPage() {
           {conditions.length > 0 && (
             <ul className="mt-3 space-y-2">
               {conditions.map((c, i) => (
-                <li key={i} className="flex items-center justify-between bg-muted p-2 rounded">
-                  <div className="text-sm">
+                <li key={i} className="flex items-center justify-between bg-gray-50 p-2 rounded-lg border border-gray-200">
+                  <div className="text-sm" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
                     {(() => {
                       const labels = {
                         firstName: 'First name',
@@ -224,7 +228,7 @@ export default function NewSegmentClientPage() {
                       return <>{label} {c.operator} <span className="font-medium">{c.value}</span></>
                     })()}
                   </div>
-                  <button type="button" onClick={() => removeCondition(i)} className="text-sm text-red-600">Remove</button>
+                  <button type="button" onClick={() => removeCondition(i)} className="text-sm text-red-600 font-medium" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Remove</button>
                 </li>
               ))}
             </ul>
@@ -233,9 +237,9 @@ export default function NewSegmentClientPage() {
         </div>
 
         <div>
-          <Button type="submit" disabled={submitting} className="inline-flex items-center px-4 py-2">
+          <button type="submit" disabled={submitting} className="inline-flex items-center px-6 py-3 rounded-lg text-white font-medium shadow-sm" style={{backgroundColor: '#5B9FDF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
             {submitting ? 'Creating...' : 'Create Segment'}
-          </Button>
+          </button>
         </div>
       </form>
 

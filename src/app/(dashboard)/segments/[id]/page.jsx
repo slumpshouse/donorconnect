@@ -67,53 +67,54 @@ export default function SegmentDetailPage() {
       <div>
         <Link
           href="/segments"
-          className="inline-flex text-sm text-primary underline underline-offset-4 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          className="inline-flex text-sm underline underline-offset-4 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          style={{color: '#5B9FDF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}
         >
           ← Back to segments
         </Link>
       </div>
-      <div className="bg-teal-700/25 border border-teal-500/25 p-6 rounded-xl shadow">
+      <div className="bg-white border border-gray-200 p-6 rounded-xl shadow-sm">
         <div className="flex items-start justify-between gap-6">
           <div>
-            <h1 className="text-3xl font-bold">{segment?.name || 'Segment'}</h1>
-            <p className="text-white/85 mt-2">{segment?.description || ''}</p>
-            <div className="text-sm text-white/75 mt-2">
+            <h1 className="text-3xl font-bold text-gray-800" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{segment?.name || 'Segment'}</h1>
+            <p className="text-base text-gray-600 mt-2" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{segment?.description || ''}</p>
+            <div className="text-sm text-gray-600 mt-2" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
               Members: <span className="font-medium">{segment?.memberCount ?? donors.length ?? 0}</span>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="bg-teal-700/25 border border-teal-500/25 p-6 rounded-xl shadow">
-        <h2 className="text-xl font-semibold">Donors in this segment</h2>
+      <div className="bg-white border border-gray-200 p-6 rounded-xl shadow-sm">
+        <h2 className="text-xl font-semibold text-gray-800" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Donors in this segment</h2>
 
         {loading ? (
-          <div className="py-6 text-white/85">Loading donors…</div>
+          <div className="py-6 text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Loading donors…</div>
         ) : error ? (
-          <div className="py-6 text-red-600">Error: {String(error.message || error)}</div>
+          <div className="py-6 text-red-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Error: {String(error.message || error)}</div>
         ) : donors.length ? (
           <div className="mt-4 space-y-2">
             {donors.map((d) => (
-              <div key={d.id} className="p-3 border border-teal-500/25 rounded flex items-center justify-between bg-black/10">
+              <div key={d.id} className="p-3 border border-gray-200 rounded-lg flex items-center justify-between bg-white">
                 <div>
-                  <div className="font-medium">
-                    <Link href={`/donors/${d.id}`} className="underline">{d.firstName} {d.lastName}</Link>
+                  <div className="font-medium text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
+                    <Link href={`/donors/${d.id}`} className="underline" style={{color: '#5B9FDF'}}>{d.firstName} {d.lastName}</Link>
                   </div>
-                  <div className="text-sm text-white/80">{d.email || 'No email'}</div>
-                  <div className="text-xs text-white/70 mt-1">Risk: {d.retentionRisk || '—'} • Status: {d.status || '—'}</div>
+                  <div className="text-sm text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{d.email || 'No email'}</div>
+                  <div className="text-xs text-gray-500 mt-1" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Risk: {d.retentionRisk || '—'} • Status: {d.status || '—'}</div>
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="text-right">
-                    <div className="text-sm text-white/70">Total</div>
-                    <div className="font-semibold">${Number(d.totalAmount || 0).toLocaleString()}</div>
-                    <div className="text-xs text-white/70">Gifts: {d.totalGifts ?? 0}</div>
+                    <div className="text-sm text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Total</div>
+                    <div className="font-semibold text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>${Number(d.totalAmount || 0).toLocaleString()}</div>
+                    <div className="text-xs text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Gifts: {d.totalGifts ?? 0}</div>
                   </div>
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <div className="py-6 text-white/85">No donors found in this segment.</div>
+          <div className="py-6 text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>No donors found in this segment.</div>
         )}
       </div>
     </div>

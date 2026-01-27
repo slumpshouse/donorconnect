@@ -38,23 +38,23 @@ export default function CampaignsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-gradient-to-r from-teal-700 to-emerald-600 p-8 rounded-lg text-white flex items-center justify-between">
+      <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-4xl font-bold">Campaigns</h1>
-          <p className="mt-2 text-white/80">Create and manage fundraising campaigns</p>
+          <h1 className="text-4xl font-bold text-gray-800" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Campaigns</h1>
+          <p className="text-base text-gray-600 mt-2" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Create and manage fundraising campaigns</p>
         </div>
-        <div>
-          <Link href="/campaigns/new">
-            <Button>Add Campaign</Button>
-          </Link>
-        </div>
+        <Link href="/campaigns/new">
+          <button className="px-6 py-3 rounded-lg text-white font-medium shadow-sm" style={{backgroundColor: '#5B9FDF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
+            Add Campaign
+          </button>
+        </Link>
       </div>
 
       <div className="space-y-4">
         {loading ? (
-          <div className="bg-card border border-border p-6 rounded-xl shadow">Loading campaigns...</div>
+          <div className="bg-white border border-gray-200 p-6 rounded-xl shadow-sm" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Loading campaigns...</div>
         ) : error ? (
-          <div className="bg-card border border-border p-6 rounded-xl shadow text-red-600">Error loading campaigns: {String(error.message || error)}</div>
+          <div className="bg-white border border-gray-200 p-6 rounded-xl shadow-sm text-red-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Error loading campaigns: {String(error.message || error)}</div>
         ) : localCampaigns.length ? localCampaigns.map((c) => {
           const remaining = Math.max(0, (c.goal ?? 0) - (c.totalAmount ?? 0))
           const progress = c.goal ? Math.min(100, ((c.totalAmount ?? 0) / c.goal) * 100) : 0
@@ -62,24 +62,25 @@ export default function CampaignsPage() {
           const start = c.startDate ? new Date(c.startDate) : null
           const end = c.endDate ? new Date(c.endDate) : null
           return (
-            <div key={c.id} className="bg-card border border-border p-6 rounded-xl shadow">
+            <div key={c.id} className="bg-white border border-gray-200 p-6 rounded-xl shadow-sm">
               <div className="flex items-start justify-between">
                 <div>
                   <Link
                     href={`/campaigns/${c.id}`}
-                    className="group inline-block rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    className="group inline-block rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
                   >
-                    <h2 className="text-3xl font-extrabold text-foreground transition-colors duration-150 group-hover:text-primary group-hover:underline group-hover:underline-offset-4">
+                    <h2 className="text-3xl font-extrabold text-gray-800 transition-colors duration-150 group-hover:underline group-hover:underline-offset-4" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', color: '#374151'}}>
                       {c.name}
                     </h2>
                   </Link>
-                  <div className="text-sm text-muted-foreground mt-2">{start ? start.toLocaleDateString() : '—'} - {end ? end.toLocaleDateString() : '—'}</div>
+                  <div className="text-sm text-gray-600 mt-2" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{start ? start.toLocaleDateString() : '—'} - {end ? end.toLocaleDateString() : '—'}</div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full bg-emerald-100 text-emerald-800">✓ {String(c.status || 'DRAFT')}</span>
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium" style={{backgroundColor: c.status === 'ACTIVE' ? '#D1FAE5' : c.status === 'COMPLETED' ? '#D1FAE5' : '#E5E7EB', color: c.status === 'ACTIVE' ? '#065F46' : c.status === 'COMPLETED' ? '#065F46' : '#6B7280', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>✓ {String(c.status || 'DRAFT')}</span>
                   <Link
                     href={`/campaigns/${c.id}`}
-                    className="px-3 py-1 rounded bg-gradient-to-r from-emerald-500 to-emerald-600 text-white text-sm shadow-lg transform-gpu hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    className="px-4 py-2 rounded-lg text-white text-sm shadow-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                    style={{backgroundColor: '#10B981', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}
                   >
                     View
                   </Link>
@@ -87,7 +88,8 @@ export default function CampaignsPage() {
                     type="button"
                     onClick={() => handleDelete(c.id, c.name)}
                     disabled={deletingId === c.id}
-                    className="px-3 py-1 rounded bg-red-50 text-red-700 text-sm disabled:opacity-60"
+                    className="px-3 py-1 rounded-lg bg-red-50 text-red-700 text-sm disabled:opacity-60"
+                    style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}
                   >
                     {deletingId === c.id ? 'Deleting…' : 'Delete'}
                   </button>
@@ -96,34 +98,34 @@ export default function CampaignsPage() {
 
               <div className="mt-6">
                 <div className="flex items-baseline gap-4">
-                  <div className="text-4xl font-extrabold text-emerald-600">${(c.totalAmount || 0).toLocaleString()}</div>
-                  <div className="text-muted-foreground">/ ${(c.goal || 0).toLocaleString()}</div>
+                  <div className="text-4xl font-extrabold" style={{color: '#10B981', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>${(c.totalAmount || 0).toLocaleString()}</div>
+                  <div className="text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>/ ${(c.goal || 0).toLocaleString()}</div>
                 </div>
 
-                <div className="mt-4 bg-muted rounded-full h-3 overflow-hidden">
-                  <div className="h-3 bg-gradient-to-r from-indigo-500 to-purple-600" style={{ width: `${progress}%` }} />
+                <div className="mt-4 bg-gray-200 rounded-full h-3 overflow-hidden">
+                  <div className="h-3" style={{ width: `${progress}%`, background: 'linear-gradient(to right, #5B9FDF, #7CB9E8)' }} />
                 </div>
-                <div className="text-center text-indigo-600 mt-2">{progress.toFixed(1)}% of goal reached</div>
+                <div className="text-center mt-2" style={{color: '#5B9FDF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{progress.toFixed(1)}% of goal reached</div>
               </div>
 
               <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="p-4 bg-muted rounded text-center">
-                  <div className="text-2xl font-bold">{c.totalDonors}</div>
-                  <div className="text-sm text-muted-foreground">TOTAL DONORS</div>
+                <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg text-center">
+                  <div className="text-2xl font-bold text-gray-800" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{c.totalDonors}</div>
+                  <div className="text-sm text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>TOTAL DONORS</div>
                 </div>
-                <div className="p-4 bg-muted rounded text-center">
-                  <div className="text-2xl font-bold">${c.averageGift.toLocaleString()}</div>
-                  <div className="text-sm text-muted-foreground">AVERAGE GIFT</div>
+                <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg text-center">
+                  <div className="text-2xl font-bold text-gray-800" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>${c.averageGift.toLocaleString()}</div>
+                  <div className="text-sm text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>AVERAGE GIFT</div>
                 </div>
-                <div className="p-4 bg-muted rounded text-center">
-                  <div className="text-2xl font-bold">${remaining.toLocaleString()}</div>
-                  <div className="text-sm text-muted-foreground">REMAINING</div>
+                <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg text-center">
+                  <div className="text-2xl font-bold text-gray-800" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>${remaining.toLocaleString()}</div>
+                  <div className="text-sm text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>REMAINING</div>
                 </div>
               </div>
             </div>
           )
         }) : (
-          <div className="bg-card border border-border p-6 rounded-xl shadow text-muted-foreground">No campaigns found</div>
+          <div className="bg-white border border-gray-200 p-6 rounded-xl shadow-sm text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>No campaigns found</div>
         )}
       </div>
     </div>

@@ -109,25 +109,25 @@ export default function NewWorkflowPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">New Workflow</h1>
-        <p className="text-gray-600 mt-2">Create an automation workflow</p>
+        <h1 className="text-4xl font-bold text-gray-800" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>New Workflow</h1>
+        <p className="text-base text-gray-600 mt-2" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Create an automation workflow</p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-lg">
         <div>
-          <label className="block text-sm font-medium text-gray-700">Name</label>
-          <input className="mt-1 block w-full rounded border px-3 py-2" {...register('name')} aria-invalid={errors.name ? 'true' : 'false'} />
+          <label className="block text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Name</label>
+          <input className="mt-1 block w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}} {...register('name')} aria-invalid={errors.name ? 'true' : 'false'} />
           {errors.name && <p className="text-sm text-red-600">{errors.name.message}</p>}
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Description</label>
-          <textarea className="mt-1 block w-full rounded border px-3 py-2" rows={3} {...register('description')} />
+          <label className="block text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Description</label>
+          <textarea className="mt-1 block w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}} rows={3} {...register('description')} />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Trigger</label>
-          <select className="mt-1 block w-full rounded border px-3 py-2" {...register('trigger')}>
+          <label className="block text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Trigger</label>
+          <select className="mt-1 block w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}} {...register('trigger')}>
             <option value="MANUAL">Manual</option>
             <option value="DONATION_RECEIVED">Donation received</option>
             <option value="FIRST_DONATION">First donation</option>
@@ -138,29 +138,29 @@ export default function NewWorkflowPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Segment ID (optional)</label>
-          <input className="mt-1 block w-full rounded border px-3 py-2" placeholder="segment id" {...register('segmentId')} />
+          <label className="block text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Segment ID (optional)</label>
+          <input className="mt-1 block w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}} placeholder="segment id" {...register('segmentId')} />
         </div>
 
         <div>
           <div className="flex items-center justify-between">
-            <label className="block text-sm font-medium text-gray-700">Presets</label>
+            <label className="block text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Presets</label>
             <div className="flex gap-2">
               {workflowPresets.map((p) => (
-                <button key={p.id} type="button" onClick={() => applyWorkflowPreset(p)} className="px-3 py-1 bg-gray-100 rounded text-sm">{p.name}</button>
+                <button key={p.id} type="button" onClick={() => applyWorkflowPreset(p)} className="px-3 py-1 bg-gray-100 rounded text-sm text-gray-700 hover:bg-gray-200" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{p.name}</button>
               ))}
             </div>
           </div>
 
           <div className="mt-2">
-            <label className="block text-sm font-medium text-gray-700">Steps</label>
-            <p className="text-xs text-gray-400 mt-1">Add friendly, non-technical workflow steps.</p>
+            <label className="block text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Steps</label>
+            <p className="text-xs text-gray-600 mt-1" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Add friendly, non-technical workflow steps.</p>
           </div>
 
           <div className="mt-3 grid grid-cols-3 gap-2 items-end">
             <div>
-              <label className="text-xs text-gray-600">Action</label>
-              <select className="mt-1 block w-full rounded border px-2 py-2" value={newAction} onChange={(e) => setNewAction(e.target.value)}>
+              <label className="text-xs text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Action</label>
+              <select className="mt-1 block w-full rounded-lg border border-gray-200 bg-white px-2 py-2 text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}} value={newAction} onChange={(e) => setNewAction(e.target.value)}>
                 <option value="sendEmail">Send Email</option>
                 <option value="createTask">Create Task</option>
                 <option value="addToSegment">Add to Segment</option>
@@ -168,26 +168,26 @@ export default function NewWorkflowPage() {
             </div>
 
             <div className="col-span-2">
-              <label className="text-xs text-gray-600">Parameter</label>
-              <input className="mt-1 block w-full rounded border px-2 py-2" value={newParam} onChange={(e) => setNewParam(e.target.value)} placeholder={newAction === 'sendEmail' ? 'email template id' : newAction === 'createTask' ? 'task title' : 'segment id'} />
+              <label className="text-xs text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Parameter</label>
+              <input className="mt-1 block w-full rounded-lg border border-gray-200 bg-white px-2 py-2 text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}} value={newParam} onChange={(e) => setNewParam(e.target.value)} placeholder={newAction === 'sendEmail' ? 'email template id' : newAction === 'createTask' ? 'task title' : 'segment id'} />
             </div>
           </div>
 
           <div className="mt-2">
-            <button type="button" onClick={addStep} className="px-3 py-1 bg-indigo-600 text-white rounded text-sm">Add Step</button>
+            <button type="button" onClick={addStep} className="px-4 py-2 rounded-lg text-white text-sm font-medium" style={{backgroundColor: '#5B9FDF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Add Step</button>
           </div>
 
           {steps.length > 0 && (
             <ul className="mt-3 space-y-2">
               {steps.map((s, i) => (
-                <li key={i} className="flex items-center justify-between bg-gray-50 p-2 rounded">
-                  <div className="text-sm">
+                <li key={i} className="flex items-center justify-between bg-gray-50 p-2 rounded-lg border border-gray-200">
+                  <div className="text-sm" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
                     <span className="font-medium">{s.action}</span>
                     {s.templateId && <> — template: <span className="font-medium">{s.templateId}</span></>}
                     {s.title && <> — title: <span className="font-medium">{s.title}</span></>}
                     {s.segmentId && <> — segment: <span className="font-medium">{s.segmentId}</span></>}
                   </div>
-                  <button type="button" onClick={() => removeStep(i)} className="text-sm text-red-600">Remove</button>
+                  <button type="button" onClick={() => removeStep(i)} className="text-sm text-red-600 font-medium" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Remove</button>
                 </li>
               ))}
             </ul>
@@ -196,13 +196,13 @@ export default function NewWorkflowPage() {
 
         <div className="flex items-center gap-3">
           <input type="checkbox" {...register('isActive')} />
-          <label className="text-sm text-gray-700">Activate workflow</label>
+          <label className="text-sm text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Activate workflow</label>
         </div>
 
         <div>
-          <Button type="submit" disabled={submitting} className="inline-flex items-center px-4 py-2">
+          <button type="submit" disabled={submitting} className="inline-flex items-center px-6 py-3 rounded-lg text-white font-medium shadow-sm" style={{backgroundColor: '#5B9FDF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
             {submitting ? 'Creating...' : 'Create Workflow'}
-          </Button>
+          </button>
         </div>
       </form>
 

@@ -28,17 +28,17 @@ export default function HomeSessionButton() {
 
   if (authed === null) {
     return (
-      <a className="inline-flex w-full items-center justify-center rounded-md bg-teal-600 px-4 py-2 text-sm font-medium text-white sm:w-auto opacity-80">Checking…</a>
+      <a className="inline-flex w-full items-center justify-center rounded-lg px-6 py-3 text-sm font-medium text-white sm:w-auto opacity-80" style={{backgroundColor: '#5B9FDF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Checking…</a>
     )
   }
 
   if (authed) {
     return (
-      <Link href="/dashboard" className="inline-flex w-full items-center justify-center rounded-md bg-teal-600 px-4 py-2 text-sm font-medium text-white sm:w-auto hover:bg-teal-500">Open dashboard</Link>
+      <Link href="/dashboard" className="inline-flex w-full items-center justify-center rounded-lg px-6 py-3 text-sm font-medium text-white sm:w-auto hover:opacity-90" style={{backgroundColor: '#5B9FDF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Open dashboard</Link>
     )
   }
 
   return (
-    <Link href="/login" className="inline-flex w-full items-center justify-center rounded-md bg-teal-600 px-4 py-2 text-sm font-medium text-white sm:w-auto hover:bg-teal-500">Get started</Link>
+    <Link href="/login" className="inline-flex w-full items-center justify-center rounded-lg px-6 py-3 text-sm font-medium text-white sm:w-auto hover:opacity-90" style={{backgroundColor: '#5B9FDF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Get started</Link>
   )
 }

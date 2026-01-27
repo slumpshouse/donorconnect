@@ -46,28 +46,29 @@ export default function DonorsPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold">Donors</h1>
-          <p className="text-muted-foreground mt-2">Manage your donor relationships and track engagement</p>
+          <h1 className="text-4xl font-bold text-gray-800" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Donors</h1>
+          <p className="text-base text-gray-600 mt-2" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Manage your donor relationships and track engagement</p>
         </div>
         <Link href="/donors/new">
-          <Button size="lg" className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg transform-gpu hover:scale-105">
-            <Plus className="mr-2 h-4 w-4" />
+          <button className="px-6 py-3 rounded-lg text-white font-medium shadow-sm" style={{backgroundColor: '#5B9FDF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
+            <Plus className="inline mr-2 h-4 w-4" />
             Add Donor
-          </Button>
+          </button>
         </Link>
       </div>
 
-      <div className="bg-card border border-border p-4 rounded shadow">
+      <div className="bg-white border border-gray-200 p-6 rounded-xl shadow-sm">
         <div className="flex gap-3 items-center mb-4">
           <input
             value={searchDraft}
             onChange={(e) => { setSearchDraft(e.target.value) }}
             onKeyDown={(e) => { if (e.key === 'Enter') runSearch() }}
             placeholder="Search donors by name or email"
-            className="border rounded px-3 py-2 w-1/3 bg-background text-foreground placeholder:text-muted-foreground"
+            className="border border-gray-300 rounded-lg px-4 py-2 w-1/3 text-gray-900 placeholder:text-gray-400"
+            style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}
           />
 
-          <button type="button" className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded" onClick={runSearch}>
+          <button type="button" className="px-5 py-2 text-white rounded-lg font-medium" style={{backgroundColor: '#5B9FDF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}} onClick={runSearch}>
             🔍 Search
           </button>
 

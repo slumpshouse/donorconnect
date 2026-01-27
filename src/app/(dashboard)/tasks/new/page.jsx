@@ -92,25 +92,25 @@ export default function NewTaskPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">New Task</h1>
-        <p className="text-gray-600 mt-2">Create a follow-up or engagement task</p>
+        <h1 className="text-4xl font-bold text-gray-800" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>New Task</h1>
+        <p className="text-base text-gray-600 mt-2" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Create a follow-up or engagement task</p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-lg">
         <div>
-          <label className="block text-sm font-medium text-gray-700">Title</label>
-          <input className="mt-1 block w-full rounded border px-3 py-2" {...register('title')} aria-invalid={errors.title ? 'true' : 'false'} />
+          <label className="block text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Title</label>
+          <input className="mt-1 block w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}} {...register('title')} aria-invalid={errors.title ? 'true' : 'false'} />
           {errors.title && <p className="text-sm text-red-600">{errors.title.message}</p>}
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Description</label>
-          <textarea className="mt-1 block w-full rounded border px-3 py-2" rows={4} {...register('description')} />
+          <label className="block text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Description</label>
+          <textarea className="mt-1 block w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}} rows={4} {...register('description')} />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Donor (optional)</label>
-          <select className="mt-1 block w-full rounded border px-3 py-2" {...register('donorId')}>
+          <label className="block text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Donor (optional)</label>
+          <select className="mt-1 block w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}} {...register('donorId')}>
             <option value="">None</option>
             {donors.map((d) => (
               <option key={d.id} value={d.id}>{d.firstName} {d.lastName}{d.email ? ` — ${d.email}` : ''}</option>
@@ -119,8 +119,8 @@ export default function NewTaskPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Assign to (optional)</label>
-          <select className="mt-1 block w-full rounded border px-3 py-2" {...register('assignedTo')}>
+          <label className="block text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Assign to (optional)</label>
+          <select className="mt-1 block w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}} {...register('assignedTo')}>
             <option value="">Auto (assign to org admin)</option>
             {admins.map((u) => (
               <option key={u.id} value={u.id}>{u.firstName} {u.lastName}{u.email ? ` — ${u.email}` : ''}</option>
@@ -133,8 +133,8 @@ export default function NewTaskPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Priority</label>
-          <select className="mt-1 block w-full rounded border px-3 py-2" {...register('priority')}>
+          <label className="block text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Priority</label>
+          <select className="mt-1 block w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}} {...register('priority')}>
             <option value="LOW">Low</option>
             <option value="MEDIUM">Medium</option>
             <option value="HIGH">High</option>
@@ -143,14 +143,14 @@ export default function NewTaskPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Due Date</label>
-          <input type="date" className="mt-1 block w-full rounded border px-3 py-2" {...register('dueDate')} />
+          <label className="block text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Due Date</label>
+          <input type="date" className="mt-1 block w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}} {...register('dueDate')} />
         </div>
 
         <div>
-          <Button type="submit" disabled={submitting} className="inline-flex items-center px-4 py-2">
+          <button type="submit" disabled={submitting} className="inline-flex items-center px-6 py-3 rounded-lg text-white font-medium shadow-sm" style={{backgroundColor: '#5B9FDF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
             {submitting ? 'Creating...' : 'Create Task'}
-          </Button>
+          </button>
         </div>
       </form>
 

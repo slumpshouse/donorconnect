@@ -159,19 +159,19 @@ export default function NewDonationClientPage() {
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold">Log a Donation</h1>
-        <p className="text-sm text-muted-foreground">Record a new donation and trigger thank-you workflow</p>
+        <h1 className="text-4xl font-bold text-gray-800" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Log a Donation</h1>
+        <p className="text-base text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Record a new donation and trigger thank-you workflow</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6 bg-card border border-border p-6 rounded-lg shadow">
+      <form onSubmit={handleSubmit} className="space-y-6 bg-white border border-gray-200 p-6 rounded-xl shadow-sm">
         <div>
-          <label className="block text-sm font-medium text-muted-foreground">Donor *</label>
+          <label className="block text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Donor *</label>
           <div className="mt-2">
             <select
               value={selectedDonor?.id || ''}
               onChange={(e) => setSelectedDonor(donors.find(d => d.id === e.target.value) || null)}
-              className="dc-select-light-options w-full rounded-md border px-3 py-2 bg-background text-foreground"
-              style={{ colorScheme: 'light' }}
+              className="dc-select-light-options w-full rounded-lg border border-gray-200 px-3 py-2 bg-white text-gray-900"
+              style={{ colorScheme: 'light', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}
             >
               {donors.map((d) => (
                 <option key={d.id} value={d.id}>{d.firstName} {d.lastName} {d.email ? `(${d.email})` : ''}</option>
@@ -180,44 +180,45 @@ export default function NewDonationClientPage() {
           </div>
 
           {selectedDonor && (
-            <div className="mt-3 p-4 rounded border border-border bg-muted flex items-center gap-4">
-              <div className="h-12 w-12 rounded-md bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-semibold">{(selectedDonor.firstName?.[0]||'').toUpperCase()}{(selectedDonor.lastName?.[0]||'').toUpperCase()}</div>
+            <div className="mt-3 p-4 rounded-lg border border-gray-200 bg-blue-50 flex items-center gap-4">
+              <div className="h-12 w-12 rounded-md flex items-center justify-center text-white font-semibold" style={{background: 'linear-gradient(135deg, #5B9FDF 0%, #4A9EE0 100%)', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{(selectedDonor.firstName?.[0]||'').toUpperCase()}{(selectedDonor.lastName?.[0]||'').toUpperCase()}</div>
               <div>
-                <div className="font-medium">{selectedDonor.firstName} {selectedDonor.lastName}</div>
-                <div className="text-sm text-muted-foreground">{selectedDonor.email ? selectedDonor.email : 'No email'} • Total giving: ${selectedDonor.totalAmount?.toLocaleString?.() ?? '0'}</div>
+                <div className="font-medium text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{selectedDonor.firstName} {selectedDonor.lastName}</div>
+                <div className="text-sm text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{selectedDonor.email ? selectedDonor.email : 'No email'} • Total giving: ${selectedDonor.totalAmount?.toLocaleString?.() ?? '0'}</div>
               </div>
             </div>
           )}
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-muted-foreground">Donation Amount *</label>
+          <label className="block text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Donation Amount *</label>
           <input
             type="number"
             step="0.01"
             min="0"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            className="mt-2 w-full rounded-md border px-4 py-3 text-lg bg-background text-foreground placeholder:text-muted-foreground"
+            className="mt-2 w-full rounded-lg border border-gray-200 px-4 py-3 text-lg bg-white text-gray-900"
+            style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}
             placeholder="0.00"
             required
           />
-          <p className="text-xs text-muted-foreground mt-1">Enter the donation amount in USD</p>
+          <p className="text-xs text-gray-600 mt-1" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Enter the donation amount in USD</p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-muted-foreground">Date Received *</label>
-            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="mt-2 w-full rounded-md border px-3 py-2 bg-background text-foreground" required />
+            <label className="block text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Date Received *</label>
+            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="mt-2 w-full rounded-lg border border-gray-200 px-3 py-2 bg-white text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}} required />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-muted-foreground">Payment Method *</label>
+            <label className="block text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Payment Method *</label>
             <select
               value={method}
               onChange={(e) => setMethod(e.target.value)}
-              className="dc-select-light-options mt-2 w-full rounded-md border px-3 py-2 bg-background text-foreground"
-              style={{ colorScheme: 'light' }}
+              className="dc-select-light-options mt-2 w-full rounded-lg border border-gray-200 px-3 py-2 bg-white text-gray-900"
+              style={{ colorScheme: 'light', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}
             >
               <option>Credit Card</option>
               <option>Check</option>
@@ -229,13 +230,13 @@ export default function NewDonationClientPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-muted-foreground">Type of Donation</label>
+          <label className="block text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Type of Donation</label>
           <div className="mt-2">
             <select
               value={campaign}
               onChange={(e) => setCampaign(e.target.value)}
-              className="dc-select-light-options w-full rounded-md border px-3 py-2 bg-background text-foreground"
-              style={{ colorScheme: 'light' }}
+              className="dc-select-light-options w-full rounded-lg border border-gray-200 px-3 py-2 bg-white text-gray-900"
+              style={{ colorScheme: 'light', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}
             >
               <option value="">General</option>
               {campaigns.map((c) => (
@@ -244,36 +245,36 @@ export default function NewDonationClientPage() {
                 </option>
               ))}
             </select>
-            <p className="text-xs text-muted-foreground mt-1">Optional: Link this donation to a specific campaign</p>
+            <p className="text-xs text-gray-600 mt-1" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Optional: Link this donation to a specific campaign</p>
           </div>
         </div>
 
         <div>
-          <label className="inline-flex items-center p-3 border rounded">
+          <label className="inline-flex items-center p-3 border border-gray-200 rounded-lg bg-white">
             <input type="checkbox" checked={recurring} onChange={(e) => setRecurring(e.target.checked)} className="mr-3" />
             <div>
-              <div className="font-medium">This is a recurring donation</div>
-              <div className="text-sm text-muted-foreground">Donor has committed to regular giving</div>
+              <div className="font-medium text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>This is a recurring donation</div>
+              <div className="text-sm text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Donor has committed to regular giving</div>
             </div>
           </label>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-muted-foreground">Notes</label>
-          <textarea value={notes} onChange={(e) => setNotes(e.target.value)} className="mt-2 w-full rounded-md border px-3 py-2 h-28 bg-background text-foreground placeholder:text-muted-foreground" placeholder="Add any additional notes about this donation (optional)" />
+          <label className="block text-sm font-medium text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Notes</label>
+          <textarea value={notes} onChange={(e) => setNotes(e.target.value)} className="mt-2 w-full rounded-lg border border-gray-200 px-3 py-2 h-28 bg-white text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}} placeholder="Add any additional notes about this donation (optional)" />
         </div>
 
-        <div className="p-4 rounded border border-border bg-muted">
-          <div className="font-medium mb-2">Thank You Workflow</div>
-          <label className="flex items-center gap-3"><input type="checkbox" checked={sendEmail} onChange={(e) => setSendEmail(e.target.checked)} /> <span>Send thank you email automatically</span></label>
-          <label className="flex items-center gap-3 mt-2"><input type="checkbox" checked={sendReceipt} onChange={(e) => setSendReceipt(e.target.checked)} /> <span>Generate and email tax receipt</span></label>
-          <label className="flex items-center gap-3 mt-2"><input type="checkbox" checked={createFollowUp} onChange={(e) => setCreateFollowUp(e.target.checked)} /> <span>Create follow-up task for personal call</span></label>
+        <div className="p-4 rounded-lg border border-gray-200 bg-blue-50">
+          <div className="font-medium mb-2 text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Thank You Workflow</div>
+          <label className="flex items-center gap-3 text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}><input type="checkbox" checked={sendEmail} onChange={(e) => setSendEmail(e.target.checked)} /> <span>Send thank you email automatically</span></label>
+          <label className="flex items-center gap-3 mt-2 text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}><input type="checkbox" checked={sendReceipt} onChange={(e) => setSendReceipt(e.target.checked)} /> <span>Generate and email tax receipt</span></label>
+          <label className="flex items-center gap-3 mt-2 text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}><input type="checkbox" checked={createFollowUp} onChange={(e) => setCreateFollowUp(e.target.checked)} /> <span>Create follow-up task for personal call</span></label>
         </div>
 
         <div>
-          <Button type="submit" className="w-full bg-gradient-to-r from-teal-700 to-emerald-600 text-white">
+          <button type="submit" className="w-full px-6 py-3 rounded-lg text-white font-medium shadow-sm" style={{backgroundColor: '#5FBF6F', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
             {loading ? 'Saving...' : '💰  Log Donation & Send Thank You'}
-          </Button>
+          </button>
         </div>
 
         {message && (

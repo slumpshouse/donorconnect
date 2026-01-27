@@ -26,20 +26,20 @@ export default function DashboardStatsClient({ initial = {} }) {
   }, [refetch])
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-      <div className="p-5 rounded-xl shadow bg-gradient-to-r from-teal-700 to-cyan-600 text-white">
-        <div className="text-sm text-white/80">Total Donors</div>
-        <div className="text-3xl font-semibold mt-2">{totals.totalDonors}</div>
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4" suppressHydrationWarning>
+      <div className="p-6 rounded-xl shadow-sm border-t-4 bg-white" style={{borderTopColor: '#4A9EE0', backgroundColor: '#E8F4FD'}}>
+        <div className="text-xs uppercase tracking-wide text-gray-500 mb-2">Total Donors</div>
+        <div className="text-4xl font-bold" style={{color: '#4A9EE0'}}>{totals.totalDonors}</div>
       </div>
 
-      <div className="p-5 rounded-xl shadow bg-gradient-to-r from-emerald-600 to-teal-600 text-white">
-        <div className="text-sm text-white/80">Total Donations</div>
-        <div className="text-3xl font-semibold mt-2">{totals.totalDonations}</div>
+      <div className="p-6 rounded-xl shadow-sm border-t-4 bg-white" style={{borderTopColor: '#FF8C42', backgroundColor: '#FFF0E5'}}>
+        <div className="text-xs uppercase tracking-wide text-gray-500 mb-2">Total Donations</div>
+        <div className="text-4xl font-bold" style={{color: '#FF8C42'}}>{totals.totalDonations}</div>
       </div>
 
-      <div className="p-5 rounded-xl shadow bg-gradient-to-r from-cyan-700 to-teal-600 text-white">
-        <div className="text-sm text-white/80">Amount Received</div>
-        <div className="text-3xl font-semibold mt-2">{formatCurrency(totals.totalAmount)}</div>
+      <div className="p-6 rounded-xl shadow-sm border-t-4 bg-white" style={{borderTopColor: '#5FBF6F', backgroundColor: '#E8F8EA'}}>
+        <div className="text-xs uppercase tracking-wide text-gray-500 mb-2">Amount Received</div>
+        <div className="text-2xl lg:text-3xl font-bold break-all" style={{color: '#5FBF6F'}} suppressHydrationWarning>{formatCurrency(totals.totalAmount)}</div>
       </div>
     </div>
   )

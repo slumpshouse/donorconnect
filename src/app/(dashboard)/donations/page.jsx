@@ -72,12 +72,20 @@ export default function DonationsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-gradient-to-r from-teal-700 to-emerald-600 p-8 rounded-lg text-white">
-        <h1 className="text-4xl font-bold">Donation List</h1>
-        <p className="mt-2 text-white/80">Search, filter, and manage all your donors</p>
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-4xl font-bold text-gray-800" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Donations</h1>
+          <p className="text-base text-gray-600 mt-2" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Search, filter, and manage all donations</p>
+        </div>
+        <Link href="/donations/new">
+          <button className="px-6 py-3 rounded-lg text-white font-medium shadow-sm" style={{backgroundColor: '#5B9FDF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
+            <Plus className="inline mr-2 h-4 w-4" />
+            Log Donation
+          </button>
+        </Link>
       </div>
 
-      <div className="bg-card border border-border p-6 rounded-xl shadow">
+      <div className="bg-white border border-gray-200 p-6 rounded-xl shadow-sm">
         <div className="flex gap-4 items-center">
           <input
             value={query}
@@ -90,60 +98,55 @@ export default function DonationsPage() {
             }}
             onKeyDown={(e) => { if (e.key === 'Enter') runSearch() }}
             placeholder="Search by name, email, ID, or phone number..."
-            className="flex-1 border rounded px-4 py-3 bg-background text-foreground placeholder:text-muted-foreground"
+            className="flex-1 border border-gray-200 rounded-lg px-4 py-3 bg-white text-gray-800"
+            style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}
           />
-          <button className="px-4 py-3 bg-teal-600 hover:bg-teal-700 text-white rounded" onClick={() => runSearch()}>🔍 Search</button>
+          <button className="px-6 py-3 text-white rounded-lg font-medium" style={{backgroundColor: '#5B9FDF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}} onClick={() => runSearch()}>🔍 Search</button>
         </div>
 
         <div className="mt-4 flex flex-wrap gap-3">
-          <button className={`px-4 py-2 rounded ${filter === 'all' ? 'bg-teal-600 text-white' : 'bg-muted'}`} onClick={() => setFilter('all')}>All Donations</button>
-          <button className={`px-4 py-2 rounded ${filter === 'online' ? 'bg-teal-600 text-white' : 'bg-muted'}`} onClick={() => setFilter('online')}>Online</button>
-          <button className={`px-4 py-2 rounded ${filter === 'offline' ? 'bg-teal-600 text-white' : 'bg-muted'}`} onClick={() => setFilter('offline')}>Offline</button>
-          <button className={`px-4 py-2 rounded ${filter === 'recurring' ? 'bg-teal-600 text-white' : 'bg-muted'}`} onClick={() => setFilter('recurring')}>Recurring</button>
+          <button className="px-4 py-2 rounded-lg text-white font-medium" style={{backgroundColor: filter === 'all' ? '#5B9FDF' : '#E5E7EB', color: filter === 'all' ? 'white' : '#6B7280', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}} onClick={() => setFilter('all')}>All Donations</button>
+          <button className="px-4 py-2 rounded-lg text-white font-medium" style={{backgroundColor: filter === 'online' ? '#5B9FDF' : '#E5E7EB', color: filter === 'online' ? 'white' : '#6B7280', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}} onClick={() => setFilter('online')}>Online</button>
+          <button className="px-4 py-2 rounded-lg text-white font-medium" style={{backgroundColor: filter === 'offline' ? '#5B9FDF' : '#E5E7EB', color: filter === 'offline' ? 'white' : '#6B7280', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}} onClick={() => setFilter('offline')}>Offline</button>
+          <button className="px-4 py-2 rounded-lg text-white font-medium" style={{backgroundColor: filter === 'recurring' ? '#5B9FDF' : '#E5E7EB', color: filter === 'recurring' ? 'white' : '#6B7280', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}} onClick={() => setFilter('recurring')}>Recurring</button>
         </div>
       </div>
 
-      <div className="bg-card border border-border p-6 rounded-xl shadow">
+      <div className="bg-white border border-gray-200 p-6 rounded-xl shadow-sm">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="text-center">
-            <div className="text-3xl font-bold">{totalCount}</div>
-            <div className="text-sm text-muted-foreground uppercase">TOTAL DONATIONS</div>
+            <div className="text-3xl font-bold text-gray-800" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{totalCount}</div>
+            <div className="text-sm text-gray-600 uppercase" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>TOTAL DONATIONS</div>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-bold">${totalAmount.toLocaleString()}</div>
-            <div className="text-sm text-muted-foreground uppercase">TOTAL AMOUNT</div>
+            <div className="text-3xl font-bold text-gray-800" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>${totalAmount.toLocaleString()}</div>
+            <div className="text-sm text-gray-600 uppercase" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>TOTAL AMOUNT</div>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-bold">{onlineCount}</div>
-            <div className="text-sm text-muted-foreground uppercase">ONLINE</div>
+            <div className="text-3xl font-bold text-gray-800" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{onlineCount}</div>
+            <div className="text-sm text-gray-600 uppercase" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>ONLINE</div>
           </div>
         </div>
       </div>
 
-      <div className="bg-card border border-border p-6 rounded-xl shadow">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">Recent Donations</h2>
-          <Link href="/donations/new">
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Log Donation
-            </Button>
-          </Link>
+      <div className="bg-white border border-gray-200 p-6 rounded-xl shadow-sm">
+        <div className="mb-4">
+          <h2 className="text-xl font-semibold text-gray-800" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Recent Donations</h2>
         </div>
 
         <div className="space-y-3">
-          {loading && <div className="text-sm text-muted-foreground">Loading donations…</div>}
-          {error && <div className="text-sm text-red-600">Failed to load donations</div>}
-          {!loading && !donations.length && <div className="text-sm text-muted-foreground">No donations recorded.</div>}
+          {loading && <div className="text-sm text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Loading donations…</div>}
+          {error && <div className="text-sm text-red-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Failed to load donations</div>}
+          {!loading && !donations.length && <div className="text-sm text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>No donations recorded.</div>}
           {!loading && donations.map((d) => (
-            <div key={d.id} className="p-4 border rounded flex justify-between items-center">
+            <div key={d.id} className="p-4 border border-gray-200 rounded-lg flex justify-between items-center">
               <div>
-                <div className="font-medium">{d.donor?.firstName} {d.donor?.lastName} <span className="text-sm text-muted-foreground">• {d.campaign?.name ?? 'General'}</span></div>
-                {d.notes && <div className="text-sm text-muted-foreground">{d.notes}</div>}
+                <div className="font-medium text-gray-800" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{d.donor?.firstName} {d.donor?.lastName} <span className="text-sm text-gray-600">• {d.campaign?.name ?? 'General'}</span></div>
+                {d.notes && <div className="text-sm text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{d.notes}</div>}
               </div>
               <div className="text-right">
-                <div className="font-semibold">${(d.amount ?? 0).toFixed(2)}</div>
-                <div className="text-sm text-muted-foreground">{d.date ? new Date(d.date).toLocaleDateString() : new Date(d.createdAt).toLocaleDateString()}</div>
+                <div className="font-semibold text-gray-800" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>${(d.amount ?? 0).toFixed(2)}</div>
+                <div className="text-sm text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{d.date ? new Date(d.date).toLocaleDateString() : new Date(d.createdAt).toLocaleDateString()}</div>
               </div>
             </div>
           ))}
