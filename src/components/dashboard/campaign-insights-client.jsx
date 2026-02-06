@@ -19,8 +19,8 @@ export default function CampaignInsightsClient({ campaignInsights = [], nextStep
           <button
             type="button"
             onClick={() => setVisible((v) => !v)}
-            className="inline-flex items-center px-5 py-2 bg-blue-600 text-white rounded-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
-            style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}
+            className="inline-flex items-center px-5 py-2 rounded-lg text-white font-medium shadow-sm hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+            style={{backgroundColor: '#5B9FDF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}
           >
             {visible ? 'Hide Insights' : 'Show Insights'}
           </button>

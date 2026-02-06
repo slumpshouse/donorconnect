@@ -6,9 +6,7 @@ import { buildDonorWhereFromSegmentRules } from '@/lib/segment-rules'
 
 export async function GET(request) {
   try {
-    const cookieHeader = request.headers.get('cookie') || ''
-    const match = cookieHeader.match(/(?:^|; )session=([^;]+)/)
-    const sessionToken = match ? match[1] : undefined
+    const sessionToken = request.cookies.get('session')?.value
     const session = await getSession(sessionToken)
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
@@ -38,7 +36,7 @@ export async function GET(request) {
 
     // Keep memberCount fresh so segments are truly "automatic".
     const now = new Date()
-    const updatedSegments = await Promise.all(
+    const settled = await Promise.allSettled(
       (segments || []).map(async (segment) => {
         const donorWhere = buildDonorWhereFromSegmentRules(segment.rules)
         const count = await prisma.donor.count({
@@ -48,7 +46,6 @@ export async function GET(request) {
           },
         })
 
-        // Persist for fast list rendering
         const updated = await prisma.segment.update({
           where: { id: segment.id },
           data: { memberCount: count, lastCalculated: now },
@@ -58,6 +55,28 @@ export async function GET(request) {
         return updated
       })
     )
+
+    const updatedSegments = settled
+      .map((result, idx) => {
+        if (result.status === 'fulfilled') return result.value
+        // eslint-disable-next-line no-console
+        console.warn('Segment recalculation failed', {
+          segmentId: segments?.[idx]?.id,
+          error: String(result.reason?.message || result.reason),
+        })
+
+        const fallback = segments?.[idx]
+        if (!fallback) return null
+        return {
+          id: fallback.id,
+          name: fallback.name,
+          description: fallback.description,
+          memberCount: fallback.memberCount,
+          lastCalculated: fallback.lastCalculated,
+          createdAt: fallback.createdAt,
+        }
+      })
+      .filter(Boolean)
 
     return NextResponse.json({ segments: updatedSegments, pagination: { page, limit, total } })
   } catch (error) {
@@ -69,9 +88,7 @@ export async function GET(request) {
 
 export async function POST(request) {
   try {
-    const cookieHeader = request.headers.get('cookie') || ''
-    const match = cookieHeader.match(/(?:^|; )session=([^;]+)/)
-    const sessionToken = match ? match[1] : undefined
+    const sessionToken = request.cookies.get('session')?.value
     const session = await getSession(sessionToken)
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 

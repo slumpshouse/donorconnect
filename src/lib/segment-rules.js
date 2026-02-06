@@ -8,6 +8,24 @@ function normalizeOperator(op) {
   return typeof op === 'string' ? op.trim() : ''
 }
 
+function normalizeEnumValue(field, value) {
+  if (typeof value !== 'string') return null
+  const normalized = value.trim().toUpperCase()
+  if (!normalized) return null
+
+  if (field === 'status') {
+    const allowed = new Set(['ACTIVE', 'LAPSED', 'INACTIVE', 'DO_NOT_CONTACT'])
+    return allowed.has(normalized) ? normalized : null
+  }
+
+  if (field === 'retentionRisk') {
+    const allowed = new Set(['UNKNOWN', 'LOW', 'MEDIUM', 'HIGH', 'CRITICAL'])
+    return allowed.has(normalized) ? normalized : null
+  }
+
+  return null
+}
+
 function buildLeafCondition(rule) {
   if (!isPlainObject(rule)) return null
 
@@ -26,68 +44,93 @@ function buildLeafCondition(rule) {
   }
 
   // Basic donor fields
-  const directFields = new Set([
-    'totalGifts',
-    'totalAmount',
-    'status',
-    'retentionRisk',
-    'firstGiftDate',
-    'lastGiftDate',
-    'email',
-    'firstName',
-    'lastName',
-  ])
+  const numericFields = new Set(['totalGifts', 'totalAmount'])
+  const enumFields = new Set(['status', 'retentionRisk'])
+  const dateFields = new Set(['firstGiftDate', 'lastGiftDate'])
+  const stringFields = new Set(['email', 'firstName', 'lastName'])
 
-  if (!directFields.has(field)) return null
+  const isNumeric = numericFields.has(field)
+  const isEnum = enumFields.has(field)
+  const isDate = dateFields.has(field)
+  const isString = stringFields.has(field)
+
+  if (!isNumeric && !isEnum && !isDate && !isString) return null
 
   // Guard: ignore empty string values which would produce an invalid/no-op filter
   if (typeof value === 'string' && value.trim() === '') return null
 
   if (operator === 'equals') {
-    // For string fields prefer case-insensitive equals; for others, pass raw
-    if (typeof value === 'string') return { [field]: { equals: value, mode: 'insensitive' } }
+    if (isString) return { [field]: { equals: String(value), mode: 'insensitive' } }
+    if (isEnum) {
+      const enumValue = normalizeEnumValue(field, value)
+      if (!enumValue) return null
+      return { [field]: enumValue }
+    }
     return { [field]: value }
   }
   if (operator === 'notEquals') {
-    if (typeof value === 'string') return { [field]: { not: { equals: value, mode: 'insensitive' } } }
+    if (isString) return { [field]: { not: { equals: String(value), mode: 'insensitive' } } }
+    if (isEnum) {
+      const enumValue = normalizeEnumValue(field, value)
+      if (!enumValue) return null
+      return { [field]: { not: enumValue } }
+    }
     return { [field]: { not: value } }
   }
 
   if (operator === 'in') {
     const list = Array.isArray(value) ? value : []
+    if (isEnum) {
+      const normalized = list.map((v) => normalizeEnumValue(field, v)).filter(Boolean)
+      if (normalized.length === 0) return null
+      return { [field]: { in: normalized } }
+    }
+    if (list.length === 0) return null
     return { [field]: { in: list } }
   }
 
   if (operator === 'notIn') {
     const list = Array.isArray(value) ? value : []
+    if (isEnum) {
+      const normalized = list.map((v) => normalizeEnumValue(field, v)).filter(Boolean)
+      if (normalized.length === 0) return null
+      return { [field]: { notIn: normalized } }
+    }
+    if (list.length === 0) return null
     return { [field]: { notIn: list } }
   }
 
-  if (operator === 'greaterThan') return { [field]: { gt: value } }
-  if (operator === 'greaterThanOrEqual') return { [field]: { gte: value } }
-  if (operator === 'lessThan') return { [field]: { lt: value } }
-  if (operator === 'lessThanOrEqual') return { [field]: { lte: value } }
-
-  if (operator === 'contains') {
-    if (typeof value !== 'string') return null
-    return { [field]: { contains: value, mode: 'insensitive' } }
+  if (isNumeric) {
+    if (operator === 'greaterThan') return { [field]: { gt: value } }
+    if (operator === 'greaterThanOrEqual') return { [field]: { gte: value } }
+    if (operator === 'lessThan') return { [field]: { lt: value } }
+    if (operator === 'lessThanOrEqual') return { [field]: { lte: value } }
   }
 
-  if (operator === 'notContains') {
-    if (typeof value !== 'string') return null
-    return { [field]: { not: { contains: value, mode: 'insensitive' } } }
+  if (isString) {
+    if (operator === 'contains') {
+      if (typeof value !== 'string') return null
+      return { [field]: { contains: value, mode: 'insensitive' } }
+    }
+
+    if (operator === 'notContains') {
+      if (typeof value !== 'string') return null
+      return { [field]: { not: { contains: value, mode: 'insensitive' } } }
+    }
   }
 
-  if (operator === 'before') {
-    const dt = value ? new Date(value) : null
-    if (!dt || Number.isNaN(dt.getTime())) return null
-    return { [field]: { lt: dt } }
-  }
+  if (isDate) {
+    if (operator === 'before') {
+      const dt = value ? new Date(value) : null
+      if (!dt || Number.isNaN(dt.getTime())) return null
+      return { [field]: { lt: dt } }
+    }
 
-  if (operator === 'after') {
-    const dt = value ? new Date(value) : null
-    if (!dt || Number.isNaN(dt.getTime())) return null
-    return { [field]: { gt: dt } }
+    if (operator === 'after') {
+      const dt = value ? new Date(value) : null
+      if (!dt || Number.isNaN(dt.getTime())) return null
+      return { [field]: { gt: dt } }
+    }
   }
 
   return null

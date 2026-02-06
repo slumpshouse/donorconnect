@@ -33,8 +33,8 @@ export default function AiPolicyPage() {
               The app does not automatically contact donors, change records, or complete tasks.
             </p>
             <p className="mt-2 text-sm text-muted-foreground">
-              The Campaign Insights on the Dashboard (trending up/down and “what to do next”) are generated from donation totals and gift counts using deterministic calculations.
-              They do not call an external AI model.
+              The Campaign Insights on the Dashboard compute the up/down trend deterministically from donation totals and gift counts.
+              The “what to do next” checklist may optionally be generated using an external AI model (if configured), and falls back to deterministic suggestions if AI is unavailable.
             </p>
             <ul className="mt-3 list-disc pl-5 text-sm text-muted-foreground space-y-2">
               <li><span className="font-medium text-foreground">Human-in-the-loop:</span> staff review every draft and decide what to send (or not send).</li>
@@ -63,7 +63,7 @@ export default function AiPolicyPage() {
               <li>I explicitly tell the model not to mention internal risk scores and to avoid sensitive inferences.</li>
               <li>I require a predictable output format (title + subject/body or call bullets + 3 “next steps”) so the result fits cleanly in the UI.</li>
               <li>I keep the output short and professional (warm, grateful tone) to reduce the chance of hallucinations and keep it usable for staff.</li>
-              <li>For Campaign Insights, I didn’t use prompts—those trends are calculated deterministically from donation totals and gift counts.</li>
+              <li>For Campaign Insights, I keep prompts scoped to recent vs previous donation totals/counts and require strictly-formatted output (3 next steps) so the UI stays consistent.</li>
             </ul>
           </section>
 
@@ -73,7 +73,7 @@ export default function AiPolicyPage() {
               <li>Generates outreach drafts (email or call scripts) so staff can follow up faster and more consistently.</li>
               <li>Provides a structured “next steps” checklist so staff can log the interaction and schedule follow-ups.</li>
               <li>Keeps staff in control: drafts are reviewable, editable, and never sent automatically.</li>
-              <li>Adds Campaign Insights on the Dashboard (trending up/down + next steps) so staff can adjust fundraising strategy using recent results—without relying on an AI model.</li>
+              <li>Adds Campaign Insights on the Dashboard (trending up/down + next steps) so staff can adjust fundraising strategy using recent results; if AI is configured, the next steps can be more specific while still using a deterministic fallback.</li>
             </ul>
           </section>
         </div>

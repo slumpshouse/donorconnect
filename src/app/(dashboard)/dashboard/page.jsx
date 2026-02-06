@@ -6,6 +6,7 @@ import { getSessionUser } from '@/lib/session'
 import { prisma } from '@/lib/db'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import DashboardStatsClient from '@/components/dashboard/stats-client'
+import { getCampaignNextSteps } from '@/lib/ai/campaign-insights'
 
 export default async function DashboardPage() {
   let user = null
@@ -160,23 +161,7 @@ export default async function DashboardPage() {
     })
     .sort((a, b) => b.recentAmount - a.recentAmount)
 
-  const upCampaigns = campaignInsights.filter((c) => c.trend === 'UP')
-  const downCampaigns = campaignInsights.filter((c) => c.trend === 'DOWN')
-
-  const nextSteps = []
-  if (upCampaigns.length) {
-    nextSteps.push(`Double down on “${upCampaigns[0].name}” — it’s trending up.`)
-  }
-  if (downCampaigns.length) {
-    nextSteps.push(`Review “${downCampaigns[0].name}” — it’s trending down.`)
-  }
-  if (!upCampaigns.length && !downCampaigns.length && campaignInsights.length) {
-    nextSteps.push('Run a small test (email/landing copy) to move a flat campaign.')
-  }
-  if (!campaignInsights.length) {
-    nextSteps.push('Record a few donations with campaigns to start tracking trends.')
-  }
-  nextSteps.push('Check totals weekly and adjust outreach accordingly.')
+  const { nextSteps } = await getCampaignNextSteps({ campaignInsights })
 
   const totalAmount = donationSumResult?._sum?.amount ?? 0
 
