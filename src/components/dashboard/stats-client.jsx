@@ -6,6 +6,7 @@ import { formatCurrency } from '@/lib/utils'
 
 export default function DashboardStatsClient({ initial = {} }) {
   const { stats, loading, error, refetch } = useDashboardStats()
+  // router removed; Campaign Insights button deleted
 
   // Merge server-provided initial totals with client-fetched stats for immediate UX
   const totals = {
@@ -26,7 +27,8 @@ export default function DashboardStatsClient({ initial = {} }) {
   }, [refetch])
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4" suppressHydrationWarning>
+    <>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4" suppressHydrationWarning>
       <div className="p-6 rounded-xl shadow-sm border-t-4 bg-white" style={{borderTopColor: '#4A9EE0', backgroundColor: '#E8F4FD'}}>
         <div className="text-xs uppercase tracking-wide text-gray-500 mb-2">Total Donors</div>
         <div className="text-4xl font-bold" style={{color: '#4A9EE0'}}>{totals.totalDonors}</div>
@@ -41,6 +43,10 @@ export default function DashboardStatsClient({ initial = {} }) {
         <div className="text-xs uppercase tracking-wide text-gray-500 mb-2">Amount Received</div>
         <div className="text-2xl lg:text-3xl font-bold break-all" style={{color: '#5FBF6F'}} suppressHydrationWarning>{formatCurrency(totals.totalAmount)}</div>
       </div>
-    </div>
+
+      </div>
+
+      {/* Campaign Insights button removed */}
+    </>
   )
 }

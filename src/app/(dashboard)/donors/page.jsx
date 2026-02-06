@@ -49,12 +49,16 @@ export default function DonorsPage() {
           <h1 className="text-4xl font-bold text-gray-800" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Donors</h1>
           <p className="text-base text-gray-600 mt-2" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Manage your donor relationships and track engagement</p>
         </div>
-        <Link href="/donors/new">
-          <button className="px-6 py-3 rounded-lg text-white font-medium shadow-sm" style={{backgroundColor: '#5B9FDF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
-            <Plus className="inline mr-2 h-4 w-4" />
-            Add Donor
-          </button>
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link href="/donors/new">
+            <button className="px-6 py-3 rounded-lg text-white font-medium shadow-sm" style={{backgroundColor: '#5B9FDF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
+              <Plus className="inline mr-2 h-4 w-4" />
+              Add Donor
+            </button>
+          </Link>
+
+          {/* Duplicate Insights removed per request */}
+        </div>
       </div>
 
       <div className="bg-white border border-gray-200 p-6 rounded-xl shadow-sm">

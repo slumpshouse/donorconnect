@@ -398,6 +398,22 @@ const segmentCriteria = {
 **Files to Implement:**
 - `src/lib/auth.js` - Password hashing and validation
 - `src/lib/session.js` - Session creation and management  
+
+**Feedback Mapping**
+
+One-Sentence Summary: Feedback creates decisions. Decisions create changes. Changes must be visible.
+
+The team collected feedback via this Google Form: https://forms.gle/REPLACE_WITH_LINK
+
+Required Mapping Table:
+
+| Feedback ID | User Feedback | Problem Identified | Decision Made | Change Implemented |
+|---|---|---|---|---|
+| FB-01 | "Save action is unclear; I didn't realize my changes saved." | Users missed the save action and thought the form submission failed. | Make primary save action more visible and add explicit success confirmation. | Moved Save button to the bottom-right, increased contrast and primary styling, added an icon, and added a confirmation toast on success. |
+| FB-02 | "Maybe having campaign insights as a button to click." | Dashboard metrics were dense and hard to scan; users wanted insights optionally discoverable. | Make campaign insights optional and discoverable via a clear control. | Added a collapsible Campaign Insights card with a clear Show/Hide control and concise helper text. |
+| FB-03 | "Show sign in / sign up on first load." | New users couldn't find authentication entry points on the landing experience. | Surface authentication entry points and improve onboarding copy for first-time visitors. | Added prominent Sign In / Sign Up buttons on the landing page and clearer onboarding copy. |
+
+Notes: Replace the Google Form link above with the live form URL used to collect feedback.
 - `src/app/api/auth/*/route.js` - Login, logout, register endpoints
 - `src/app/(auth)/*/page.jsx` - Login and registration forms
 - `src/middleware.js` - Route protection

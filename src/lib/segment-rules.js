@@ -40,8 +40,18 @@ function buildLeafCondition(rule) {
 
   if (!directFields.has(field)) return null
 
-  if (operator === 'equals') return { [field]: value }
-  if (operator === 'notEquals') return { [field]: { not: value } }
+  // Guard: ignore empty string values which would produce an invalid/no-op filter
+  if (typeof value === 'string' && value.trim() === '') return null
+
+  if (operator === 'equals') {
+    // For string fields prefer case-insensitive equals; for others, pass raw
+    if (typeof value === 'string') return { [field]: { equals: value, mode: 'insensitive' } }
+    return { [field]: value }
+  }
+  if (operator === 'notEquals') {
+    if (typeof value === 'string') return { [field]: { not: { equals: value, mode: 'insensitive' } } }
+    return { [field]: { not: value } }
+  }
 
   if (operator === 'in') {
     const list = Array.isArray(value) ? value : []

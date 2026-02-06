@@ -11,8 +11,8 @@ export default function LogoutButton() {
     try {
       const res = await fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' })
       if (res.ok) {
-        // Redirect to login page after successful logout
-        window.location.href = '/login'
+        // Redirect to home page after successful logout
+        window.location.href = '/'
       } else {
         setLoading(false)
         const data = await res.json().catch(() => ({}))

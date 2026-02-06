@@ -1,10 +1,13 @@
 // Dashboard home page with sidebar
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+import CampaignInsightsClient from '@/components/dashboard/campaign-insights-client'
+import AnomalyReviewClient from '@/components/admin/anomaly-review-client'
 import { getSessionUser } from '@/lib/session'
 import { prisma } from '@/lib/db'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import DashboardStatsClient from '@/components/dashboard/stats-client'
+import { scanAnomalies } from '@/lib/anomaly-detection'
 
 export default async function DashboardPage() {
   let user = null
@@ -56,6 +59,7 @@ export default async function DashboardPage() {
     recentDonations,
     recentCampaignStats,
     previousCampaignStats,
+    anomalyResults,
   ] = await Promise.all([
     prisma.donor.count({ where: { organizationId: orgId } }),
     prisma.donation.count({ where: { donor: { organizationId: orgId } } }),
@@ -100,6 +104,8 @@ export default async function DashboardPage() {
       _sum: { amount: true },
       _count: { _all: true },
     }),
+    // server-side anomaly scan for this organization
+    scanAnomalies(orgId),
   ])
 
   const recentMap = new Map(
@@ -179,8 +185,13 @@ export default async function DashboardPage() {
 
   const totalAmount = donationSumResult?._sum?.amount ?? 0
 
+  // prepare anomaly lookup sets and shared system font
+  const donorAnomalyIds = new Set((anomalyResults?.donorAnomalies || []).map((d) => d.id))
+  const donationAnomalyIds = new Set((anomalyResults?.donationAnomalies || []).map((d) => d.id))
+  const systemFont = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+
   return (
-    <div className="space-y-6" suppressHydrationWarning>
+    <div className="space-y-6" suppressHydrationWarning style={{ fontFamily: systemFont }}>
       <div className="flex items-start justify-between gap-4">
         <div>
           <h1 className="text-4xl font-bold text-gray-800" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Dashboard</h1>
@@ -209,13 +220,18 @@ export default async function DashboardPage() {
               {atRiskDonors.slice(0, 3).map((d) => (
                 <div key={d.id} className="flex items-start justify-between">
                   <div className="flex-1">
-                    <div className="font-bold text-gray-900 mb-1" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', fontSize: '15px'}}>{d.firstName} {d.lastName}</div>
-                    <div className="text-sm flex items-center gap-2" style={{color: '#7B68A6', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
+                    <div className="font-bold text-gray-900 mb-1" style={{fontSize: '15px'}}>
+                      {d.firstName} {d.lastName}
+                      {donorAnomalyIds.has(d.id) ? (
+                        <span className="ml-2 inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded" style={{backgroundColor: '#FEF2F2', color: '#DC2626'}}>Suspicion</span>
+                      ) : null}
+                    </div>
+                    <div className="text-sm flex items-center gap-2" style={{color: '#7B68A6'}}>
                       <span>{d.email || 'No email'}</span>
                       <span className="px-2 py-0.5 text-xs font-semibold rounded" style={{backgroundColor: '#FEE2E2', color: '#DC2626'}}>HIGH</span>
                     </div>
                   </div>
-                  <div className="text-sm ml-4" style={{color: '#9CA3AF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{d.totalGifts ?? 0} donations</div>
+                  <div className="text-sm ml-4" style={{color: '#9CA3AF'}}>{d.totalGifts ?? 0} donations</div>
                 </div>
               ))}
             </div>
@@ -240,11 +256,16 @@ export default async function DashboardPage() {
                 {recentDonations.map((d) => (
                   <div key={d.id} className="grid grid-cols-3 gap-4">
                     <div>
-                      <div className="font-medium" style={{color: '#374151', fontSize: '15px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{d.donor?.firstName} {d.donor?.lastName}</div>
-                      <div className="text-sm mt-1" style={{color: '#9CA3AF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{d.campaign?.name ?? 'General'}</div>
+                      <div className="font-medium" style={{color: '#374151', fontSize: '15px'}}>{d.donor?.firstName} {d.donor?.lastName}</div>
+                      <div className="text-sm mt-1" style={{color: '#9CA3AF'}}>{d.campaign?.name ?? 'General'}</div>
                     </div>
-                    <div className="text-center font-bold" style={{color: '#5FBF6F', fontSize: '15px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>${d.amount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
-                    <div className="text-right" style={{color: '#374151', fontSize: '15px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{formatDate(d.createdAt)}</div>
+                    <div className="text-center font-bold" style={{color: '#5FBF6F', fontSize: '15px'}}>
+                      ${d.amount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                      {donationAnomalyIds.has(d.id) ? (
+                        <span className="ml-2 inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded" style={{backgroundColor: '#FEF2F2', color: '#DC2626'}}>Suspicion</span>
+                      ) : null}
+                    </div>
+                    <div className="text-right" style={{color: '#374151', fontSize: '15px'}}>{formatDate(d.createdAt)}</div>
                   </div>
                 ))}
               </div>
@@ -255,68 +276,12 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      <div className="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
-        <div className="mb-6">
-          <h3 className="text-xl font-bold text-gray-900 mb-1" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Campaign Insights</h3>
-          <p className="text-sm text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Trending up/down over the last 30 days</p>
-        </div>
+      <CampaignInsightsClient campaignInsights={campaignInsights} nextSteps={nextSteps} />
 
-        {campaignInsights.length ? (
-          <div className="space-y-6">
-            {campaignInsights.slice(0, 6).map((c) => (
-              <div key={c.id} className="flex items-start justify-between pb-6 border-b border-gray-200 last:border-b-0 last:pb-0">
-                <div className="flex-1">
-                  <Link
-                    href={`/campaigns/${c.id}`}
-                    className="font-semibold text-gray-900 hover:text-blue-600 transition-colors text-base"
-                    style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}
-                  >
-                    {c.name}
-                  </Link>
-                  <div className="text-sm text-gray-600 mt-1.5" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
-                    30d: <span className="text-blue-600 font-medium">{formatCurrency(c.recentAmount)}</span> • {c.recentCount} gift{c.recentCount !== 1 ? 's' : ''}
-                  </div>
-                  <div className="text-sm text-gray-600 mt-0.5" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
-                    Prev 30d: <span className="text-gray-700">{formatCurrency(c.previousAmount)}</span> • {c.previousCount} gift{c.previousCount !== 1 ? 's' : ''}
-                  </div>
-                </div>
-                <div className="ml-4">
-                  {c.trend === 'UP' ? (
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border-2 border-green-500 text-green-600 bg-white">
-                      ✓ UP
-                    </span>
-                  ) : c.trend === 'DOWN' ? (
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border-2 border-red-400 text-red-500 bg-white">
-                      ↘ DOWN
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border-2 border-gray-400 text-gray-600 bg-white">
-                      →
-                    </span>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-sm text-gray-500">No campaign donations in the last 60 days.</div>
-        )}
-
-        <div className="mt-8 p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
-          <div className="flex items-center gap-2 mb-3">
-            <span className="text-lg">📋</span>
-            <h4 className="font-semibold text-gray-900" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>What to do next</h4>
-          </div>
-          <div className="space-y-3">
-            {nextSteps.slice(0, 3).map((item, idx) => (
-              <div key={item} className="flex items-start gap-3 p-3 bg-white rounded-lg border-l-4" style={{borderLeftColor: idx === 0 ? '#5FBF6F' : idx === 1 ? '#FF8C42' : '#4A9EE0'}}>
-                <span className="text-lg flex-shrink-0">
-                  {idx === 0 ? '✅' : idx === 1 ? '⚠️' : '📊'}
-                </span>
-                <p className="text-sm text-gray-700" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>{item}</p>
-              </div>
-            ))}
-          </div>
+      <div className="mt-4">
+        <div className="text-lg font-semibold mb-2">Admin</div>
+        <div className="max-w-2xl">
+          <AnomalyReviewClient />
         </div>
       </div>
     </div>
