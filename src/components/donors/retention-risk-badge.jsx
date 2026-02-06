@@ -18,9 +18,9 @@ export function RetentionRiskBadge({ risk, className }) {
       variant: 'default',
     },
     UNKNOWN: {
-      label: 'Likely to return',
-      classes: 'bg-green-100 text-green-800 risk-green success green',
-      variant: 'default',
+      label: 'Unknown',
+      classes: 'bg-gray-100 text-gray-800',
+      variant: 'secondary',
     },
     MEDIUM: {
       label: 'At risk',

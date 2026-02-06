@@ -122,7 +122,10 @@ export default function DonorsPage() {
               <tbody>
                 {donors.length ? (
                   donors.map((d) => (
-                    <tr key={d.id} className="border-t">
+                    <tr
+                      key={d.id}
+                      className={`border-t ${(String(d?.retentionRisk || '').toUpperCase() === 'HIGH' || String(d?.retentionRisk || '').toUpperCase() === 'CRITICAL') ? 'bg-red-50' : ''}`}
+                    >
                       <td className="p-2">
                         <Link href={`/donors/${d.id}`} className="hover:underline">
                           {d.firstName} {d.lastName}
@@ -132,7 +135,7 @@ export default function DonorsPage() {
                       <td className="p-2 text-sm text-muted-foreground">{d.phone || '-'}</td>
                       <td className="p-2">{d.status}</td>
                       <td className="p-2">
-                        <RetentionRiskBadge risk={d?.aiInsights?.level || d.retentionRisk} />
+                        <RetentionRiskBadge risk={d.retentionRisk} />
                       </td>
                       
                       <td className="p-2">{d.totalGifts ?? 0}</td>

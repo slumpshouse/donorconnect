@@ -99,12 +99,23 @@ export default function EvidenceRubricPage() {
           </p>
 
           <div className="mt-4">
-            <Link
-              href="/tasks"
-              className="inline-flex items-center justify-center rounded-md border border-border bg-muted px-3 py-2 text-sm font-medium text-foreground hover:bg-muted/80"
-            >
-              View where this is used
-            </Link>
+            <div className="flex flex-wrap gap-2">
+              <Link
+                href="/dashboard#campaign-insights"
+                className="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-800 hover:bg-blue-50"
+                style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}
+              >
+                Campaign Insights
+              </Link>
+
+              <Link
+                href="/donors"
+                className="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-800 hover:bg-blue-50"
+                style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}
+              >
+                View AI Outreach Assistant
+              </Link>
+            </div>
           </div>
         </section>
       </div>

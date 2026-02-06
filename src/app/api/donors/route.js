@@ -1,9 +1,7 @@
 // Donors API - List and Create
 import { NextResponse } from 'next/server'
-import { getSession } from '@/lib/session'
 import { requireAuth } from '@/lib/requireAuth'
 import { prisma } from '@/lib/db'
-import { heuristicRetentionRisk } from '@/lib/ai/retention-risk'
 
 export async function GET(request) {
   try {
@@ -63,12 +61,7 @@ export async function GET(request) {
       },
     })
 
-    const donorsWithRisk = donors.map((d) => ({
-      ...d,
-      aiInsights: heuristicRetentionRisk(d),
-    }))
-
-    return NextResponse.json({ donors: donorsWithRisk, pagination: { page, limit, total } })
+    return NextResponse.json({ donors, pagination: { page, limit, total } })
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('GET /api/donors error', error)

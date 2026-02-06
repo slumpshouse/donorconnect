@@ -54,7 +54,7 @@ export default function WhyDonorConnectPage() {
               <li><span className="font-medium">Data consistency:</span> I planned to store donors/donations in a structured database (PostgreSQL + Prisma) and keep donor metrics updated.</li>
               <li><span className="font-medium">Multi-user + tenant safety:</span> I used organizations as the tenant boundary so data is always scoped per org.</li>
               <li><span className="font-medium">Authentication:</span> I implemented cookie-based sessions to protect dashboard pages and API routes.</li>
-              <li><span className="font-medium">Trustworthy insights:</span> AI features are explainable and human-in-the-loop, and the app falls back to deterministic logic when AI enrichment isn’t available.</li>
+              <li><span className="font-medium">Trustworthy insights:</span> risk levels and trends are based on donation history and shown in a simple, explainable way.</li>
               <li><span className="font-medium">Keeping it MVP:</span> I focused on the core workflows (donors, donations, campaigns, tasks) before adding extra polish.</li>
             </ul>
           </section>
@@ -62,7 +62,7 @@ export default function WhyDonorConnectPage() {
           <section className="rounded-xl border border-gray-200 bg-white p-6 space-y-2 shadow-sm">
             <h2 className="text-base font-semibold text-gray-800" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>Summary of your system (pages + data)</h2>
             <p className="text-sm leading-6 text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
-              The app includes public pages (Home, About, Why DonorConnect, AI Policy) and a protected dashboard area (Dashboard, Donors, Donations,
+              The app includes public pages (Home, About, Why DonorConnect) and a protected dashboard area (Dashboard, Donors, Donations,
               Campaigns, Segments, Workflows, Tasks). Data is stored in PostgreSQL using Prisma models like Organization, User, Donor, Donation,
               Campaign, and Task. Dashboard views are built from Prisma queries (counts, aggregates, and recent activity) and are always filtered
               by the signed-in user’s organization.

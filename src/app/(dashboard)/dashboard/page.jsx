@@ -2,12 +2,10 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import CampaignInsightsClient from '@/components/dashboard/campaign-insights-client'
-import AnomalyReviewClient from '@/components/admin/anomaly-review-client'
 import { getSessionUser } from '@/lib/session'
 import { prisma } from '@/lib/db'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import DashboardStatsClient from '@/components/dashboard/stats-client'
-import { scanAnomalies } from '@/lib/anomaly-detection'
 
 export default async function DashboardPage() {
   let user = null
@@ -59,7 +57,6 @@ export default async function DashboardPage() {
     recentDonations,
     recentCampaignStats,
     previousCampaignStats,
-    anomalyResults,
   ] = await Promise.all([
     prisma.donor.count({ where: { organizationId: orgId } }),
     prisma.donation.count({ where: { donor: { organizationId: orgId } } }),
@@ -104,8 +101,6 @@ export default async function DashboardPage() {
       _sum: { amount: true },
       _count: { _all: true },
     }),
-    // server-side anomaly scan for this organization
-    scanAnomalies(orgId),
   ])
 
   const recentMap = new Map(
@@ -185,9 +180,7 @@ export default async function DashboardPage() {
 
   const totalAmount = donationSumResult?._sum?.amount ?? 0
 
-  // prepare anomaly lookup sets and shared system font
-  const donorAnomalyIds = new Set((anomalyResults?.donorAnomalies || []).map((d) => d.id))
-  const donationAnomalyIds = new Set((anomalyResults?.donationAnomalies || []).map((d) => d.id))
+  // shared system font
   const systemFont = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
 
   return (
@@ -222,9 +215,6 @@ export default async function DashboardPage() {
                   <div className="flex-1">
                     <div className="font-bold text-gray-900 mb-1" style={{fontSize: '15px'}}>
                       {d.firstName} {d.lastName}
-                      {donorAnomalyIds.has(d.id) ? (
-                        <span className="ml-2 inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded" style={{backgroundColor: '#FEF2F2', color: '#DC2626'}}>Suspicion</span>
-                      ) : null}
                     </div>
                     <div className="text-sm flex items-center gap-2" style={{color: '#7B68A6'}}>
                       <span>{d.email || 'No email'}</span>
@@ -261,9 +251,6 @@ export default async function DashboardPage() {
                     </div>
                     <div className="text-center font-bold" style={{color: '#5FBF6F', fontSize: '15px'}}>
                       ${d.amount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
-                      {donationAnomalyIds.has(d.id) ? (
-                        <span className="ml-2 inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded" style={{backgroundColor: '#FEF2F2', color: '#DC2626'}}>Suspicion</span>
-                      ) : null}
                     </div>
                     <div className="text-right" style={{color: '#374151', fontSize: '15px'}}>{formatDate(d.createdAt)}</div>
                   </div>
@@ -276,13 +263,8 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      <CampaignInsightsClient campaignInsights={campaignInsights} nextSteps={nextSteps} />
-
-      <div className="mt-4">
-        <div className="text-lg font-semibold mb-2">Admin</div>
-        <div className="max-w-2xl">
-          <AnomalyReviewClient />
-        </div>
+      <div id="campaign-insights">
+        <CampaignInsightsClient campaignInsights={campaignInsights} nextSteps={nextSteps} />
       </div>
     </div>
   )

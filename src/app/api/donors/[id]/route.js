@@ -2,7 +2,6 @@
 import { NextResponse } from 'next/server'
 import { getSession } from '@/lib/session'
 import { prisma } from '@/lib/db'
-import { getRetentionRiskInsights } from '@/lib/ai/retention-risk'
 
 export async function GET(request, { params }) {
   try {
@@ -20,9 +19,7 @@ export async function GET(request, { params }) {
 
     if (!donor) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
-    const aiInsights = await getRetentionRiskInsights(donor)
-
-    return NextResponse.json({ ...donor, aiInsights })
+    return NextResponse.json(donor)
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('GET /api/donors/[id] error', error)
