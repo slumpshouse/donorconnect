@@ -3,12 +3,17 @@ import { NextResponse } from 'next/server'
 import { getSession } from '@/lib/session'
 import { prisma } from '@/lib/db'
 import { buildDonorWhereFromSegmentRules } from '@/lib/segment-rules'
+import { ensureDefaultSegmentsForOrganization } from '@/lib/starter-data'
 
 export async function GET(request) {
   try {
     const sessionToken = request.cookies.get('session')?.value
     const session = await getSession(sessionToken)
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+    // In production (e.g., Vercel), orgs created via registration may not have seeded demo segments.
+    // Ensure a small set of default segments exists so the Segments page isn't empty by default.
+    await ensureDefaultSegmentsForOrganization(session.user.organizationId).catch(() => null)
 
     const url = new URL(request.url)
     const page = Math.max(1, parseInt(url.searchParams.get('page') || '1', 10))
