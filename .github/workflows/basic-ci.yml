@@ -15,7 +15,7 @@ permissions:
 
 env:
   NODE_VERSION: "20"
-  PNPM_VERSION: "10"
+  PNPM_VERSION: "10.18.1"
   # Prisma generate runs during install (postinstall) and requires DATABASE_URL
   # because prisma.config.js reads env('DATABASE_URL'). This is a CI-safe placeholder.
   DATABASE_URL: "postgresql://user:pass@localhost:5432/donorconnect_test?schema=public"
