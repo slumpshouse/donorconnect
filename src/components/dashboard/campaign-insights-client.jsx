@@ -76,7 +76,7 @@ export default function CampaignInsightsClient({ campaignInsights = [], nextStep
           </div>
         </>
       ) : (
-        <div className="text-sm text-gray-500">Insights are hidden. Click "Show Insights" to reveal campaign trends.</div>
+        <div className="text-sm text-gray-500">Insights are hidden. Click &quot;Show Insights&quot; to reveal campaign trends.</div>
       )}
     </div>
   )

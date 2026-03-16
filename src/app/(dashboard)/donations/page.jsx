@@ -24,7 +24,6 @@ export default function DonationsPage() {
 
   useEffect(() => {
     let mounted = true
-    setLoading(true)
     fetch('/api/donations', { credentials: 'same-origin' })
       .then(async (res) => {
         if (!res.ok) throw await res.json()

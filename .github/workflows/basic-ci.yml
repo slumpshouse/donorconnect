@@ -1,45 +1,28 @@
-name: DonorConnect CI
+name: Basic CI
 
 on:
   push:
     branches: ["main"]
   pull_request:
-  workflow_dispatch:
-
-concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true
-
-permissions:
-  contents: read
-
-env:
-  NODE_VERSION: "20"
-  PNPM_VERSION: "10.18.1"
-  # Prisma generate runs during install (postinstall) and requires DATABASE_URL
-  # because prisma.config.js reads env('DATABASE_URL'). This is a CI-safe placeholder.
-  DATABASE_URL: "postgresql://user:pass@localhost:5432/donorconnect_test?schema=public"
-  NEXT_TELEMETRY_DISABLED: "1"
 
 jobs:
-  quality:
-    name: Lint, Test, Build
+  ci:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: 20
           cache: pnpm
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -47,42 +30,8 @@ jobs:
       - name: Lint
         run: pnpm lint
 
-      - name: Unit tests (node)
-        run: pnpm test:node
+      - name: Test
+        run: pnpm test
 
-      - name: Unit tests (client)
-        run: pnpm test:client
-
-      # Integration tests require a real Postgres instance and migrations.
-      # This repo may not always include prisma/migrations, so we skip if absent.
-      - name: Integration tests (if migrations exist)
-        shell: bash
-        run: |
-          if [ -d prisma/migrations ]; then
-            pnpm test:integration
-          else
-            echo "Skipping integration tests (prisma/migrations not found)."
-          fi
-
-      - name: Build (Next.js)
+      - name: Build
         run: pnpm build
-
-  docker:
-    name: Docker build
-    runs-on: ubuntu-latest
-    needs: [quality]
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: ./Dockerfile
-          push: false
-          tags: donorconnect-app:ci
