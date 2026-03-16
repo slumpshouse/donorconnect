@@ -9,6 +9,11 @@ jobs:
   ci:
     runs-on: ubuntu-latest
 
+    env:
+      # prisma generate runs during pnpm install (postinstall) and requires DATABASE_URL.
+      # CI does not need a real database connection just to generate the Prisma client.
+      DATABASE_URL: postgresql://user:pass@localhost:5432/db?schema=public
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
