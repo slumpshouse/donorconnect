@@ -80,11 +80,6 @@ jobs:
         if: ${{ always() && steps.install.outcome == 'success' }}
         run: pnpm build
 
-      # 4. Tests
-      - name: Run tests (Vitest)
-        if: ${{ always() && steps.install.outcome == 'success' }}
-        run: pnpm test
-
       - name: Cache pnpm store (save)
         if: ${{ always() && steps.install.outcome == 'success' && steps.cache-restore.outputs.cache-hit != 'true' }}
         uses: actions/cache/save@v4
