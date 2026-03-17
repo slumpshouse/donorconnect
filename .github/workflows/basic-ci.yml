@@ -13,8 +13,11 @@ jobs:
       # prisma generate runs during pnpm install (postinstall) and requires DATABASE_URL.
       # CI does not need a real database connection just to generate the Prisma client.
       DATABASE_URL: postgresql://user:pass@localhost:5432/db?schema=public
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      NEXT_TELEMETRY_DISABLED: 1
 
     steps:
+      # 1. Install & Setup
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -33,7 +36,7 @@ jobs:
         shell: bash
         run: echo "STORE_PATH=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
 
-      - name: Cache pnpm store
+      - name: Cache pnpm store (restore)
         uses: actions/cache/restore@v4
         id: cache-restore
         with:
@@ -46,15 +49,41 @@ jobs:
         id: install
         run: pnpm install --frozen-lockfile
 
-      - name: Lint
+      - name: Set up environment variables
+        if: ${{ steps.install.outcome == 'success' }}
+        shell: bash
+        run: |
+          echo "DATABASE_URL is set (masked)"
+          echo "NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL"
+
+      - name: Generate Prisma client (optional)
+        if: ${{ steps.install.outcome == 'success' }}
+        run: pnpm prisma:generate
+
+      # 2. Lint & Type Check
+      - name: Run ESLint
+        if: ${{ steps.install.outcome == 'success' }}
         run: pnpm lint
 
-      - name: Test
-        run: pnpm test
+      - name: Run TypeScript checks (tsc --noEmit)
+        if: ${{ steps.install.outcome == 'success' }}
+        shell: bash
+        run: |
+          if [ -f tsconfig.json ]; then
+            pnpm exec tsc --noEmit
+          else
+            echo "No tsconfig.json found; skipping tsc (this repo is JS-first)."
+          fi
 
-      - name: Build
-        if: ${{ always() }}
+      # 3. Build
+      - name: next build
+        if: ${{ always() && steps.install.outcome == 'success' }}
         run: pnpm build
+
+      # 4. Tests
+      - name: Run tests (Vitest)
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: pnpm test
 
       - name: Cache pnpm store (save)
         if: ${{ always() && steps.install.outcome == 'success' && steps.cache-restore.outputs.cache-hit != 'true' }}
@@ -62,3 +91,50 @@ jobs:
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
+
+  docker:
+    name: Docker Build + Deploy
+    runs-on: ubuntu-latest
+    needs: [ci]
+    if: ${{ always() }}
+    steps:
+      # 5. Docker Build + Deploy
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Docker build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          tags: donorconnect:${{ github.sha }}
+          load: true
+
+      - name: Deploy (no-op unless configured)
+        shell: bash
+        env:
+          CI_RESULT: ${{ needs.ci.result }}
+          DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
+          DOCKER_REPOSITORY: ${{ secrets.DOCKER_REPOSITORY }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+
+          if [ "$CI_RESULT" != "success" ]; then
+            echo "Skipping deploy because CI job failed ($CI_RESULT)."
+            exit 0
+          fi
+
+          if [ -z "${DOCKER_REGISTRY:-}" ] || [ -z "${DOCKER_REPOSITORY:-}" ] || [ -z "${DOCKER_USERNAME:-}" ] || [ -z "${DOCKER_PASSWORD:-}" ]; then
+            echo "Deploy not configured. Set secrets DOCKER_REGISTRY, DOCKER_REPOSITORY, DOCKER_USERNAME, DOCKER_PASSWORD to enable pushing the image."
+            exit 0
+          fi
+
+          echo "$DOCKER_PASSWORD" | docker login "$DOCKER_REGISTRY" -u "$DOCKER_USERNAME" --password-stdin
+          docker tag "donorconnect:$IMAGE_TAG" "$DOCKER_REGISTRY/$DOCKER_REPOSITORY:$IMAGE_TAG"
+          docker push "$DOCKER_REGISTRY/$DOCKER_REPOSITORY:$IMAGE_TAG"
