@@ -9,8 +9,11 @@ WORKDIR /app
 ARG DATABASE_URL="postgresql://user:pass@localhost:5432/db?schema=public"
 ENV DATABASE_URL=$DATABASE_URL
 
+# Use pnpm for installs (repo is pnpm-managed), but run the build via `npm run build`
+# to match the assignment requirement.
+RUN corepack enable && corepack prepare pnpm@10.18.1 --activate
+
 COPY package.json ./
-COPY package-lock.json ./
 COPY .npmrc ./
 COPY pnpm-lock.yaml ./
 
@@ -18,8 +21,7 @@ COPY pnpm-lock.yaml ./
 COPY prisma ./prisma
 COPY prisma.config.js ./
 
-# Use npm to match the assignment requirement.
-RUN npm ci
+RUN pnpm install --frozen-lockfile
 
 # Copy only what Next needs to build.
 COPY src ./src
