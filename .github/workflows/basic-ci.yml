@@ -168,22 +168,14 @@ jobs:
         with:
 # Docker build context
           context: .
-# Dockerfile path
           file: ./Dockerfile
-# Local tag (sha) for traceability
           tags: donorconnect:${{ github.sha }}
-# Load image into the runner's docker engine (needed for tag/push in deploy step)
           load: true
 
-# Optional deploy step: becomes a no-op unless secrets are configured
       - name: Deploy (no-op unless configured)
-# Run script using bash
         shell: bash
-# Environment variables for this step
         env:
-# CI job result used to block deploy on failures
           CI_RESULT: ${{ needs.ci.result }}
-# Registry/credentials are stored as GitHub secrets
           DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
           DOCKER_REPOSITORY: ${{ secrets.DOCKER_REPOSITORY }}
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
