@@ -88,7 +88,6 @@ jobs:
 # Use frozen lockfile so CI fails on lockfile drift
         run: pnpm install --frozen-lockfile
 
-# Optional: print basic env sanity checks (no secrets)
       - name: Set up environment variables
 # Only run if install succeeded
         if: ${{ steps.install.outcome == 'success' }}
