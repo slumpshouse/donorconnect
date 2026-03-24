@@ -103,24 +103,15 @@ jobs:
       # 2. Lint & Type Check
 # Run ESLint to catch code-quality issues
       - name: Run ESLint
-# Only run if install succeeded
         if: ${{ steps.install.outcome == 'success' }}
-# Repo lint script
         run: pnpm lint
 
-# Run TypeScript type-check if tsconfig exists (repo is JS-first)
       - name: Run TypeScript checks (tsc --noEmit)
-# Only run if install succeeded
         if: ${{ steps.install.outcome == 'success' }}
-# Execute as bash so we can conditionally run tsc
         shell: bash
-# Script block
         run: |
-# If a tsconfig.json exists, do a strict typecheck without emitting files
           if [ -f tsconfig.json ]; then
-# Run the TypeScript compiler via pnpm
             pnpm exec tsc --noEmit
-# Otherwise, log why we're not running it
           else
             echo "No tsconfig.json found; skipping tsc (this repo is JS-first)."
           fi
