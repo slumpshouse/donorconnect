@@ -83,21 +83,14 @@ jobs:
 
 # Install dependencies (also runs Prisma generate via postinstall)
       - name: Install dependencies
-# Step id used to gate later steps
         id: install
-# Use frozen lockfile so CI fails on lockfile drift
         run: pnpm install --frozen-lockfile
 
       - name: Set up environment variables
-# Only run if install succeeded
         if: ${{ steps.install.outcome == 'success' }}
-# Execute as bash
         shell: bash
-# Script block
         run: |
-# Confirm DATABASE_URL exists without printing it
           echo "DATABASE_URL is set (masked)"
-# Show the public app URL used in CI
           echo "NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL"
 
 # Explicit Prisma generate (kept even though postinstall does it)
