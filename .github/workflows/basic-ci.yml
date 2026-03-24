@@ -3,85 +3,48 @@ name: Basic CI
 
 # Triggers that start this workflow
 on:
-# Run on pushes to main
   push:
-# Limit push trigger to main branch
     branches: ["main"]
-# Also run for all pull requests
   pull_request:
 
 # All jobs (independent units of work) in this workflow
 jobs:
-# Main CI job: installs, lints, builds, and primes cache
   ci:
-# GitHub-hosted runner image
     runs-on: ubuntu-latest
 
-# Job-wide environment variables available to all steps
     env:
-# prisma generate runs during pnpm install (postinstall) and requires DATABASE_URL.
-      # prisma generate runs during pnpm install (postinstall) and requires DATABASE_URL.
-# CI does not need a real database connection just to generate the Prisma client.
-      # CI does not need a real database connection just to generate the Prisma client.
-# Dummy DATABASE_URL so Prisma client generation succeeds in CI
       DATABASE_URL: postgresql://user:pass@localhost:5432/db?schema=public
-# Public base URL used by some client code (safe placeholder for CI)
       NEXT_PUBLIC_APP_URL: http://localhost:3000
-# Disable Next.js telemetry to keep CI quiet/consistent
       NEXT_TELEMETRY_DISABLED: 1
 
-# Ordered list of steps executed in this job
     steps:
-      # 1. Install & Setup
-# Checkout repository so subsequent steps can read the code
       - name: Checkout
-# Official checkout action
         uses: actions/checkout@v4
 
-# Set up Node.js runtime
       - name: Setup Node
-# Official Node setup action
         uses: actions/setup-node@v4
-# Action inputs
         with:
-# Pin Node major version for reproducibility
           node-version: 20
 
-# Install pnpm (package manager)
       - name: Setup pnpm
-# Official pnpm setup action
         uses: pnpm/action-setup@v4
-# Action inputs
         with:
-# Pin pnpm version to match repo's packageManager field
           version: 10.18.1
 
-# Discover pnpm store path so we can cache it
       - name: Get pnpm store path
-# Step id used by later cache steps
         id: pnpm-cache
-# Run via bash on the runner
         shell: bash
-# Write the pnpm store path to GITHUB_OUTPUT for downstream steps
         run: echo "STORE_PATH=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
 
-# Restore pnpm store cache (download dependencies faster)
       - name: Cache pnpm store (restore)
-# Cache restore action
         uses: actions/cache/restore@v4
-# Step id so we can check cache-hit
         id: cache-restore
-# Action inputs
         with:
-# What to cache (pnpm store directory)
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-# Cache key includes lockfile hash so it changes when deps change
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
-# Fallback prefixes for partial cache matches
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
-# Install dependencies (also runs Prisma generate via postinstall)
       - name: Install dependencies
         id: install
         run: pnpm install --frozen-lockfile
@@ -93,15 +56,10 @@ jobs:
           echo "DATABASE_URL is set (masked)"
           echo "NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL"
 
-# Explicit Prisma generate (kept even though postinstall does it)
       - name: Generate Prisma client (optional)
-# Only run if install succeeded
         if: ${{ steps.install.outcome == 'success' }}
-# Generate Prisma client artifacts
         run: pnpm prisma:generate
 
-      # 2. Lint & Type Check
-# Run ESLint to catch code-quality issues
       - name: Run ESLint
         if: ${{ steps.install.outcome == 'success' }}
         run: pnpm lint
@@ -116,57 +74,32 @@ jobs:
             echo "No tsconfig.json found; skipping tsc (this repo is JS-first)."
           fi
 
-      # 3. Build
-# Build the Next.js app (ensures it compiles)
       - name: next build
-# Always attempt build if dependencies installed (even if lint/typecheck fails)
         if: ${{ always() && steps.install.outcome == 'success' }}
-# Repo build script
         run: pnpm build
 
-# Save pnpm store cache (only when we had a cache miss and install succeeded)
       - name: Cache pnpm store (save)
-# Run even if prior steps failed, but only after successful install
         if: ${{ always() && steps.install.outcome == 'success' && steps.cache-restore.outputs.cache-hit != 'true' }}
-# Cache save action
         uses: actions/cache/save@v4
-# Action inputs
         with:
-# What to cache (pnpm store directory)
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-# Same cache key used for restore
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
 
-# Separate job to validate container build and optionally deploy
   docker:
-# Job name shown in Actions UI
     name: Docker Build + Deploy
-# GitHub-hosted runner image
     runs-on: ubuntu-latest
-# Ensure CI job ran first (even if it failed, since this job uses always())
     needs: [ci]
-# Always run the Docker build so Dockerfile errors are caught
     if: ${{ always() }}
-# Ordered list of steps executed in this job
     steps:
-      # 5. Docker Build + Deploy
-# Checkout repository so Docker build has context
       - name: Checkout
-# Official checkout action
         uses: actions/checkout@v4
 
-# Enable docker buildx (better caching/build features)
       - name: Set up Docker Buildx
-# Official buildx setup action
         uses: docker/setup-buildx-action@v3
 
-# Build the Docker image to ensure the container build is valid
       - name: Docker build
-# Official docker build action
         uses: docker/build-push-action@v6
-# Action inputs
         with:
-# Docker build context
           context: .
           file: ./Dockerfile
           tags: donorconnect:${{ github.sha }}
@@ -180,30 +113,19 @@ jobs:
           DOCKER_REPOSITORY: ${{ secrets.DOCKER_REPOSITORY }}
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-# Tag to push (commit sha)
           IMAGE_TAG: ${{ github.sha }}
-# Script block
         run: |
-# Strict bash: fail fast, undefined vars are errors, and pipeline errors propagate
           set -euo pipefail
-
-# Block deploy if CI job failed (protects real users)
           if [ "$CI_RESULT" != "success" ]; then
             echo "Skipping deploy because CI job failed ($CI_RESULT)."
             exit 0
           fi
-
-# If secrets aren't set, print guidance and exit successfully (no deploy)
           if [ -z "${DOCKER_REGISTRY:-}" ] || [ -z "${DOCKER_REPOSITORY:-}" ] || [ -z "${DOCKER_USERNAME:-}" ] || [ -z "${DOCKER_PASSWORD:-}" ]; then
             echo "Deploy not configured. Set secrets DOCKER_REGISTRY, DOCKER_REPOSITORY, DOCKER_USERNAME, DOCKER_PASSWORD to enable pushing the image."
             exit 0
           fi
-
-# Authenticate to the container registry
           echo "$DOCKER_PASSWORD" | docker login "$DOCKER_REGISTRY" -u "$DOCKER_USERNAME" --password-stdin
-# Retag the locally-built image with the registry/repo name
           docker tag "donorconnect:$IMAGE_TAG" "$DOCKER_REGISTRY/$DOCKER_REPOSITORY:$IMAGE_TAG"
-# Push the image to the registry
           docker push "$DOCKER_REGISTRY/$DOCKER_REPOSITORY:$IMAGE_TAG"
 
       - name: Deploy to EC2 via SSH
@@ -213,7 +135,6 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_KEY }}
           script: |
-            # Install Docker if not present
             if ! command -v docker &> /dev/null; then
               sudo apt-get update -y
               sudo apt-get install -y docker.io docker-compose-v2
