@@ -242,12 +242,12 @@ jobs:
             sed -i "s/^DATABASE_URL='\(.*\)'$/DATABASE_URL=\1/" .env.production
             sed -i 's/^DATABASE_URL="\(.*\)"$/DATABASE_URL=\1/' .env.production
 
-            docker compose --env-file .env.production pull app
-            docker compose --env-file .env.production down
-            docker compose --env-file .env.production up -d
+            docker compose -f docker-compose.prod.yml --env-file .env.production pull app
+            docker compose -f docker-compose.prod.yml --env-file .env.production down
+            docker compose -f docker-compose.prod.yml --env-file .env.production up -d
 
             echo "Waiting for app to become healthy..."
-            timeout 60 sh -c 'until [ "$(docker inspect -f "{{.State.Health.Status}}" $(docker compose --env-file .env.production ps -q app))" = "healthy" ]; do sleep 3; done' || echo "Health check timed out - container may still be starting"
+            timeout 60 sh -c 'until [ "$(docker inspect -f "{{.State.Health.Status}}" $(docker compose -f docker-compose.prod.yml --env-file .env.production ps -q app))" = "healthy" ]; do sleep 3; done' || echo "Health check timed out - container may still be starting"
 
             docker image prune -f
  
