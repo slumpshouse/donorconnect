@@ -89,7 +89,7 @@ jobs:
     name: Docker Build + Deploy
     runs-on: ubuntu-latest
     needs: [ci]
-    if: ${{ always() }}
+    if: ${{ needs.ci.result == 'success' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -119,7 +119,6 @@ jobs:
       - name: Deploy (no-op unless configured)
         shell: bash
         env:
-          CI_RESULT: ${{ needs.ci.result }}
           DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
           DOCKER_REPOSITORY: ${{ secrets.DOCKER_REPOSITORY }}
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -127,10 +126,6 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           set -euo pipefail
-          if [ "$CI_RESULT" != "success" ]; then
-            echo "Skipping deploy because CI job failed ($CI_RESULT)."
-            exit 0
-          fi
           if [ -z "${DOCKER_REGISTRY:-}" ] || [ -z "${DOCKER_REPOSITORY:-}" ] || [ -z "${DOCKER_USERNAME:-}" ] || [ -z "${DOCKER_PASSWORD:-}" ]; then
             echo "Deploy not configured. Set secrets DOCKER_REGISTRY, DOCKER_REPOSITORY, DOCKER_USERNAME, DOCKER_PASSWORD to enable pushing the image."
             exit 0
@@ -140,6 +135,7 @@ jobs:
           docker push "$DOCKER_REGISTRY/$DOCKER_REPOSITORY:$IMAGE_TAG"
 
       - name: Deploy to EC2 via SSH
+        if: ${{ secrets.EC2_HOST != '' && secrets.EC2_KEY != '' && secrets.DATABASE_URL != '' }}
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -190,29 +186,38 @@ jobs:
             
             docker stop donorconnect-app || true
             docker rm donorconnect-app || true
-            docker run -d --name donorconnect-app -p 3000:3000 -e DATABASE_URL="$DATABASE_URL" -e HOSTNAME=0.0.0.0 -e PORT=3000 "$IMAGE_NAME"
+            docker run -d --name donorconnect-app -p 80:3000 -p 3000:3000 -e DATABASE_URL="$DATABASE_URL" -e HOSTNAME=0.0.0.0 -e PORT=3000 "$IMAGE_NAME"
             sleep 10
             docker ps | grep -q donorconnect-app
             docker logs donorconnect-app --tail 50
-
-            
-            # Run the new container with environment variables
-            docker run -d --name donorconnect-app \
-              -p 3000:3000 \
-              -e DATABASE_URL="$DATABASE_URL" \
-              -e HOSTNAME=0.0.0.0 \
-              -e PORT=3000 \
-              "$IMAGE_NAME"
             echo "App deployed and running on port 3000"
             
             # Wait a moment and check if container is running
             sleep 5
             if docker ps | grep -q donorconnect-app; then
               echo "✅ Container is running successfully"
-              echo "🌐 Access your app at: http://${{ secrets.EC2_HOST }}:3000"
+              echo "🌐 Access your app at: http://${{ secrets.EC2_HOST }}"
+              echo "🌐 Alternate URL: http://${{ secrets.EC2_HOST }}:3000"
             else
               echo "❌ Container failed to start. Checking logs..."
               docker logs donorconnect-app || echo "No logs available"
               exit 1
             fi
+
+      - name: Verify app is reachable from the internet
+        if: ${{ secrets.EC2_HOST != '' && secrets.EC2_KEY != '' && secrets.DATABASE_URL != '' }}
+        shell: bash
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+        run: |
+          set -euo pipefail
+          echo "Checking public endpoint at http://${EC2_HOST} ..."
+          timeout 60 bash -c 'until curl -fsS "http://${EC2_HOST}" > /dev/null; do sleep 5; done'
+          echo "Public endpoint is reachable."
+
+      - name: Explain why deploy was skipped
+        if: ${{ !(secrets.EC2_HOST != '' && secrets.EC2_KEY != '' && secrets.DATABASE_URL != '') }}
+        shell: bash
+        run: |
+          echo "EC2 deploy skipped because one or more required secrets are missing: EC2_HOST, EC2_KEY, DATABASE_URL."
  
