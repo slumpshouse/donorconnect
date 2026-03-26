@@ -138,60 +138,77 @@ jobs:
       - name: Deploy to EC2 via SSH
         run: |
           ssh -o StrictHostKeyChecking=no -o ConnectTimeout=30 ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
+          echo "Starting deployment on EC2..."
+          
           if ! command -v docker &> /dev/null; then
-            sudo apt-get update -y
-            sudo apt-get install -y docker.io docker-compose-v2
-            sudo systemctl start docker
-            sudo systemctl enable docker
+            echo "Installing Docker..."
+            sudo apt-get update -y || { echo "Failed to update apt"; exit 1; }
+            sudo apt-get install -y docker.io docker-compose-v2 || { echo "Failed to install docker"; exit 1; }
+            sudo systemctl start docker || { echo "Failed to start docker"; exit 1; }
+            sudo systemctl enable docker || { echo "Failed to enable docker"; exit 1; }
             sudo usermod -aG docker ubuntu
+            echo "Docker installed successfully"
+          else
+            echo "Docker already installed"
           fi
           
           # Deploy the app
           if [ -n "${DOCKER_REGISTRY:-}" ] && [ -n "${DOCKER_REPOSITORY:-}" ] && [ -n "${DOCKER_USERNAME:-}" ] && [ -n "${DOCKER_PASSWORD:-}" ]; then
             echo "Using Docker registry for deployment..."
-            echo "$DOCKER_PASSWORD" | docker login "$DOCKER_REGISTRY" -u "$DOCKER_USERNAME" --password-stdin
+            echo "$DOCKER_PASSWORD" | docker login "$DOCKER_REGISTRY" -u "$DOCKER_USERNAME" --password-stdin || { echo "Failed to login to docker registry"; exit 1; }
             IMAGE_NAME="$DOCKER_REGISTRY/$DOCKER_REPOSITORY:$IMAGE_TAG"
-            docker pull "$IMAGE_NAME"
+            echo "Pulling image: $IMAGE_NAME"
+            docker pull "$IMAGE_NAME" || { echo "Failed to pull docker image"; exit 1; }
           else
             echo "No Docker registry configured; building directly on EC2..."
             IMAGE_NAME="donorconnect:$IMAGE_TAG"
             
             # Clone repo and build on EC2
             if [ ! -d "donorconnect" ]; then
-              git clone https://github.com/slumpshouse/donorconnect.git
+              echo "Cloning repository..."
+              git clone https://github.com/slumpshouse/donorconnect.git || { echo "Failed to clone repository"; exit 1; }
               cd donorconnect
             else
+              echo "Updating existing repository..."
               cd donorconnect
-              git pull origin main
+              git pull origin main || { echo "Failed to pull repository"; exit 1; }
             fi
             
-            # Install dependencies and build
-            curl -fsSL https://get.pnpm.io/install.sh | sh -
+            echo "Installing pnpm..."
+            curl -fsSL https://get.pnpm.io/install.sh | sh - || { echo "Failed to install pnpm"; exit 1; }
             export PATH="$HOME/.local/share/pnpm:$PATH"
-            pnpm install --frozen-lockfile
-            pnpm prisma:generate
-            pnpm build
             
-            # Build Docker image
-            docker build -t "$IMAGE_NAME" .
+            echo "Installing dependencies..."
+            pnpm install --frozen-lockfile || { echo "Failed to install dependencies"; exit 1; }
+            
+            echo "Generating Prisma client..."
+            pnpm prisma:generate || { echo "Failed to generate Prisma client"; exit 1; }
+            
+            echo "Building application..."
+            pnpm build || { echo "Failed to build application"; exit 1; }
+            
+            echo "Building Docker image..."
+            docker build -t "$IMAGE_NAME" . || { echo "Failed to build docker image"; exit 1; }
             cd ..
           fi
           
-          # Stop and remove existing container if running
-          docker stop donorconnect-app || true
-          docker rm donorconnect-app || true
+          echo "Stopping existing container..."
+          docker stop donorconnect-app || echo "No existing container to stop"
+          docker rm donorconnect-app || echo "No existing container to remove"
           
-          # Run the new container with environment variables
+          echo "Starting new container..."
+          echo "Using DATABASE_URL: ${DATABASE_URL:0:20}..."
           docker run -d --name donorconnect-app \
             -p 3000:3000 \
             -e DATABASE_URL="$DATABASE_URL" \
             -e HOSTNAME=0.0.0.0 \
             -e PORT=3000 \
-            "$IMAGE_NAME"
+            "$IMAGE_NAME" || { echo "Failed to start container"; exit 1; }
+          
           echo "App deployed and running on port 3000"
           
           # Wait a moment and check if container is running
-          sleep 5
+          sleep 10
           if docker ps | grep -q donorconnect-app; then
             echo "✅ Container is running successfully"
             echo "🌐 Access your app at: http://${{ secrets.EC2_HOST }}:3000"
