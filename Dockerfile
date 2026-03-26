@@ -78,12 +78,6 @@ COPY --from=builder /app/.next/static ./.next/static
 
 # Prisma schema + generated client (custom output path under prisma/)
 COPY --from=builder /app/prisma ./prisma
-# Prisma 7 migrate commands require this config file at runtime
-COPY --from=builder /app/prisma.config.js ./prisma.config.js
-# Include Prisma CLI + engines so migrations can run in deploy container
-COPY --from=deps /app/node_modules/prisma ./node_modules/prisma
-COPY --from=deps /app/node_modules/@prisma ./node_modules/@prisma
-COPY --from=deps /app/node_modules/.bin ./node_modules/.bin
 
 # Drop privileges for runtime
 USER nextjs

@@ -85,6 +85,46 @@ jobs:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
 
+  migrate:
+    name: Run DB Migrations
+    runs-on: ubuntu-latest
+    needs: [ci]
+    if: ${{ needs.ci.result == 'success' && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.18.1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Get pnpm store path
+        id: pnpm-cache
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
+
+      - name: Restore pnpm cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run migrations
+        run: pnpm exec prisma migrate deploy
+
   docker:
     name: Docker Build + Deploy
     runs-on: ubuntu-latest
@@ -163,7 +203,6 @@ jobs:
 
             docker compose --env-file .env.production pull app
             docker compose --env-file .env.production down
-            docker compose --env-file .env.production run --rm --no-deps app ./node_modules/.bin/prisma migrate deploy --config prisma.config.js
             docker compose --env-file .env.production up -d
 
             echo "Waiting for app to become healthy..."
