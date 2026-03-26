@@ -134,7 +134,13 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_KEY }}
-          env_vars: DATABASE_URL=${{ secrets.DATABASE_URL }}
+          env_vars: |
+            DATABASE_URL=${{ secrets.DATABASE_URL }}
+            IMAGE_TAG=${{ github.sha }}
+            DOCKER_REGISTRY=${{ secrets.DOCKER_REGISTRY || '' }}
+            DOCKER_REPOSITORY=${{ secrets.DOCKER_REPOSITORY || '' }}
+            DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME || '' }}
+            DOCKER_PASSWORD=${{ secrets.DOCKER_PASSWORD || '' }}
           timeout: 30s
           command_timeout: 20m
           script: |
