@@ -122,6 +122,22 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Validate DATABASE_URL
+        shell: bash
+        run: |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "ERROR: DATABASE_URL secret is not set or is empty."
+            exit 1
+          fi
+          SCHEME=$(echo "$DATABASE_URL" | sed 's|://.*||')
+          echo "DATABASE_URL scheme: $SCHEME"
+          if [[ "$SCHEME" != "postgresql" && "$SCHEME" != "postgres" ]]; then
+            echo "ERROR: Unrecognised scheme '$SCHEME'. Must be postgresql or postgres."
+            echo "Fix: update the DATABASE_URL GitHub secret - no surrounding quotes, starts with postgresql://"
+            exit 1
+          fi
+          echo "DATABASE_URL format looks valid."
+
       - name: Run migrations
         run: pnpm exec prisma migrate deploy
 
@@ -195,11 +211,11 @@ jobs:
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
             docker pull ghcr.io/${{ github.repository_owner }}/donorconnect:latest
 
-            cat > .env.production <<EOF
-DATABASE_URL=${{ secrets.DATABASE_URL }}
-OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
-APP_IMAGE=ghcr.io/${{ github.repository_owner }}/donorconnect:latest
-EOF
+            cat > .env.production <<'EOF'
+            DATABASE_URL=${{ secrets.DATABASE_URL }}
+            OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+            APP_IMAGE=ghcr.io/${{ github.repository_owner }}/donorconnect:latest
+            EOF
 
             docker compose --env-file .env.production pull app
             docker compose --env-file .env.production down
