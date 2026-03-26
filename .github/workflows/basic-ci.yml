@@ -134,6 +134,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_KEY }}
+          env_vars: DATABASE_URL=${{ secrets.DATABASE_URL }}
           script: |
             if ! command -v docker &> /dev/null; then
               sudo apt-get update -y
@@ -153,9 +154,25 @@ jobs:
               docker stop donorconnect-app || true
               docker rm donorconnect-app || true
               
-              # Run the new container
-              docker run -d --name donorconnect-app -p 3000:3000 "$IMAGE_NAME"
+              # Run the new container with environment variables
+              docker run -d --name donorconnect-app \
+                -p 3000:3000 \
+                -e DATABASE_URL="$DATABASE_URL" \
+                -e HOSTNAME=0.0.0.0 \
+                -e PORT=3000 \
+                "$IMAGE_NAME"
               echo "App deployed and running on port 3000"
+              
+              # Wait a moment and check if container is running
+              sleep 5
+              if docker ps | grep -q donorconnect-app; then
+                echo "✅ Container is running successfully"
+                echo "🌐 Access your app at: http://${{ secrets.EC2_HOST }}:3000"
+              else
+                echo "❌ Container failed to start. Checking logs..."
+                docker logs donorconnect-app || echo "No logs available"
+                exit 1
+              fi
             else
               echo "Docker registry secrets not configured; skipping app deployment."
             fi
