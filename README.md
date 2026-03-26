@@ -4,6 +4,8 @@ DonorConnect is a donor retention platform built around a common nonprofit probl
 
 This repository is also well-suited for student teams because it ships with a repeatable Docker setup that avoids local machine drift.
 
+<!-- Deployment test: 2026-03-26 -->
+
 ## Project Overview
 
 Nonprofits often lose most first-time donors after a single gift. The underlying challenges are usually not “lack of effort” but **data fragmentation, limited staff capacity, and weak feedback loops** (spreadsheets + CRMs + email tools + siloed reporting).
