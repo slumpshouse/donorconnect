@@ -89,11 +89,7 @@ jobs:
     name: Docker Build + Deploy
     runs-on: ubuntu-latest
     needs: [ci]
-    if: ${{ needs.ci.result == 'success' }}
-    env:
-      EC2_HOST: ${{ secrets.EC2_HOST }}
-      EC2_KEY: ${{ secrets.EC2_KEY }}
-      EC2_DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    if: ${{ always() }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -120,108 +116,51 @@ jobs:
             ghcr.io/${{ github.repository_owner }}/donorconnect:latest
             ghcr.io/${{ github.repository_owner }}/donorconnect:${{ github.sha }}
 
-      - name: Deploy (no-op unless configured)
-        shell: bash
-        env:
-          DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
-          DOCKER_REPOSITORY: ${{ secrets.DOCKER_REPOSITORY }}
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          IMAGE_TAG: ${{ github.sha }}
-        run: |
-          set -euo pipefail
-          if [ -z "${DOCKER_REGISTRY:-}" ] || [ -z "${DOCKER_REPOSITORY:-}" ] || [ -z "${DOCKER_USERNAME:-}" ] || [ -z "${DOCKER_PASSWORD:-}" ]; then
-            echo "Deploy not configured. Set secrets DOCKER_REGISTRY, DOCKER_REPOSITORY, DOCKER_USERNAME, DOCKER_PASSWORD to enable pushing the image."
-            exit 0
-          fi
-          echo "$DOCKER_PASSWORD" | docker login "$DOCKER_REGISTRY" -u "$DOCKER_USERNAME" --password-stdin
-          docker tag "donorconnect:$IMAGE_TAG" "$DOCKER_REGISTRY/$DOCKER_REPOSITORY:$IMAGE_TAG"
-          docker push "$DOCKER_REGISTRY/$DOCKER_REPOSITORY:$IMAGE_TAG"
-
       - name: Deploy to EC2 via SSH
-        if: ${{ env.EC2_HOST != '' && env.EC2_KEY != '' && env.EC2_DATABASE_URL != '' }}
+        if: ${{ needs.ci.result == 'success' && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
-          username: ubuntu
+          username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_KEY }}
-          env_vars: |
-            DATABASE_URL=${{ secrets.DATABASE_URL }}
-            IMAGE_TAG=${{ github.sha }}
-            DOCKER_REGISTRY=${{ secrets.DOCKER_REGISTRY || '' }}
-            DOCKER_REPOSITORY=${{ secrets.DOCKER_REPOSITORY || '' }}
-            DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME || '' }}
-            DOCKER_PASSWORD=${{ secrets.DOCKER_PASSWORD || '' }}
           timeout: 30s
-          command_timeout: 20m
+          command_timeout: 30m
           script: |
-            set -eux
+            set -e
+
             if ! command -v docker &> /dev/null; then
+              curl -fsSL https://get.docker.com | sh
+              sudo usermod -aG docker $USER
+            fi
+
+            if ! docker compose version > /dev/null 2>&1; then
               sudo apt-get update -y
-              sudo apt-get install -y docker.io docker-compose-v2
-              sudo systemctl start docker
-              sudo systemctl enable docker
-              sudo usermod -aG docker ubuntu
-            fi
-            
-            if [ -n "${DOCKER_REGISTRY:-}" ] && [ -n "${DOCKER_REPOSITORY:-}" ] && [ -n "${DOCKER_USERNAME:-}" ] && [ -n "${DOCKER_PASSWORD:-}" ]; then
-              echo "Using Docker registry for deployment..."
-              echo "$DOCKER_PASSWORD" | docker login "$DOCKER_REGISTRY" -u "$DOCKER_USERNAME" --password-stdin
-              IMAGE_NAME="$DOCKER_REGISTRY/$DOCKER_REPOSITORY:$IMAGE_TAG"
-              docker pull "$IMAGE_NAME"
-            else
-              echo "No Docker registry configured; building directly on EC2..."
-              IMAGE_NAME="donorconnect:$IMAGE_TAG"
-              if [ ! -d "donorconnect" ]; then
-                git clone https://github.com/slumpshouse/donorconnect.git
-              fi
-              cd donorconnect
-              git fetch --all
-              git reset --hard origin/main
-              git checkout main
-              curl -fsSL https://get.pnpm.io/install.sh | sh -
-              export PATH="$HOME/.local/share/pnpm:$PATH"
-              pnpm install --frozen-lockfile
-              pnpm prisma:generate
-              pnpm build
-              docker build -t "$IMAGE_NAME" .
-              cd ..
-            fi
-            
-            docker stop donorconnect-app || true
-            docker rm donorconnect-app || true
-            docker run -d --name donorconnect-app -p 80:3000 -p 3000:3000 -e DATABASE_URL="$DATABASE_URL" -e HOSTNAME=0.0.0.0 -e PORT=3000 "$IMAGE_NAME"
-            sleep 10
-            docker ps | grep -q donorconnect-app
-            docker logs donorconnect-app --tail 50
-            echo "App deployed and running on port 3000"
-            
-            # Wait a moment and check if container is running
-            sleep 5
-            if docker ps | grep -q donorconnect-app; then
-              echo "✅ Container is running successfully"
-              echo "🌐 Access your app at: http://${{ secrets.EC2_HOST }}"
-              echo "🌐 Alternate URL: http://${{ secrets.EC2_HOST }}:3000"
-            else
-              echo "❌ Container failed to start. Checking logs..."
-              docker logs donorconnect-app || echo "No logs available"
-              exit 1
+              sudo apt-get install -y docker-compose-plugin
             fi
 
-      - name: Verify app is reachable from the internet
-        if: ${{ env.EC2_HOST != '' && env.EC2_KEY != '' && env.EC2_DATABASE_URL != '' }}
-        shell: bash
-        env:
-          EC2_HOST: ${{ secrets.EC2_HOST }}
-        run: |
-          set -euo pipefail
-          echo "Checking public endpoint at http://${EC2_HOST} ..."
-          timeout 60 bash -c 'until curl -fsS "http://${EC2_HOST}" > /dev/null; do sleep 5; done'
-          echo "Public endpoint is reachable."
+            if [ ! -d "${{ secrets.EC2_PROJECT_PATH }}" ]; then
+              git clone https://github.com/${{ github.repository }}.git "${{ secrets.EC2_PROJECT_PATH }}"
+            fi
 
-      - name: Explain why deploy was skipped
-        if: ${{ !(env.EC2_HOST != '' && env.EC2_KEY != '' && env.EC2_DATABASE_URL != '') }}
-        shell: bash
-        run: |
-          echo "EC2 deploy skipped because one or more required secrets are missing: EC2_HOST, EC2_KEY, DATABASE_URL."
+            cd "${{ secrets.EC2_PROJECT_PATH }}"
+            git pull origin main
+
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+            docker pull ghcr.io/${{ github.repository_owner }}/donorconnect:latest
+
+            cat > .env.production <<'EOF'
+            DATABASE_URL=${{ secrets.DATABASE_URL }}
+            OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+            APP_IMAGE=ghcr.io/${{ github.repository_owner }}/donorconnect:latest
+            EOF
+
+            docker compose --env-file .env.production pull app
+            docker compose --env-file .env.production down
+            docker compose --env-file .env.production run --rm --no-deps app npx prisma migrate deploy --config prisma.config.js
+            docker compose --env-file .env.production up -d
+
+            echo "Waiting for app to become healthy..."
+            timeout 60 sh -c 'until [ "$(docker inspect -f "{{.State.Health.Status}}" $(docker compose --env-file .env.production ps -q app))" = "healthy" ]; do sleep 3; done' || echo "Health check timed out - container may still be starting"
+
+            docker image prune -f
  

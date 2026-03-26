@@ -1,15 +1,15 @@
 services:
   app:
-    build: ./
+    image: ${APP_IMAGE:-donorconnect:local}
+    build:
+      context: ./
     restart: always
     ports:
       - "80:3000"
     env_file:
       - .env.production
     environment:
-      # Point the app at the Postgres service below.
-      # You can override this via .env.production if you prefer.
-      DATABASE_URL: postgresql://donorconnect:donorconnect_pw@db:5432/donorconnect_db
+      DATABASE_URL: ${DATABASE_URL:-postgresql://donorconnect:donorconnect_pw@db:5432/donorconnect_db}
       HOSTNAME: 0.0.0.0
       PORT: 3000
     healthcheck:
