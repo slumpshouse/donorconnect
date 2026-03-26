@@ -135,6 +135,9 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_KEY }}
           env_vars: DATABASE_URL=${{ secrets.DATABASE_URL }}
+          timeout: 30s
+          command_timeout: 10m
+          debug: true
           script: |
             if ! command -v docker &> /dev/null; then
               sudo apt-get update -y
