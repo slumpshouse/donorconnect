@@ -151,8 +151,16 @@ jobs:
           fi
           echo "DATABASE_URL format looks valid."
 
-      - name: Run migrations
-        run: pnpm exec prisma migrate deploy
+      - name: Apply schema changes
+        shell: bash
+        run: |
+          if [ -d "prisma/migrations" ] && [ -n "$(find prisma/migrations -mindepth 1 -maxdepth 1 -type d 2>/dev/null)" ]; then
+            echo "Found migration history. Running migrate deploy..."
+            pnpm exec prisma migrate deploy
+          else
+            echo "No migration history found. Running db push to sync schema..."
+            pnpm exec prisma db push --skip-generate
+          fi
 
   docker:
     name: Docker Build + Deploy
