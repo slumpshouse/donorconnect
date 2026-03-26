@@ -128,6 +128,11 @@ jobs:
           script: |
             set -e
 
+            PROJECT_PATH="${{ secrets.EC2_PROJECT_PATH }}"
+            if [ -z "$PROJECT_PATH" ]; then
+              PROJECT_PATH="$HOME/donorconnect"
+            fi
+
             if ! command -v docker &> /dev/null; then
               curl -fsSL https://get.docker.com | sh
               sudo usermod -aG docker $USER
@@ -138,11 +143,13 @@ jobs:
               sudo apt-get install -y docker-compose-plugin
             fi
 
-            if [ ! -d "${{ secrets.EC2_PROJECT_PATH }}" ]; then
-              git clone https://github.com/${{ github.repository }}.git "${{ secrets.EC2_PROJECT_PATH }}"
+            mkdir -p "$(dirname "$PROJECT_PATH")"
+
+            if [ ! -d "$PROJECT_PATH/.git" ]; then
+              git clone https://github.com/${{ github.repository }}.git "$PROJECT_PATH"
             fi
 
-            cd "${{ secrets.EC2_PROJECT_PATH }}"
+            cd "$PROJECT_PATH"
             git pull origin main
 
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
