@@ -159,29 +159,4 @@ jobs:
             else
               echo "Docker registry secrets not configured; skipping app deployment."
             fi
-
-  rotate-instance:
-    name: Launch EC2 instance (no termination)
-    runs-on: ubuntu-latest
-    needs: [docker]
-    if: ${{ always() }}
-    steps:
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: Launch a new EC2 instance (keep existing instances)
-        run: |
-          set -euo pipefail
-
-          APP_TAG_VALUE="donorconnect-app"
-          AMI_ID="${{ secrets.EC2_AMI_ID }}"
-          INSTANCE_TYPE="t3.small"
-
-          echo "Launching a new instance..."
-          new_id=$(aws ec2 run-instances --image-id "$AMI_ID" --instance-type "$INSTANCE_TYPE" --count 1 --tag-specifications "ResourceType=instance,Tags=[{Key=Role,Value=$APP_TAG_VALUE}]" --query 'Instances[0].InstanceId' --output text)
-          echo "New instance launched: $new_id"
  
