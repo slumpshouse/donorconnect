@@ -165,8 +165,8 @@ jobs:
   docker:
     name: Docker Build + Deploy
     runs-on: ubuntu-latest
-    needs: [ci]
-    if: ${{ always() }}
+    needs: [ci, migrate]
+    if: ${{ needs.ci.result == 'success' && (needs.migrate.result == 'success' || needs.migrate.result == 'skipped') }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -194,7 +194,7 @@ jobs:
             ghcr.io/${{ github.repository_owner }}/donorconnect:${{ github.sha }}
 
       - name: Deploy to EC2 via SSH
-        if: ${{ needs.ci.result == 'success' && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.migrate.result == 'success' }}
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
