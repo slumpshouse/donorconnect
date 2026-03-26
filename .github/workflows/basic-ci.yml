@@ -146,34 +146,56 @@ jobs:
             
             # Deploy the app
             if [ -n "${DOCKER_REGISTRY:-}" ] && [ -n "${DOCKER_REPOSITORY:-}" ] && [ -n "${DOCKER_USERNAME:-}" ] && [ -n "${DOCKER_PASSWORD:-}" ]; then
+              echo "Using Docker registry for deployment..."
               echo "$DOCKER_PASSWORD" | docker login "$DOCKER_REGISTRY" -u "$DOCKER_USERNAME" --password-stdin
               IMAGE_NAME="$DOCKER_REGISTRY/$DOCKER_REPOSITORY:$IMAGE_TAG"
               docker pull "$IMAGE_NAME"
-              
-              # Stop and remove existing container if running
-              docker stop donorconnect-app || true
-              docker rm donorconnect-app || true
-              
-              # Run the new container with environment variables
-              docker run -d --name donorconnect-app \
-                -p 3000:3000 \
-                -e DATABASE_URL="$DATABASE_URL" \
-                -e HOSTNAME=0.0.0.0 \
-                -e PORT=3000 \
-                "$IMAGE_NAME"
-              echo "App deployed and running on port 3000"
-              
-              # Wait a moment and check if container is running
-              sleep 5
-              if docker ps | grep -q donorconnect-app; then
-                echo "✅ Container is running successfully"
-                echo "🌐 Access your app at: http://${{ secrets.EC2_HOST }}:3000"
-              else
-                echo "❌ Container failed to start. Checking logs..."
-                docker logs donorconnect-app || echo "No logs available"
-                exit 1
-              fi
             else
-              echo "Docker registry secrets not configured; skipping app deployment."
+              echo "No Docker registry configured; building directly on EC2..."
+              IMAGE_NAME="donorconnect:$IMAGE_TAG"
+              
+              # Clone repo and build on EC2
+              if [ ! -d "donorconnect" ]; then
+                git clone https://github.com/slumpshouse/donorconnect.git
+                cd donorconnect
+              else
+                cd donorconnect
+                git pull origin main
+              fi
+              
+              # Install dependencies and build
+              curl -fsSL https://get.pnpm.io/install.sh | sh -
+              export PATH="$HOME/.local/share/pnpm:$PATH"
+              pnpm install --frozen-lockfile
+              pnpm prisma:generate
+              pnpm build
+              
+              # Build Docker image
+              docker build -t "$IMAGE_NAME" .
+              cd ..
+            fi
+            
+            # Stop and remove existing container if running
+            docker stop donorconnect-app || true
+            docker rm donorconnect-app || true
+            
+            # Run the new container with environment variables
+            docker run -d --name donorconnect-app \
+              -p 3000:3000 \
+              -e DATABASE_URL="$DATABASE_URL" \
+              -e HOSTNAME=0.0.0.0 \
+              -e PORT=3000 \
+              "$IMAGE_NAME"
+            echo "App deployed and running on port 3000"
+            
+            # Wait a moment and check if container is running
+            sleep 5
+            if docker ps | grep -q donorconnect-app; then
+              echo "✅ Container is running successfully"
+              echo "🌐 Access your app at: http://${{ secrets.EC2_HOST }}:3000"
+            else
+              echo "❌ Container failed to start. Checking logs..."
+              docker logs donorconnect-app || echo "No logs available"
+              exit 1
             fi
  
