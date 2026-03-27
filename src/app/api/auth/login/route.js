@@ -50,20 +50,17 @@ export async function POST(request) {
     try {
       const maxAge = 60 * 60 * 24 * 7
       const expires = new Date(Date.now() + maxAge * 1000).toUTCString()
-      // Only set Secure flag when the request actually came in over HTTPS.
-      // Using NODE_ENV=production is wrong because the container may serve HTTP
-      // (e.g. behind a load balancer or direct EC2 IP access).
-      const proto = request.headers.get('x-forwarded-proto') || ''
-      const isHttps = proto === 'https'
+      const isProd = process.env.NODE_ENV === 'production'
       let cookieValue = `session=${token}; Path=/; Expires=${expires}; Max-Age=${maxAge}; HttpOnly; SameSite=Lax`
-      if (isHttps) cookieValue += '; Secure'
+      if (isProd) cookieValue += '; Secure'
+      // set via headers (also keep NextResponse cookies for runtime)
       res.headers.append('set-cookie', cookieValue)
       try {
         res.cookies.set('session', token, {
           httpOnly: true,
           path: '/',
           sameSite: 'lax',
-          secure: isHttps,
+          secure: isProd,
           maxAge,
         })
       } catch (e) {

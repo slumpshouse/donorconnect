@@ -112,6 +112,10 @@ export default function DashboardSidebar({ user }) {
       </nav>
 
       <div className="mt-8">
+        <LogoutButton />
+      </div>
+
+      <div className="mt-4">
         <Link href="/donors/new" className="block">
           <button
             type="button"
@@ -121,10 +125,6 @@ export default function DashboardSidebar({ user }) {
             + Add New Donor
           </button>
         </Link>
-      </div>
-
-      <div className="mt-4">
-        <LogoutButton />
       </div>
     </aside>
   )
