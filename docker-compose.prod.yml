@@ -1,14 +1,21 @@
+# Production Compose stack: run prebuilt app image behind host port 80.
 services:
   app:
+    # Deployed image is injected by CD (latest or commit SHA tag).
     image: ${APP_IMAGE:-donorconnect:local}
+    # Auto-restart for resilience on VM reboot or process crash.
     restart: always
+    # Map public HTTP port to Next.js runtime port.
     ports:
       - "80:3000"
+    # Production secrets are provided by deployment step.
     env_file:
       - .env.production
     environment:
+      # Explicit container binding for external traffic.
       HOSTNAME: 0.0.0.0
       PORT: 3000
+    # Health probe used by deployment script to verify readiness.
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/ || exit 1"]
       interval: 10s

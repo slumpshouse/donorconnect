@@ -1,41 +1,55 @@
+# Local/dev Compose stack: app + postgres with persistent volume.
 services:
   app:
+    # Use prebuilt image if provided, otherwise build/use local donorconnect tag.
     image: ${APP_IMAGE:-donorconnect:local}
+    # Build context for local image creation.
     build:
       context: ./
+    # Keep app container running after host restart.
     restart: always
+    # Expose container port 3000 on host port 80.
     ports:
       - "80:3000"
+    # Load runtime secrets/config from env file when present.
     env_file:
       - .env.production
     environment:
+      # Default points app to Compose postgres service in local/dev mode.
       DATABASE_URL: ${DATABASE_URL:-postgresql://donorconnect:donorconnect_pw@db:5432/donorconnect_db}
       HOSTNAME: 0.0.0.0
       PORT: 3000
+    # Simple HTTP probe used by depends_on and runtime monitoring
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/ || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 3
       start_period: 15s
+    # Wait for database health before starting app boot sequence.
     depends_on:
       db:
         condition: service_healthy
 
   db:
+    # PostgreSQL service for application data.
     image: postgres:15
     restart: always
     environment:
+      # Dev defaults; override in env file for non-local usage.
       POSTGRES_USER: donorconnect
       POSTGRES_PASSWORD: donorconnect_pw
       POSTGRES_DB: donorconnect_db
+    # Readiness check prevents app startup races.
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U donorconnect -d donorconnect_db"]
       interval: 5s
       timeout: 5s
       retries: 5
+    # Persist database state between container restarts/rebuilds.
     volumes:
       - db_data:/var/lib/postgresql/data
 
 volumes:
+  # Named volume managed by Docker for Postgres persistence.
   db_data:

@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 
 export default function CampaignsPage() {
   const { campaigns, loading, error, refetch } = useCampaigns()
-  const [localCampaigns, setLocalCampaigns] = useState([])
+  const [s, sets] = useState([])
   const [deletingId, setDeletingId] = useState(null)
 
   useEffect(() => {
