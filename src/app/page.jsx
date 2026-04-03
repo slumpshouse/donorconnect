@@ -20,7 +20,7 @@ export default function HomePage() {
         <section className="rounded-xl border border-gray-200 bg-white p-6 sm:p-8 shadow-sm">
           <h1 className="text-4xl font-bold tracking-tight text-gray-800" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>DonorConnect</h1>
           <p className="mt-4 text-lg text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
-            First time donors often lapse because follow-up is hard to prioritize and data is scattered.
+            First-time donors often lapse because follow-up is hard to prioritize and data is scattered.
           </p>
           <p className="mt-2 text-lg text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
             DonorConnect centralizes donor giving history and highlights retention risk so staff can focus outreach where it matters.
