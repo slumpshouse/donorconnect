@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 
 export default function CampaignsPage() {
   const { campaigns, loading, error, refetch } = useCampaigns()
-  const [s, sets] = useState([])
+  const [localCampaigns, setLocalCampaigns] = useState([])
   const [deletingId, setDeletingId] = useState(null)
 
   useEffect(() => {
@@ -114,7 +114,7 @@ export default function CampaignsPage() {
                   <div className="text-sm text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>TOTAL DONORS</div>
                 </div>
                 <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-gray-800" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>${c.averageGift.toLocaleString()}</div>
+                  <div className="text-2xl font-bold text-gray-800" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>${(c.averageGift ?? 0).toLocaleString()}</div>
                   <div className="text-sm text-gray-600" style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>AVERAGE GIFT</div>
                 </div>
                 <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg text-center">
