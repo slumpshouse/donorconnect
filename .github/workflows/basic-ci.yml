@@ -135,10 +135,12 @@ jobs:
 
             if ! command -v docker &> /dev/null; then
               curl -fsSL https://get.docker.com | sh
+              # Note: usermod only takes effect in a new login session.
+              # All docker commands below use sudo so this session works immediately.
               sudo usermod -aG docker $USER
             fi
 
-            if ! docker compose version > /dev/null 2>&1; then
+            if ! sudo docker compose version > /dev/null 2>&1; then
               sudo apt-get update -y
               sudo apt-get install -y docker-compose-plugin
             fi
@@ -152,8 +154,8 @@ jobs:
             cd "$PROJECT_PATH"
             git pull origin main
 
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-            docker pull ghcr.io/${{ github.repository_owner }}/donorconnect:latest
+            echo "${{ secrets.GITHUB_TOKEN }}" | sudo docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+            sudo docker pull ghcr.io/${{ github.repository_owner }}/donorconnect:latest
 
             cat > .env.production <<'EOF'
             DATABASE_URL=${{ secrets.DATABASE_URL }}
@@ -165,12 +167,12 @@ jobs:
             sed -i "s/^DATABASE_URL='\(.*\)'$/DATABASE_URL=\1/" .env.production
             sed -i 's/^DATABASE_URL="\(.*\)"$/DATABASE_URL=\1/' .env.production
 
-            docker compose -f docker-compose.prod.yml --env-file .env.production pull app
-            docker compose -f docker-compose.prod.yml --env-file .env.production down
-            docker compose -f docker-compose.prod.yml --env-file .env.production up -d
+            sudo docker compose -f docker-compose.prod.yml --env-file .env.production pull app
+            sudo docker compose -f docker-compose.prod.yml --env-file .env.production down
+            sudo docker compose -f docker-compose.prod.yml --env-file .env.production up -d
 
             echo "Waiting for app to become healthy..."
-            timeout 60 sh -c 'until [ "$(docker inspect -f "{{.State.Health.Status}}" $(docker compose -f docker-compose.prod.yml --env-file .env.production ps -q app))" = "healthy" ]; do sleep 3; done' || echo "Health check timed out - container may still be starting"
+            timeout 60 sh -c 'until [ "$(sudo docker inspect -f "{{.State.Health.Status}}" $(sudo docker compose -f docker-compose.prod.yml --env-file .env.production ps -q app))" = "healthy" ]; do sleep 3; done' || echo "Health check timed out - container may still be starting"
 
-            docker image prune -f
+            sudo docker image prune -f
  
