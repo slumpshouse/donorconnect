@@ -158,7 +158,7 @@ jobs:
             sudo docker pull ghcr.io/${{ github.repository_owner }}/donorconnect:latest
 
             cat > .env.production <<'EOF'
-            DATABASE_URL=${{ secrets.DATABASE_URL }}
+            DATABASE_URL=postgresql://donorconnect:donorconnect_pw@db:5432/donorconnect_db
             OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
             APP_IMAGE=ghcr.io/${{ github.repository_owner }}/donorconnect:latest
             EOF
@@ -175,4 +175,10 @@ jobs:
             timeout 60 sh -c 'until [ "$(sudo docker inspect -f "{{.State.Health.Status}}" $(sudo docker compose -f docker-compose.prod.yml --env-file .env.production ps -q app))" = "healthy" ]; do sleep 3; done' || echo "Health check timed out - container may still be starting"
 
             sudo docker image prune -f
+
+            # Seed demo data on first deploy (safe to skip if seed fails or already seeded).
+            echo "Seeding demo data (first deploy only)..."
+            sudo docker compose -f docker-compose.prod.yml --env-file .env.production exec -T app node prisma/seed.js \
+              && echo "Seed complete." \
+              || echo "Seed skipped — DB may already be seeded or seed file unavailable in image."
  

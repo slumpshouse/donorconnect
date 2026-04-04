@@ -22,3 +22,29 @@ services:
       timeout: 5s
       retries: 3
       start_period: 15s
+    # Wait for Postgres to be ready before starting the app.
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    # Postgres service for production data.
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: donorconnect
+      POSTGRES_PASSWORD: donorconnect_pw
+      POSTGRES_DB: donorconnect_db
+    # Readiness check so app waits until Postgres accepts connections.
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U donorconnect -d donorconnect_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    # Persist database state across container restarts.
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  # Named volume for Postgres data persistence on the EC2 host.
+  db_data:
