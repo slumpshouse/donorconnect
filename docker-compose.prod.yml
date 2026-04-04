@@ -1,50 +1,81 @@
-# Production Compose stack: run prebuilt app image behind host port 80.
+# Production Compose stack: db -> migrate (schema+seed) -> app.
+# Startup order is enforced by depends_on so the app never starts
+# before the schema exists and demo data is seeded.
 services:
-  app:
-    # Deployed image is injected by CD (latest or commit SHA tag).
-    image: ${APP_IMAGE:-donorconnect:local}
-    # Auto-restart for resilience on VM reboot or process crash.
-    restart: always
-    # Map public HTTP port to Next.js runtime port.
-    ports:
-      - "80:3000"
-    # Production secrets are provided by deployment step.
-    env_file:
-      - .env.production
-    environment:
-      # Explicit container binding for external traffic.
-      HOSTNAME: 0.0.0.0
-      PORT: 3000
-    # Health probe used by deployment script to verify readiness.
-    healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/ || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 15s
-    # Wait for Postgres to be ready before starting the app.
-    depends_on:
-      db:
-        condition: service_healthy
 
   db:
-    # Postgres service for production data.
+    # PostgreSQL service - starts first, must be healthy before migrate or app boots.
     image: postgres:15
     restart: always
     environment:
       POSTGRES_USER: donorconnect
       POSTGRES_PASSWORD: donorconnect_pw
       POSTGRES_DB: donorconnect_db
-    # Readiness check so app waits until Postgres accepts connections.
+    # pg_isready health check gates all dependent services.
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U donorconnect -d donorconnect_db"]
       interval: 5s
       timeout: 5s
       retries: 5
-    # Persist database state across container restarts.
+    # Named volume keeps data across container restarts.
     volumes:
       - db_data:/var/lib/postgresql/data
 
+  migrate:
+    # One-shot init container: applies Prisma schema and seeds demo data.
+    # Uses full node:20-alpine so Prisma CLI and all seed deps are available.
+    image: node:20-alpine
+    working_dir: /setup
+    volumes:
+      # Mount project source files needed for schema push and seed script.
+      - ./prisma:/setup/prisma
+      - ./prisma.config.js:/setup/prisma.config.js
+    environment:
+      # Internal compose network hostname for Postgres.
+      DATABASE_URL: postgresql://donorconnect:donorconnect_pw@db:5432/donorconnect_db
+    # Install exact Prisma version and seed deps, push schema, seed demo data, exit 0.
+    command: >
+      sh -c "
+        npm install --no-save --quiet prisma@7 @prisma/adapter-pg pg bcryptjs dotenv 2>&1 | tail -3 &&
+        node_modules/.bin/prisma db push --skip-generate --accept-data-loss &&
+        node prisma/seed.js &&
+        echo 'Schema and demo data ready.'
+      "
+    depends_on:
+      db:
+        condition: service_healthy
+    # Run once and exit; Docker will not restart after a clean exit.
+    restart: "no"
+
+  app:
+    # Deployed image is injected by CD pipeline (latest or commit SHA tag).
+    image: ${APP_IMAGE:-donorconnect:local}
+    # Auto-restart so app recovers from crashes or VM reboots.
+    restart: always
+    # Expose Next.js runtime on host port 80.
+    ports:
+      - "80:3000"
+    # Production secrets provided by the deployment step.
+    env_file:
+      - .env.production
+    environment:
+      # Bind on all interfaces so external traffic reaches the container.
+      HOSTNAME: 0.0.0.0
+      PORT: 3000
+    # HTTP health probe used by the deployment script and Docker restart logic.
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    # App only starts after DB is healthy AND schema + seed migration completed.
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+
 volumes:
-  # Named volume for Postgres data persistence on the EC2 host.
+  # Named volume managed by Docker for Postgres data persistence on the EC2 host.
   db_data:
