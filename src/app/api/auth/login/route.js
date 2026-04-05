@@ -3,6 +3,19 @@ import { NextResponse } from 'next/server'
 import { login } from '@/lib/auth'
 import { createSession } from '@/lib/session'
 
+function getCookieSecureFlag(request) {
+  const forced = process.env.SESSION_COOKIE_SECURE
+  if (typeof forced === 'string') {
+    const normalized = forced.trim().toLowerCase()
+    if (['1', 'true', 'yes', 'on'].includes(normalized)) return true
+    if (['0', 'false', 'no', 'off'].includes(normalized)) return false
+  }
+
+  const forwardedProto = request.headers.get('x-forwarded-proto')
+  const proto = (forwardedProto || request.nextUrl?.protocol || '').split(',')[0].trim().toLowerCase()
+  return proto === 'https' || proto === 'https:'
+}
+
 export async function POST(request) {
   try {
     const body = await request.json()
@@ -50,9 +63,9 @@ export async function POST(request) {
     try {
       const maxAge = 60 * 60 * 24 * 7
       const expires = new Date(Date.now() + maxAge * 1000).toUTCString()
-      const isProd = process.env.NODE_ENV === 'production'
+      const useSecureCookie = getCookieSecureFlag(request)
       let cookieValue = `session=${token}; Path=/; Expires=${expires}; Max-Age=${maxAge}; HttpOnly; SameSite=Lax`
-      if (isProd) cookieValue += '; Secure'
+      if (useSecureCookie) cookieValue += '; Secure'
       // set via headers (also keep NextResponse cookies for runtime)
       res.headers.append('set-cookie', cookieValue)
       try {
@@ -60,7 +73,7 @@ export async function POST(request) {
           httpOnly: true,
           path: '/',
           sameSite: 'lax',
-          secure: isProd,
+          secure: useSecureCookie,
           maxAge,
         })
       } catch (e) {
