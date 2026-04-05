@@ -77,7 +77,7 @@ export default function WhyDonorConnectPage() {
         style={{backgroundColor: '#5B9FDF', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}
         aria-label="Get started"
       >
-        Get started!
+        Get started
       </Link>
     </main>
   )
