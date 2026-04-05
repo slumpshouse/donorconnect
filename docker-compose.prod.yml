@@ -43,7 +43,7 @@ services:
     command: >
       sh -c "
         echo '{\"type\":\"module\"}' > /setup/package.json &&
-        npm install --no-save prisma@7 @prisma/adapter-pg pg bcryptjs dotenv &&
+        npm install --no-save prisma@7 @prisma/adapter-pg @prisma/client-runtime-utils pg bcryptjs dotenv ws &&
         node_modules/.bin/prisma db push --schema ./prisma/schema.prisma --accept-data-loss &&
         node prisma/seed.js &&
         echo 'Schema and demo data ready.'
